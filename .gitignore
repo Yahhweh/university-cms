@@ -19,3 +19,7 @@ target/
 *.iml
 *.ipr
 .mvn
+
+/UML/V1
+/UML/V2
+/UML/V3
