@@ -1,0 +1,21 @@
+spring:
+  application:
+         name: uni-cms
+
+  flyway:
+    enabled: true
+    locations: classpath:/db/migration
+    target: latest
+
+  datasource:
+    url: jdbc:postgresql://localhost:5436/uni-cms
+    username: postgres
+    password: 22305
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+logging:
+  level:
+    org.flywaydb: DEBUG
