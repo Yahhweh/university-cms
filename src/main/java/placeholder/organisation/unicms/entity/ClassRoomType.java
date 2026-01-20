@@ -12,6 +12,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ClassRoomType {
 
+    public ClassRoomType(String name, Long capacity) {
+        this.name = name;
+        this.capacity = capacity;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

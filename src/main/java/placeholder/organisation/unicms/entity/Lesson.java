@@ -1,7 +1,9 @@
 package placeholder.organisation.unicms.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -9,7 +11,18 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "lesson")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Lesson {
+    public Lesson(Duration duration, StudySubject studySubject, Group group, Lecturer lecturer, ClassRoom classRoom, LocalDate date) {
+        this.duration = duration;
+        this.studySubject = studySubject;
+        this.group = group;
+        this.lecturer = lecturer;
+        this.classRoom = classRoom;
+        this.date = date;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

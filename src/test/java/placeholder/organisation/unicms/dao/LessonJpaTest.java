@@ -1,4 +1,4 @@
-package placeholder.organisation.unicms.jpa;
+package placeholder.organisation.unicms.dao;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,12 +7,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.jdbc.Sql;
-import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.entity.PersonType;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;

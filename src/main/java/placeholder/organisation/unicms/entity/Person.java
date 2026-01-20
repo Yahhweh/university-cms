@@ -19,7 +19,6 @@ import java.time.LocalDate;
         length = 20
 )
 public abstract class Person {
-
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

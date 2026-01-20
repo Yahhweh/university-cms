@@ -12,6 +12,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Address {
 
+    public Address(String city, String street, String country, String houseNumber, String postalCode) {
+        this.city = city;
+        this.street = street;
+        this.country = country;
+        this.houseNumber = houseNumber;
+        this.postalCode = postalCode;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
