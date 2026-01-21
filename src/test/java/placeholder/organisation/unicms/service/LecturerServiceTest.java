@@ -6,8 +6,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.dao.DaoException;
-import placeholder.organisation.unicms.dao.LecturerJpa;
-import placeholder.organisation.unicms.dao.StudySubjectJpa;
+import placeholder.organisation.unicms.dao.LecturerDao;
+import placeholder.organisation.unicms.dao.StudySubjectDao;
 import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.StudySubject;
 
@@ -23,10 +23,10 @@ import static org.mockito.Mockito.*;
 class LecturerServiceTest {
 
     @Mock
-    private LecturerJpa lecturerJpa;
+    private LecturerDao lecturerDao;
 
     @Mock
-    private StudySubjectJpa studySubjectJpa;
+    private StudySubjectDao studySubjectDao;
 
     @InjectMocks
     private LecturerService lecturerService;
@@ -40,14 +40,14 @@ class LecturerServiceTest {
         Lecturer lecturer = new Lecturer();
         lecturer.setStudySubjects(new HashSet<>());
 
-        when(studySubjectJpa.findById(subjectId)).thenReturn(Optional.of(subject));
-        when(lecturerJpa.findById(lecturerId)).thenReturn(Optional.of(lecturer));
+        when(studySubjectDao.findById(subjectId)).thenReturn(Optional.of(subject));
+        when(lecturerDao.findById(lecturerId)).thenReturn(Optional.of(lecturer));
 
         lecturerService.assignSubjectToLecturer(subjectId, lecturerId);
 
         assertTrue(lecturer.getStudySubjects().contains(subject));
-        verify(studySubjectJpa).findById(subjectId);
-        verify(lecturerJpa).findById(lecturerId);
+        verify(studySubjectDao).findById(subjectId);
+        verify(lecturerDao).findById(lecturerId);
     }
 
     @Test
@@ -55,7 +55,7 @@ class LecturerServiceTest {
         long subjectId = 1L;
         long lecturerId = 2L;
 
-        when(studySubjectJpa.findById(subjectId)).thenThrow(new DaoException("Database error"));
+        when(studySubjectDao.findById(subjectId)).thenThrow(new DaoException("Database error"));
 
         assertThrows(ServiceException.class, () ->
                 lecturerService.assignSubjectToLecturer(subjectId, lecturerId)
@@ -73,14 +73,14 @@ class LecturerServiceTest {
         subjects.add(subject);
         lecturer.setStudySubjects(subjects);
 
-        when(studySubjectJpa.findById(subjectId)).thenReturn(Optional.of(subject));
-        when(lecturerJpa.findById(lecturerId)).thenReturn(Optional.of(lecturer));
+        when(studySubjectDao.findById(subjectId)).thenReturn(Optional.of(subject));
+        when(lecturerDao.findById(lecturerId)).thenReturn(Optional.of(lecturer));
 
         lecturerService.removeSubjectToLecturer(subjectId, lecturerId);
 
         assertTrue(lecturer.getStudySubjects().isEmpty());
-        verify(studySubjectJpa).findById(subjectId);
-        verify(lecturerJpa).findById(lecturerId);
+        verify(studySubjectDao).findById(subjectId);
+        verify(lecturerDao).findById(lecturerId);
     }
 
     @Test
@@ -88,7 +88,7 @@ class LecturerServiceTest {
         long subjectId = 1L;
         long lecturerId = 2L;
 
-        when(studySubjectJpa.findById(subjectId)).thenThrow(new DaoException(""));
+        when(studySubjectDao.findById(subjectId)).thenThrow(new DaoException(""));
 
         assertThrows(ServiceException.class, () ->
                 lecturerService.removeSubjectToLecturer(subjectId, lecturerId)

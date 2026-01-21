@@ -1,29 +1,34 @@
 package placeholder.organisation.unicms.service.datagenerator;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import placeholder.organisation.unicms.entity.Address;
 import placeholder.organisation.unicms.entity.Lecturer;
+import placeholder.organisation.unicms.service.AddressService;
 import placeholder.organisation.unicms.service.LecturerService;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LecturerGeneratorTest {
 
     @Mock
-    private LecturerService lecturerService;
+    private LecturerService lecturerServiceMock;
+    @Mock
+    private AddressService addressServiceMock;
 
+    @InjectMocks
     private LecturerGenerator lecturerGenerator;
-
-    @BeforeEach
-    void setup() {
-        lecturerGenerator = new LecturerGenerator(lecturerService);
-    }
 
     @Test
     void generate_createsExactAmountOfLecturers() {
@@ -31,25 +36,28 @@ class LecturerGeneratorTest {
 
         lecturerGenerator.generate(amount);
 
-        verify(lecturerService, times(amount)).addLecturer(any(Lecturer.class));
+        verify(addressServiceMock).findAll();
+        verify(lecturerServiceMock, times(amount)).addLecturer(any(Lecturer.class));
     }
 
     @Test
     void generate_populatesInheritedAndSpecificFields() {
+        when(addressServiceMock.findAll()).thenReturn( List.of( new Address("1", "12", "1", "12", "12", "12")));
         lecturerGenerator.generate(1);
 
-        ArgumentCaptor<Lecturer> lecturerCaptor = ArgumentCaptor.forClass(Lecturer.class);
-        verify(lecturerService).addLecturer(lecturerCaptor.capture());
+        verify(addressServiceMock).findAll();
+        verify(lecturerServiceMock).addLecturer(argThat(lecturer -> {
+            assertThat(lecturer.getName()).isNotNull();
+            assertThat(lecturer.getSureName()).isNotNull();
+            assertThat(lecturer.getPassword()).isNotNull();
+            assertThat(lecturer.getGender()).isNotNull();
+            assertThat(lecturer.getDateOfBirth()).isNotNull();
+            assertThat(lecturer.getAddress()).isNotNull();
 
-        Lecturer savedLecturer = lecturerCaptor.getValue();
+            assertThat(lecturer.getSalary()).isNotNull();
+            assertThat(lecturer.getSalary()).isGreaterThanOrEqualTo(3000);
 
-        assertNotNull(savedLecturer.getName());
-        assertNotNull(savedLecturer.getSureName());
-        assertNotNull(savedLecturer.getPassword());
-        assertNotNull(savedLecturer.getGender());
-        assertNotNull(savedLecturer.getDateOfBirth());
-
-        assertNotNull(savedLecturer.getSalary());
-        assertTrue(savedLecturer.getSalary() >= 3000);
+            return true;
+        }));
     }
 }

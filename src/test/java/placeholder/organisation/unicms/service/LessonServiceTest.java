@@ -10,7 +10,7 @@ import placeholder.organisation.unicms.entity.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,24 +18,23 @@ import java.util.Set;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class LessonServiceTest {
     @Mock
-    LessonJpa lessonJpaMock;
+    LessonDao lessonDaoMock;
     @Mock
-    DurationJpa durationJpaMock;
+    DurationDao durationDaoMock;
     @Mock
-    ClassRoomJpa classRoomJpaMock;
+    ClassRoomDao classRoomDaoMock;
     @Mock
-    GroupJpa groupJpaMock;
+    GroupDao groupDaoMock;
     @Mock
-    StudySubjectJpa studySubjectJpaMock;
+    StudySubjectDao studySubjectDaoMock;
     @Mock
-    LecturerJpa lecturerJpaMock;
+    LecturerDao lecturerDaoMock;
     @InjectMocks
     LessonService lessonService;
 
@@ -47,15 +46,15 @@ class LessonServiceTest {
         Duration newDuration = new Duration(2L, LocalTime.now().plusHours(1), LocalTime.now().plusHours(1));
         Lesson lesson = getLesson();
 
-        when(durationJpaMock.findById(durationId)).thenReturn(Optional.of(newDuration));
-        when(lessonJpaMock.findById(lessonId)).thenReturn(Optional.ofNullable(lesson));
+        when(durationDaoMock.findById(durationId)).thenReturn(Optional.of(newDuration));
+        when(lessonDaoMock.findById(lessonId)).thenReturn(Optional.ofNullable(lesson));
 
         assertThat(lesson.getDuration()).isEqualTo(getOldDuration());
 
         lessonService.changeDuration(lessonId, durationId);
 
-        verify(durationJpaMock).findById(durationId);
-        verify(lessonJpaMock).findById(lessonId);
+        verify(durationDaoMock).findById(durationId);
+        verify(lessonDaoMock).findById(lessonId);
 
 
         assertThat(lesson.getDuration()).isEqualTo(newDuration);
@@ -68,15 +67,15 @@ class LessonServiceTest {
         Lesson lesson = getLesson();
         ClassRoom newRoom = new ClassRoom(2L, "311", new ClassRoomType(1L, "same", 50L));
 
-        when(classRoomJpaMock.findById(classRoomId)).thenReturn(Optional.of(newRoom));
-        when(lessonJpaMock.findById(lessonId)).thenReturn(Optional.of(lesson));
+        when(classRoomDaoMock.findById(classRoomId)).thenReturn(Optional.of(newRoom));
+        when(lessonDaoMock.findById(lessonId)).thenReturn(Optional.of(lesson));
 
         assertThat(lesson.getClassRoom()).isEqualTo(getOldClassRoom());
 
         lessonService.changeClassroom(lessonId, classRoomId);
 
-        verify(lessonJpaMock).findById(lessonId);
-        verify(classRoomJpaMock).findById(classRoomId);
+        verify(lessonDaoMock).findById(lessonId);
+        verify(classRoomDaoMock).findById(classRoomId);
         assertThat(lesson.getClassRoom()).isEqualTo(newRoom);
     }
 
@@ -87,15 +86,15 @@ class LessonServiceTest {
         Lesson lesson = getLesson();
         Group newGroup = new Group(2L, "12A");
 
-        when(groupJpaMock.findById(groupId)).thenReturn(Optional.of(newGroup));
-        when(lessonJpaMock.findById(lessonId)).thenReturn(Optional.ofNullable(lesson));
+        when(groupDaoMock.findById(groupId)).thenReturn(Optional.of(newGroup));
+        when(lessonDaoMock.findById(lessonId)).thenReturn(Optional.ofNullable(lesson));
 
         assertThat(lesson.getGroup()).isEqualTo(getOldGroup());
 
         lessonService.changeGroup(lessonId, groupId);
 
-        verify(groupJpaMock).findById(groupId);
-        verify(lessonJpaMock).findById(lessonId);
+        verify(groupDaoMock).findById(groupId);
+        verify(lessonDaoMock).findById(lessonId);
 
         assertThat(lesson.getGroup()).isEqualTo(newGroup);
     }
@@ -107,15 +106,15 @@ class LessonServiceTest {
         Lesson lesson = getLesson();
         StudySubject newSubject = new StudySubject(subjectId, "Mathematics");
 
-        when(studySubjectJpaMock.findById(subjectId)).thenReturn(Optional.of(newSubject));
-        when(lessonJpaMock.findById(lessonId)).thenReturn(Optional.of(lesson));
+        when(studySubjectDaoMock.findById(subjectId)).thenReturn(Optional.of(newSubject));
+        when(lessonDaoMock.findById(lessonId)).thenReturn(Optional.of(lesson));
 
         assertThat(lesson.getStudySubject()).isEqualTo(getOldSubject());
 
         lessonService.changeStudySubject(lessonId, subjectId);
 
-        verify(lessonJpaMock).findById(lessonId);
-        verify(studySubjectJpaMock).findById(subjectId);
+        verify(lessonDaoMock).findById(lessonId);
+        verify(studySubjectDaoMock).findById(subjectId);
         assertThat(lesson.getStudySubject()).isEqualTo(newSubject);
     }
 
@@ -126,16 +125,51 @@ class LessonServiceTest {
         Lesson lesson = getLesson();
         Lecturer newLecturer = new Lecturer((int) lecturerId, Set.of(getOldSubject()));
 
-        when(lecturerJpaMock.findById(lecturerId)).thenReturn(Optional.of(newLecturer));
-        when(lessonJpaMock.findById(lessonId)).thenReturn(Optional.of(lesson));
+        when(lecturerDaoMock.findById(lecturerId)).thenReturn(Optional.of(newLecturer));
+        when(lessonDaoMock.findById(lessonId)).thenReturn(Optional.of(lesson));
 
         assertThat(lesson.getLecturer()).isEqualTo(getLecturer());
 
         lessonService.changeLecturer(lessonId, lecturerId);
 
-        verify(lessonJpaMock).findById(lessonId);
-        verify(lecturerJpaMock).findById(lecturerId);
+        verify(lessonDaoMock).findById(lessonId);
+        verify(lecturerDaoMock).findById(lecturerId);
         assertThat(lesson.getLecturer()).isEqualTo(newLecturer);
+    }
+
+    @Test
+    void findLessonsInRange_shouldReturnLessons_whenDataExists() {
+        LocalDate start = LocalDate.of(2025, 10, 1);
+        LocalDate end = LocalDate.of(2025, 10, 31);
+        long personId = 1L;
+        PersonType type = PersonType.Lecturer;
+        Lesson lesson = getLesson();
+
+        when(lessonDaoMock.findInRange(start, end, personId, type))
+                .thenReturn(List.of(lesson));
+
+        List<Lesson> result = lessonService.findLessonsInRange(start, end, personId, type);
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0)).isEqualTo(lesson);
+        verify(lessonDaoMock).findInRange(start, end, personId, type);
+    }
+
+    @Test
+    void findByDate_shouldReturnEmptyList_whenNoLessonsFound() {
+        LocalDate date = LocalDate.of(2025, 12, 25);
+        long personId = 1L;
+        PersonType type = PersonType.Student;
+
+        when(lessonDaoMock.findByDateAndRole(date, personId, type))
+                .thenReturn(List.of());
+
+        List<Lesson> result = lessonService.findByDate(date, personId, type);
+
+        assertThat(result).isNotNull();
+        assertThat(result.isEmpty()).isTrue();
+        verify(lessonDaoMock).findByDateAndRole(date, personId, type);
     }
 
     private static Duration getOldDuration() {

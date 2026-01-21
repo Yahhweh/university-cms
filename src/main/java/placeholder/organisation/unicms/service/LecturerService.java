@@ -4,8 +4,8 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import placeholder.organisation.unicms.dao.DaoException;
-import placeholder.organisation.unicms.dao.LecturerJpa;
-import placeholder.organisation.unicms.dao.StudySubjectJpa;
+import placeholder.organisation.unicms.dao.LecturerDao;
+import placeholder.organisation.unicms.dao.StudySubjectDao;
 import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.StudySubject;
 
@@ -16,42 +16,42 @@ import java.util.Optional;
 @Log4j2
 @Transactional(readOnly = true)
 public class LecturerService {
-    LecturerJpa lecturerJpa;
-    StudySubjectJpa studySubjectJpa;
+    LecturerDao lecturerDao;
+    StudySubjectDao studySubjectDao;
 
-    public LecturerService(LecturerJpa lecturerJpa, StudySubjectJpa studySubjectJpa) {
-        this.lecturerJpa = lecturerJpa;
-        this.studySubjectJpa = studySubjectJpa;
+    public LecturerService(LecturerDao lecturerDao, StudySubjectDao studySubjectDao) {
+        this.lecturerDao = lecturerDao;
+        this.studySubjectDao = studySubjectDao;
     }
 
     public List<Lecturer> findAllLecturers(){
-        List<Lecturer> lecturers =lecturerJpa.findAll();
+        List<Lecturer> lecturers = lecturerDao.findAll();
         log.debug("Found size {} lecturers", lecturers.size());
         return lecturers;
     }
 
     @Transactional
     public void addLecturer(Lecturer lecturer) {
-        lecturerJpa.save(lecturer);
+        lecturerDao.save(lecturer);
         log.debug("Lecturer saved successfully. Name: {}}", lecturer.getName());
     }
 
     public Optional<Lecturer> findLecturerByNameAndSureName(String name, String sureName) {
-        Optional<Lecturer> lecturer = lecturerJpa.findByNameAndSureName(name, sureName);
+        Optional<Lecturer> lecturer = lecturerDao.findByNameAndSureName(name, sureName);
         lecturer.ifPresent(value -> log.debug("Found lecturer {}", value));
         return lecturer;
     }
 
     public Optional<Lecturer> findLecturer(long lecturerId){
-        Optional<Lecturer> lecturer = lecturerJpa.findById(lecturerId);
+        Optional<Lecturer> lecturer = lecturerDao.findById(lecturerId);
         lecturer.ifPresent(value -> log.debug("Found lecturer {}", value));
         return lecturer;
     }
 
     public void assignSubjectToLecturer(long subjectId, long lecturerId){
         try {
-            Optional<StudySubject> subject = studySubjectJpa.findById(subjectId);
-            Optional<Lecturer> lecturer = lecturerJpa.findById(lecturerId);
+            Optional<StudySubject> subject = studySubjectDao.findById(subjectId);
+            Optional<Lecturer> lecturer = lecturerDao.findById(lecturerId);
             if(subject.isPresent() && lecturer.isPresent()){
                 if(lecturer.get().getStudySubjects().add(subject.get())){
                     log.info("Lecturer assigned to keep this subject. lecturerId: {}, subjectId: {}", lecturerId, subjectId);
@@ -65,8 +65,8 @@ public class LecturerService {
 
     public void removeSubjectToLecturer(long subjectId, long lecturerId){
         try {
-            Optional<StudySubject> subject = studySubjectJpa.findById(subjectId);
-            Optional<Lecturer> lecturer = lecturerJpa.findById(lecturerId);
+            Optional<StudySubject> subject = studySubjectDao.findById(subjectId);
+            Optional<Lecturer> lecturer = lecturerDao.findById(lecturerId);
             if(subject.isPresent() && lecturer.isPresent()){
                 if(lecturer.get().getStudySubjects().remove(subject.get())){
                     log.info("Lecturer is not to keeping this subject. lecturerId: {}, subjectId: {}", lecturerId, subjectId);

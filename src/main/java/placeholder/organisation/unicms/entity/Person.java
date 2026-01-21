@@ -36,8 +36,10 @@ public abstract class Person {
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private GenderType gender;
+    @Column(name = "email")
+    private String email;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id",
             foreignKey = @ForeignKey(name = "fk_person_address"),
             referencedColumnName = "id")

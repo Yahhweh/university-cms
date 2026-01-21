@@ -2,12 +2,13 @@ package placeholder.organisation.unicms.service.datagenerator;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import placeholder.organisation.unicms.entity.Address;
 import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.entity.Student;
+import placeholder.organisation.unicms.service.AddressService;
 import placeholder.organisation.unicms.service.GroupService;
 import placeholder.organisation.unicms.service.StudentService;
 
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,13 +26,19 @@ public class StudentsGeneratorTest {
     private StudentService mockStudentService;
     @Mock
     private GroupService mockGroupService;
+    @Mock
+    private AddressService mockAddressService;
     @InjectMocks
     private StudentsGenerator studentsGenerator;
+
 
     @Test
     void generate_shouldCreateExactAmountOfStudents() {
         int amount = 15;
+
         studentsGenerator.generate(amount);
+
+        verify(mockAddressService).findAll();
         verify(mockStudentService, times(amount)).createStudent(any(Student.class));
     }
 
@@ -40,6 +47,7 @@ public class StudentsGeneratorTest {
         int studentCount = 10;
         int minPerGroup = 2;
         int maxPerGroup = 2;
+        int expectedAssignments = 6;
 
         List<Student> mockStudents = createMockStudents(studentCount);
         List<Group> mockGroups = createMockGroups(3);
@@ -49,15 +57,13 @@ public class StudentsGeneratorTest {
 
         studentsGenerator.assignRandomGroups(minPerGroup, maxPerGroup);
 
-        ArgumentCaptor<Student> studentCaptor = ArgumentCaptor.forClass(Student.class);
-        verify(mockStudentService, times(6)).updateStudent(studentCaptor.capture());
+        verify(mockStudentService, times(expectedAssignments)).updateStudent(any(Student.class));
 
-        long uniqueStudentsAssigned = studentCaptor.getAllValues().stream()
-                .map(Student::getId)
-                .distinct()
+        long assignedCount = mockStudents.stream()
+                .filter(s -> s.getGroup() != null)
                 .count();
 
-        assertEquals(6, uniqueStudentsAssigned);
+        assertThat(assignedCount).isEqualTo(expectedAssignments);
     }
 
     private List<Student> createMockStudents(int count) {

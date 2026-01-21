@@ -17,22 +17,22 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
 @DataJpaTest(
-        includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = LessonJpa.class)
+        includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = LessonDao.class)
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Sql(scripts = "/datasets/lesson_jpa.sql",
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-class LessonJpaTest {
+class LessonDaoTest {
 
     @Autowired
-    LessonJpa lessonJpa;
+    LessonDao lessonDao;
 
     @Test
     void findByLecturerId_shouldReturnLecturer_WhenLecturerExists() {
         Long targetLecturerId = 2L;
         int expectedLessonsSize = 3;
 
-        List<Lesson> lessons = lessonJpa.findByLecturerId(targetLecturerId);
+        List<Lesson> lessons = lessonDao.findByLecturerId(targetLecturerId);
 
         assertThat(lessons).isNotNull();
 
@@ -54,7 +54,7 @@ class LessonJpaTest {
         long groupId = 1L;
         int expectedLessonsSize = 1;
 
-        List<Lesson> lessons = lessonJpa.findByDateAndRole(lessonDate,studentId, PersonType.Student);
+        List<Lesson> lessons = lessonDao.findByDateAndRole(lessonDate,studentId, PersonType.Student);
 
         assertThat(lessons.size()).isEqualTo(expectedLessonsSize);
         Lesson foundLesson = lessons.get(0);
@@ -68,7 +68,7 @@ class LessonJpaTest {
         LocalDate lessonDate = LocalDate.parse("2026-01-17");
         long studentId = 1000L;
 
-        List<Lesson> lessons = lessonJpa.findByDateAndRole(lessonDate,studentId, PersonType.Student);
+        List<Lesson> lessons = lessonDao.findByDateAndRole(lessonDate,studentId, PersonType.Student);
 
         assertThat(lessons.isEmpty()).isTrue();
     }
@@ -78,7 +78,7 @@ class LessonJpaTest {
         LocalDate lessonDate = LocalDate.parse("2026-02-17");
         long studentId = 1L;
 
-        List<Lesson> lessons = lessonJpa.findByDateAndRole(lessonDate,studentId, PersonType.Student);
+        List<Lesson> lessons = lessonDao.findByDateAndRole(lessonDate,studentId, PersonType.Student);
 
         assertThat(lessons.isEmpty()).isTrue();
     }
@@ -89,7 +89,7 @@ class LessonJpaTest {
         long lecturerId = 2L;
         int expectedLessonsSize = 2;
 
-        List<Lesson> lessons = lessonJpa.findByDateAndRole(lessonDate,lecturerId, PersonType.Lecturer);
+        List<Lesson> lessons = lessonDao.findByDateAndRole(lessonDate,lecturerId, PersonType.Lecturer);
 
         assertThat(lessons.size()).isEqualTo(expectedLessonsSize);
         Lesson foundLesson = lessons.get(0);
@@ -104,7 +104,7 @@ class LessonJpaTest {
         LocalDate lessonDate = LocalDate.parse("2026-01-17");
         long lecturerId = 200L;
 
-        List<Lesson> lessons = lessonJpa.findByDateAndRole(lessonDate,lecturerId, PersonType.Lecturer);
+        List<Lesson> lessons = lessonDao.findByDateAndRole(lessonDate,lecturerId, PersonType.Lecturer);
 
         assertThat(lessons.isEmpty()).isTrue();
     }
@@ -120,7 +120,7 @@ class LessonJpaTest {
         LocalDate fromDate = LocalDate.parse("2026-01-17");
         LocalDate toDate = LocalDate.parse("2026-01-18");
 
-        List<Lesson> lessons = lessonJpa.findInRange(fromDate, toDate, studentId, PersonType.Student);
+        List<Lesson> lessons = lessonDao.findInRange(fromDate, toDate, studentId, PersonType.Student);
 
 
         assertThat(lessons.size()).isEqualTo(expectedLessonsSize);
@@ -140,7 +140,7 @@ class LessonJpaTest {
         LocalDate fromDate = LocalDate.parse("2026-01-17");
         LocalDate toDate = LocalDate.parse("2026-01-18");
 
-        List<Lesson> lessons = lessonJpa.findInRange(fromDate, toDate, lecturerId, PersonType.Lecturer);
+        List<Lesson> lessons = lessonDao.findInRange(fromDate, toDate, lecturerId, PersonType.Lecturer);
 
         assertThat(lessons.size()).isEqualTo(expectedLessonsSize);
         assertThat(lessons.get(0).getStudySubject().getName()).isEqualTo(nameOfFirstLesson);

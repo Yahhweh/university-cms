@@ -15,7 +15,6 @@ import java.util.Random;
 public class ClassRoomGenerator implements DataGenerator {
 
     public static final int MAX_FLOORS = 5;
-    public static final int ROOMS_PER_FLOOR = 10;
     private static final int BIG_ROOM_THRESHOLD = 50;
     private static final String LARGE_PREFIX = "A-";
     private static final String SMALL_PREFIX = "B-";

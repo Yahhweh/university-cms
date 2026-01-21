@@ -2,8 +2,9 @@ package placeholder.organisation.unicms.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import placeholder.organisation.unicms.entity.Student;
+import placeholder.organisation.unicms.entity.Address;
 
 @Repository
-public interface StudentJpa extends JpaRepository<Student, Long> {
+public interface AddressDao extends JpaRepository<Address, Long> {
 }
+

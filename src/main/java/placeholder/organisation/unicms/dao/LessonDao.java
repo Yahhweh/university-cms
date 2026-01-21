@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface LessonJpa extends JpaRepository<Lesson, Long> {
+public interface LessonDao extends JpaRepository<Lesson, Long> {
 
     List<Lesson> findByLecturerId(Long lecturerId);
 

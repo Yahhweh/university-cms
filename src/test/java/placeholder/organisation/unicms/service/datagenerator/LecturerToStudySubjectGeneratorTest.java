@@ -3,7 +3,6 @@ package placeholder.organisation.unicms.service.datagenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.Lecturer;
@@ -12,11 +11,13 @@ import placeholder.organisation.unicms.service.LecturerService;
 import placeholder.organisation.unicms.service.StudySubjectService;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,8 +30,6 @@ class LecturerToStudySubjectGeneratorTest {
 
     private LecturerToStudySubjectGenerator generator;
 
-    private static final int LECTURERS_COUNT = 50;
-    private static final int SUBJECTS_COUNT = 15;
     private static final int MIN_SUBJECTS = 1;
     private static final int MAX_SUBJECTS = 2;
 
@@ -46,18 +45,19 @@ class LecturerToStudySubjectGeneratorTest {
 
     @Test
     void generate_assignsExpectedRangeOfSubjects_whenDataIsValid() {
-        List<Lecturer> lecturers = createLecturers(LECTURERS_COUNT);
-        List<StudySubject> subjects = createSubjects(SUBJECTS_COUNT);
+        int count = 50;
+        List<Lecturer> lecturers = createLecturers(count);
+        List<StudySubject> subjects = createSubjects(15);
 
         when(lecturerService.findAllLecturers()).thenReturn(lecturers);
         when(subjectService.findAllSubjects()).thenReturn(subjects);
 
-        generator.generate(LECTURERS_COUNT);
+        generator.generate(count);
 
-        verify(lecturerService, atLeast(LECTURERS_COUNT * MIN_SUBJECTS))
+        verify(lecturerService, atLeast(count * MIN_SUBJECTS))
                 .assignSubjectToLecturer(anyLong(), anyLong());
 
-        verify(lecturerService, atMost(LECTURERS_COUNT * MAX_SUBJECTS))
+        verify(lecturerService, atMost(count * MAX_SUBJECTS))
                 .assignSubjectToLecturer(anyLong(), anyLong());
     }
 
@@ -65,21 +65,20 @@ class LecturerToStudySubjectGeneratorTest {
     void generate_respectsAmountLimit_whenAmountIsSmallerThanLecturerList() {
         int totalInDb = 30;
         int requestAmount = 10;
+        Set<Long> processedLecturerIds = new HashSet<>();
 
         when(lecturerService.findAllLecturers()).thenReturn(createLecturers(totalInDb));
-        when(subjectService.findAllSubjects()).thenReturn(createSubjects(SUBJECTS_COUNT));
+        when(subjectService.findAllSubjects()).thenReturn(createSubjects(15));
+
+        doAnswer(invocation -> {
+            processedLecturerIds.add(invocation.getArgument(0));
+            return null;
+        }).when(lecturerService).assignSubjectToLecturer(anyLong(), anyLong());
 
         generator.generate(requestAmount);
 
-        ArgumentCaptor<Long> lecturerIdCaptor = ArgumentCaptor.forClass(Long.class);
-        verify(lecturerService, atLeastOnce())
-                .assignSubjectToLecturer(lecturerIdCaptor.capture(), anyLong());
-
-        long distinctLecturersProcessed = lecturerIdCaptor.getAllValues().stream()
-                .distinct()
-                .count();
-
-        assertEquals(requestAmount, distinctLecturersProcessed);
+        assertThat(processedLecturerIds).hasSize(requestAmount);
+        assertThat(processedLecturerIds).allMatch(id -> id <= requestAmount);
     }
 
     @Test
@@ -107,10 +106,8 @@ class LecturerToStudySubjectGeneratorTest {
                 .mapToObj(i -> {
                     Lecturer l = new Lecturer();
                     l.setId(i);
-                    l.setName("Lecturer" + i);
                     return l;
-                })
-                .collect(Collectors.toList());
+                }).collect(Collectors.toList());
     }
 
     private List<StudySubject> createSubjects(int count) {
@@ -118,9 +115,7 @@ class LecturerToStudySubjectGeneratorTest {
                 .mapToObj(i -> {
                     StudySubject s = new StudySubject();
                     s.setId(i);
-                    s.setName("Subject" + i);
                     return s;
-                })
-                .collect(Collectors.toList());
+                }).collect(Collectors.toList());
     }
 }

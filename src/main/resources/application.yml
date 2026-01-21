@@ -8,14 +8,19 @@ spring:
     target: latest
 
   datasource:
-    url: jdbc:postgresql://localhost:5436/uni-cms
+    url: jdbc:postgresql://localhost:5436/uni-cms?stringtype=unspecified
     username: postgres
     password: 22305
 
-  jpa:
     hibernate:
       ddl-auto: none
 
 logging:
   level:
     org.flywaydb: DEBUG
+
+subject:
+  generator:
+    min-per-lecturer: 1
+    max-per-lecturer: 3
+

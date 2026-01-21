@@ -3,8 +3,7 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.dao.DurationJpa;
-import placeholder.organisation.unicms.entity.ClassRoom;
+import placeholder.organisation.unicms.dao.DurationDao;
 import placeholder.organisation.unicms.entity.Duration;
 
 import java.util.List;
@@ -14,21 +13,21 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class DurationService {
 
-    DurationJpa durationJpa;
+    DurationDao durationDao;
 
-    public DurationService(DurationJpa durationJpa) {
-        this.durationJpa = durationJpa;
+    public DurationService(DurationDao durationDao) {
+        this.durationDao = durationDao;
     }
 
     public List<Duration> findAllDurations(){
-       List<Duration> durations=  durationJpa.findAll();
+       List<Duration> durations=  durationDao.findAll();
         log.debug("Found {} durations ", durations.size());
         return durations;
     }
 
     @Transactional
     public void addDuration(Duration duration){
-        durationJpa.save(duration);
+        durationDao.save(duration);
         log.info("Duration saved successfully. Start: {}, End: {}", duration.getStart(), duration.getEnd());
     }
 }

@@ -12,12 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Address {
 
-    public Address(String city, String street, String country, String houseNumber, String postalCode) {
+    public Address(String city, String street, String country, String houseNumber, String postalCode, String phoneNumber) {
         this.city = city;
         this.street = street;
         this.country = country;
         this.houseNumber = houseNumber;
         this.postalCode = postalCode;
+        this.phoneNumber = phoneNumber;
     }
 
     @Id
@@ -28,6 +29,8 @@ public class Address {
     String city;
     @Column(name = "street")
     String street;
+    @Column(name = "phone_number")
+    String phoneNumber;
     @Column(name = "country")
     String country;
     @Column(name = "house_number")

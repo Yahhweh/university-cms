@@ -1,5 +1,7 @@
 package placeholder.organisation.unicms.service.datagenerator;
 
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Service;
 import placeholder.organisation.unicms.entity.Address;
 import placeholder.organisation.unicms.service.AddressService;
 
@@ -8,6 +10,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+@Service
+@Log4j2
 public class AddressGenerator implements DataGenerator {
 
 
@@ -51,8 +55,9 @@ public class AddressGenerator implements DataGenerator {
                     String street = streets.get(ThreadLocalRandom.current().nextInt(streets.size()));
                     String houseNumber = generateHouseNumber();
                     String postalCode = generatePostalCode();
+                    String phoneNumber = generatePhoneNumber();
 
-                    Address result = new Address(city, street, country, houseNumber, postalCode);
+                    Address result = new Address(city, street, country, houseNumber, postalCode, phoneNumber);
                     addressService.createAddress(result);
                 }
             });
@@ -74,6 +79,11 @@ public class AddressGenerator implements DataGenerator {
         int securityCenter = random.nextInt(MAX_SECURITY_CENTER);
         int deliveryArea = random.nextInt(MAX_DELIVERY_AREA);
         return String.valueOf(nationalArea + "" + securityCenter + deliveryArea);
+    }
+
+    private String generatePhoneNumber() {
+        long randomPart = ThreadLocalRandom.current().nextLong(100_000_000L, 999_999_999L);
+        return String.valueOf(randomPart);
     }
 
 }

@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.dao.*;
 import placeholder.organisation.unicms.entity.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,25 +15,27 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class LessonService {
 
-    LessonJpa lessonJpa;
-    DurationJpa durationJpa;
-    ClassRoomJpa classRoomJpa;
-    GroupJpa groupJpa;
-    StudySubjectJpa studySubjectJpa;
-    LecturerJpa lecturerJpa;
+    LessonDao lessonDao;
+    DurationDao durationDao;
+    ClassRoomDao classRoomDao;
+    GroupDao groupDao;
+    StudySubjectDao studySubjectDao;
+    LecturerDao lecturerDao;
+    StudentDao studentDao;
 
-    public LessonService(LessonJpa lessonJpa, DurationJpa durationJpa, ClassRoomJpa classRoomJpa, GroupJpa groupJpa, StudySubjectJpa studySubjectJpa, LecturerJpa lecturerJpa) {
-        this.lessonJpa = lessonJpa;
-        this.durationJpa = durationJpa;
-        this.classRoomJpa = classRoomJpa;
-        this.groupJpa = groupJpa;
-        this.studySubjectJpa = studySubjectJpa;
-        this.lecturerJpa = lecturerJpa;
+    public LessonService(LessonDao lessonDao, StudentDao studentDao, DurationDao durationDao, ClassRoomDao classRoomDao, GroupDao groupDao, StudySubjectDao studySubjectDao, LecturerDao lecturerDao) {
+        this.lessonDao = lessonDao;
+        this.durationDao = durationDao;
+        this.classRoomDao = classRoomDao;
+        this.groupDao = groupDao;
+        this.studySubjectDao = studySubjectDao;
+        this.lecturerDao = lecturerDao;
+        this.studentDao = studentDao;
     }
 
-    List<Lesson> findAllLessons() {
+    public List<Lesson> findAllLessons() {
         try {
-            List<Lesson> lessons = lessonJpa.findAll();
+            List<Lesson> lessons = lessonDao.findAll();
             log.debug("found {} lessons", lessons.size());
             return lessons;
         } catch (RuntimeException e) {
@@ -41,9 +44,9 @@ public class LessonService {
         }
     }
 
-    Optional<Lesson> findLesson(long id) {
+    public Optional<Lesson> findLesson(long id) {
         try {
-            Optional<Lesson> lesson = lessonJpa.findById(id);
+            Optional<Lesson> lesson = lessonDao.findById(id);
             if (lesson.isPresent()) {
                 log.debug("Found {} lesson with id {}", lesson.get().getStudySubject(), lesson.get().getId());
                 return lesson;
@@ -58,19 +61,19 @@ public class LessonService {
     }
 
     @Transactional
-    void addLesson(Lesson lesson) {
+    public void addLesson(Lesson lesson) {
         if (lesson == null) {
             log.error("Attempt to save a null lesson object");
             throw new IllegalArgumentException("Lesson cannot be null");
         }
-        lessonJpa.save(lesson);
+        lessonDao.save(lesson);
         log.info("Lesson saved successfully. Name: {}", lesson.getStudySubject());
     }
 
     @Transactional
     public void changeDuration(Long lessonId, Long durationId) {
         Lesson lesson = findLesson(lessonId);
-        Duration dbDuration = durationJpa.findById(durationId)
+        Duration dbDuration = durationDao.findById(durationId)
                 .orElseThrow(() -> new IllegalArgumentException("Duration not found: " + durationId));
 
         if (!dbDuration.equals(lesson.getDuration())) {
@@ -82,7 +85,7 @@ public class LessonService {
     @Transactional
     public void changeClassroom(Long lessonId, Long classroomId) {
         Lesson lesson = findLesson(lessonId);
-        ClassRoom dbClassroom = classRoomJpa.findById(classroomId)
+        ClassRoom dbClassroom = classRoomDao.findById(classroomId)
                 .orElseThrow(() -> new IllegalArgumentException("Classroom not found: " + classroomId));
 
         if (!dbClassroom.equals(lesson.getClassRoom())) {
@@ -94,7 +97,7 @@ public class LessonService {
     @Transactional
     public void changeGroup(Long lessonId, Long groupId) {
         Lesson lesson = findLesson(lessonId);
-        Group dbGroup = groupJpa.findById(groupId)
+        Group dbGroup = groupDao.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("Group not found: " + groupId));
 
         if (!dbGroup.equals(lesson.getGroup())) {
@@ -106,7 +109,7 @@ public class LessonService {
     @Transactional
     public void changeStudySubject(Long lessonId, Long subjectId) {
         Lesson lesson = findLesson(lessonId);
-        StudySubject dbSubject = studySubjectJpa.findById(subjectId)
+        StudySubject dbSubject = studySubjectDao.findById(subjectId)
                 .orElseThrow(() -> new IllegalArgumentException("Subject not found: " + subjectId));
 
         if (!dbSubject.equals(lesson.getStudySubject())) {
@@ -118,7 +121,7 @@ public class LessonService {
     @Transactional
     public void changeLecturer(Long lessonId, Long lecturerId) {
         Lesson lesson = findLesson(lessonId);
-        Lecturer dbLecturer = lecturerJpa.findById(lecturerId)
+        Lecturer dbLecturer = lecturerDao.findById(lecturerId)
                 .orElseThrow(() -> new IllegalArgumentException("Lecturer not found: " + lecturerId));
 
         if (!dbLecturer.equals(lesson.getLecturer())) {
@@ -127,8 +130,21 @@ public class LessonService {
         }
     }
 
-    private Lesson findLesson(Long id) {
-        return lessonJpa.findById(id)
+    public Lesson findLesson(Long id) {
+        return lessonDao.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Lesson not found: " + id));
     }
+
+    public List<Lesson> findLessonsInRange(LocalDate startDate,LocalDate endDate, long personId, PersonType type){
+        List<Lesson> lessons = lessonDao.findInRange(startDate,endDate, personId, type);
+        log.debug("Using range filter {} lessons found", lessons.size());
+        return  lessons;
+    }
+
+    public List<Lesson> findByDate(LocalDate date, long personId, PersonType type){
+        List<Lesson> lessons = lessonDao.findByDateAndRole(date,personId, type);
+        log.debug("Using find by date filter {} lessons found", lessons.size());
+        return  lessons;
+    }
+
 }
