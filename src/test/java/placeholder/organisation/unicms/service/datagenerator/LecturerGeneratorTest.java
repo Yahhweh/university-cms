@@ -42,7 +42,7 @@ class LecturerGeneratorTest {
 
     @Test
     void generate_populatesInheritedAndSpecificFields() {
-        when(addressServiceMock.findAll()).thenReturn( List.of( new Address("1", "12", "1", "12", "12", "12")));
+        when(addressServiceMock.findAll()).thenReturn(List.of(new Address("1", "12", "1", "12", "12", "12")));
         lecturerGenerator.generate(1);
 
         verify(addressServiceMock).findAll();

@@ -19,14 +19,14 @@ public class DurationService {
         this.durationDao = durationDao;
     }
 
-    public List<Duration> findAllDurations(){
-       List<Duration> durations=  durationDao.findAll();
+    public List<Duration> findAllDurations() {
+        List<Duration> durations = durationDao.findAll();
         log.debug("Found {} durations ", durations.size());
         return durations;
     }
 
     @Transactional
-    public void addDuration(Duration duration){
+    public void addDuration(Duration duration) {
         durationDao.save(duration);
         log.info("Duration saved successfully. Start: {}, End: {}", duration.getStart(), duration.getEnd());
     }

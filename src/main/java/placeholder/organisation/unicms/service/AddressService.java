@@ -20,21 +20,21 @@ public class AddressService {
         this.addressDao = addressDao;
     }
 
-    public List<Address> findAll(){
-        List<Address> addresses =  addressDao.findAll();
+    public List<Address> findAll() {
+        List<Address> addresses = addressDao.findAll();
         log.debug("Found {} addresses ", addresses.size());
         return addresses;
     }
 
     @Transactional
-    public void createAddress(Address address){
+    public void createAddress(Address address) {
         addressDao.save(address);
         log.debug("Address saved successfully. City: {}}", address.getCity());
     }
 
-    public Optional<Address> findAddress(long id){
+    public Optional<Address> findAddress(long id) {
         Optional<Address> address = addressDao.findById(id);
-        address.ifPresent(value -> log.debug("Found address {}",value));
+        address.ifPresent(value -> log.debug("Found address {}", value));
         return address;
     }
 }

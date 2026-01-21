@@ -1,7 +1,6 @@
 package placeholder.organisation.unicms.service.datagenerator;
 
 
-
 import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +16,6 @@ import placeholder.organisation.unicms.entity.StudySubject;
 import placeholder.organisation.unicms.service.StudySubjectService;
 
 
-
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,9 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 
-
 @ExtendWith(MockitoExtension.class)
-
 class StudySubjectGeneratorTest {
 
     @Mock

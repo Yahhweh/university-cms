@@ -50,8 +50,8 @@ public class UniversityFacade {
     }
 
     @Transactional
-    public void initializeDataBase(){
-        if(studentService.findAllStudents().size() >= 50){
+    public void initializeDataBase() {
+        if (studentService.findAllStudents().size() >= 50) {
             log.info("Database already has enough data. Skipping initialization part...");
             return;
         }

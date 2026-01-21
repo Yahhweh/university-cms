@@ -24,7 +24,7 @@ public class LecturerService {
         this.studySubjectDao = studySubjectDao;
     }
 
-    public List<Lecturer> findAllLecturers(){
+    public List<Lecturer> findAllLecturers() {
         List<Lecturer> lecturers = lecturerDao.findAll();
         log.debug("Found size {} lecturers", lecturers.size());
         return lecturers;
@@ -42,37 +42,37 @@ public class LecturerService {
         return lecturer;
     }
 
-    public Optional<Lecturer> findLecturer(long lecturerId){
+    public Optional<Lecturer> findLecturer(long lecturerId) {
         Optional<Lecturer> lecturer = lecturerDao.findById(lecturerId);
         lecturer.ifPresent(value -> log.debug("Found lecturer {}", value));
         return lecturer;
     }
 
-    public void assignSubjectToLecturer(long subjectId, long lecturerId){
+    public void assignSubjectToLecturer(long subjectId, long lecturerId) {
         try {
             Optional<StudySubject> subject = studySubjectDao.findById(subjectId);
             Optional<Lecturer> lecturer = lecturerDao.findById(lecturerId);
-            if(subject.isPresent() && lecturer.isPresent()){
-                if(lecturer.get().getStudySubjects().add(subject.get())){
+            if (subject.isPresent() && lecturer.isPresent()) {
+                if (lecturer.get().getStudySubjects().add(subject.get())) {
                     log.info("Lecturer assigned to keep this subject. lecturerId: {}, subjectId: {}", lecturerId, subjectId);
                 }
             }
-        }catch (DaoException e) {
+        } catch (DaoException e) {
             throw new ServiceException("Failed to add subject to lecturer, lecturer id: " + lecturerId
                     + " subject id: " + subjectId, e);
         }
     }
 
-    public void removeSubjectToLecturer(long subjectId, long lecturerId){
+    public void removeSubjectToLecturer(long subjectId, long lecturerId) {
         try {
             Optional<StudySubject> subject = studySubjectDao.findById(subjectId);
             Optional<Lecturer> lecturer = lecturerDao.findById(lecturerId);
-            if(subject.isPresent() && lecturer.isPresent()){
-                if(lecturer.get().getStudySubjects().remove(subject.get())){
+            if (subject.isPresent() && lecturer.isPresent()) {
+                if (lecturer.get().getStudySubjects().remove(subject.get())) {
                     log.info("Lecturer is not to keeping this subject. lecturerId: {}, subjectId: {}", lecturerId, subjectId);
                 }
             }
-        }catch (DaoException e) {
+        } catch (DaoException e) {
             throw new ServiceException("Failed to remove subject from lecturer, lecturer id: " + lecturerId
                     + " subject id: " + subjectId, e);
         }

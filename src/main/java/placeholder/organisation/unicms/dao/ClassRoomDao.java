@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface ClassRoomDao extends JpaRepository<ClassRoom, Long> {
- Optional<ClassRoom> findByRoom(String name);
- }
+    Optional<ClassRoom> findByRoom(String name);
+}

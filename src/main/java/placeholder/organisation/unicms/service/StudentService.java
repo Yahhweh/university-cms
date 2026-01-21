@@ -62,5 +62,4 @@ public class StudentService {
         studentDao.delete(student.get());
         log.info("Student deleted. ID: {}", studentId);
     }
-
 }

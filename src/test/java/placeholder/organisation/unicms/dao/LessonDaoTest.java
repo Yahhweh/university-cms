@@ -48,13 +48,13 @@ class LessonDaoTest {
     }
 
     @Test
-    void findByDateAndRole_ShouldReturnLessonByStudent_WhenUserIdProvided(){
+    void findByDateAndRole_ShouldReturnLessonByStudent_WhenUserIdProvided() {
         LocalDate lessonDate = LocalDate.parse("2026-01-17");
         long studentId = 1L;
         long groupId = 1L;
         int expectedLessonsSize = 1;
 
-        List<Lesson> lessons = lessonDao.findByDateAndRole(lessonDate,studentId, PersonType.Student);
+        List<Lesson> lessons = lessonDao.findByDateAndRole(lessonDate, studentId, PersonType.Student);
 
         assertThat(lessons.size()).isEqualTo(expectedLessonsSize);
         Lesson foundLesson = lessons.get(0);
@@ -64,32 +64,32 @@ class LessonDaoTest {
     }
 
     @Test
-    void findByDateAndRole_ShouldReturnTrue_WhenUserDoesNotExists(){
+    void findByDateAndRole_ShouldReturnTrue_WhenUserDoesNotExists() {
         LocalDate lessonDate = LocalDate.parse("2026-01-17");
         long studentId = 1000L;
 
-        List<Lesson> lessons = lessonDao.findByDateAndRole(lessonDate,studentId, PersonType.Student);
+        List<Lesson> lessons = lessonDao.findByDateAndRole(lessonDate, studentId, PersonType.Student);
 
         assertThat(lessons.isEmpty()).isTrue();
     }
 
     @Test
-    void findByDateAndRole_ShouldReturnTrue_WhenDateDoesNotExists(){
+    void findByDateAndRole_ShouldReturnTrue_WhenDateDoesNotExists() {
         LocalDate lessonDate = LocalDate.parse("2026-02-17");
         long studentId = 1L;
 
-        List<Lesson> lessons = lessonDao.findByDateAndRole(lessonDate,studentId, PersonType.Student);
+        List<Lesson> lessons = lessonDao.findByDateAndRole(lessonDate, studentId, PersonType.Student);
 
         assertThat(lessons.isEmpty()).isTrue();
     }
 
     @Test
-    void findByDateAndRole_ShouldReturnLessonByLecturer_WhenLecturerIdProvided(){
+    void findByDateAndRole_ShouldReturnLessonByLecturer_WhenLecturerIdProvided() {
         LocalDate lessonDate = LocalDate.parse("2026-01-17");
         long lecturerId = 2L;
         int expectedLessonsSize = 2;
 
-        List<Lesson> lessons = lessonDao.findByDateAndRole(lessonDate,lecturerId, PersonType.Lecturer);
+        List<Lesson> lessons = lessonDao.findByDateAndRole(lessonDate, lecturerId, PersonType.Lecturer);
 
         assertThat(lessons.size()).isEqualTo(expectedLessonsSize);
         Lesson foundLesson = lessons.get(0);
@@ -100,17 +100,17 @@ class LessonDaoTest {
     }
 
     @Test
-    void findByDateAndRole_ShouldReturnTrueByLecturer_WhenLecturerDoesNotExists(){
+    void findByDateAndRole_ShouldReturnTrueByLecturer_WhenLecturerDoesNotExists() {
         LocalDate lessonDate = LocalDate.parse("2026-01-17");
         long lecturerId = 200L;
 
-        List<Lesson> lessons = lessonDao.findByDateAndRole(lessonDate,lecturerId, PersonType.Lecturer);
+        List<Lesson> lessons = lessonDao.findByDateAndRole(lessonDate, lecturerId, PersonType.Lecturer);
 
         assertThat(lessons.isEmpty()).isTrue();
     }
 
     @Test
-    void findInRange_shouldReturnTwoLessonsWithDifferentDateByStudent_WhenLessonsExists(){
+    void findInRange_shouldReturnTwoLessonsWithDifferentDateByStudent_WhenLessonsExists() {
         long studentId = 1L;
         int expectedLessonsSize = 2;
 
@@ -129,7 +129,7 @@ class LessonDaoTest {
     }
 
     @Test
-    void findInRange_shouldReturnTwoLessonsWithDifferentDateByLecturer_WhenLessonsExists(){
+    void findInRange_shouldReturnTwoLessonsWithDifferentDateByLecturer_WhenLessonsExists() {
         long lecturerId = 2L;
         int expectedLessonsSize = 3;
 

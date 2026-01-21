@@ -39,7 +39,7 @@ public class StudySubjectService {
         return subject;
     }
 
-    public Optional<StudySubject> findSubject(long studySubjectId){
+    public Optional<StudySubject> findSubject(long studySubjectId) {
         Optional<StudySubject> subject = studySubjectDao.findById(studySubjectId);
         subject.ifPresent(value -> log.debug("Found subject {}", value));
         return subject;

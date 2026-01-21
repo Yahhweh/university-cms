@@ -135,16 +135,16 @@ public class LessonService {
                 .orElseThrow(() -> new IllegalArgumentException("Lesson not found: " + id));
     }
 
-    public List<Lesson> findLessonsInRange(LocalDate startDate,LocalDate endDate, long personId, PersonType type){
-        List<Lesson> lessons = lessonDao.findInRange(startDate,endDate, personId, type);
+    public List<Lesson> findLessonsInRange(LocalDate startDate, LocalDate endDate, long personId, PersonType type) {
+        List<Lesson> lessons = lessonDao.findInRange(startDate, endDate, personId, type);
         log.debug("Using range filter {} lessons found", lessons.size());
-        return  lessons;
+        return lessons;
     }
 
-    public List<Lesson> findByDate(LocalDate date, long personId, PersonType type){
-        List<Lesson> lessons = lessonDao.findByDateAndRole(date,personId, type);
+    public List<Lesson> findByDate(LocalDate date, long personId, PersonType type) {
+        List<Lesson> lessons = lessonDao.findByDateAndRole(date, personId, type);
         log.debug("Using find by date filter {} lessons found", lessons.size());
-        return  lessons;
+        return lessons;
     }
 
 }
