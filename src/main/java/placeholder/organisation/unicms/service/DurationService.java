@@ -7,6 +7,7 @@ import placeholder.organisation.unicms.entity.ClassRoom;
 import placeholder.organisation.unicms.repository.DurationRepository;
 import placeholder.organisation.unicms.entity.Duration;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,17 +30,38 @@ public class DurationService {
 
     @Transactional
     public void createDuration(Duration duration) {
+        validateDuration(duration);
         durationRepository.save(duration);
         log.info("Duration saved successfully. Start: {}, End: {}", duration.getStart(), duration.getEnd());
     }
 
+    @Transactional
     public void removeDuration(long durationId){
         try {
             Optional<Duration> duration = durationRepository.findById(durationId);
-            duration.ifPresent(durationRepository.delete(duration));
+            duration.ifPresent(durationRepository::delete);
         }catch (RuntimeException e){
             log.error("Failed to delete duration with id: {}", durationId);
             throw new ServiceException("Error deleting duration");
+        }
+    }
+
+    private boolean isStartBeforeEnd(LocalTime start, LocalTime end){
+        return start.isBefore(end);
+    }
+
+    private boolean isDurationInRange(LocalTime start, LocalTime end){
+        java.time.Duration duration = java.time.Duration.between(start, end);
+
+        return duration.toMinutes() >= 45 && duration.toMinutes() <= 90;
+    }
+
+    private void validateDuration(Duration duration) {
+        if (!isStartBeforeEnd(duration.getStart(), duration.getEnd())) {
+            throw new ServiceException("Start time must be before end time");
+        }
+        if (!isDurationInRange(duration.getStart(), duration.getEnd())) {
+            throw new ServiceException("Duration must be between 45 and 90 minutes");
         }
     }
 }

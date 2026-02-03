@@ -82,7 +82,7 @@ public class LecturerService {
     public void removeLecturer(long lecturerId){
         try {
             Optional<Lecturer> lecturer = lecturerRepository.findById(lecturerId);
-            lecturer.ifPresent(lecturerRepository.delete(lecturer));
+            lecturer.ifPresent(lecturerRepository::delete);
         }catch (RuntimeException e){
             log.error("Failed to delete lecturer with id: {}", lecturerId);
             throw new ServiceException("Error deleting lecturer");

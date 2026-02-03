@@ -67,7 +67,7 @@ public class StudentService {
     public void removeStudent(long studentId){
         try {
             Optional<Student> student = studentRepository.findById(studentId);
-            student.ifPresent(studentRepository.delete(student));
+            student.ifPresent(studentRepository::delete);
         }catch (RuntimeException e){
             log.error("Failed to delete student with id: {}", studentId);
             throw new ServiceException("Error deleting student");

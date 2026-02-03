@@ -150,7 +150,7 @@ public class LessonService {
     public void removeLesson(long lessonId){
         try {
             Optional<Lesson> lesson = lessonRepository.findById(lessonId);
-            lesson.ifPresent(lessonRepository.delete(lesson));
+            lesson.ifPresent(lessonRepository::delete);
         }catch (RuntimeException e){
             log.error("Failed to delete lesson with id: {}", lessonId);
             throw new ServiceException("Error deleting lesson");

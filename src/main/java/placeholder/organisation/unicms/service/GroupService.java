@@ -42,7 +42,7 @@ public class GroupService {
     public void removeGroup(long groupId){
         try {
             Optional<Group> group = groupRepository.findById(groupId);
-            group.ifPresent(groupRepository.delete(group));
+            group.ifPresent(groupRepository::delete);
         }catch (RuntimeException e){
             log.error("Failed to delete group with id: {}", groupId);
             throw new ServiceException("Error deleting group");

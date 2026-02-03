@@ -49,11 +49,13 @@ public class ClassRoomTypeService {
     public void removeClassRoomType(long classRoomTypeId){
         try {
             Optional<ClassRoomType> classRoomType = classRoomTypeRepository.findById(classRoomTypeId);
-            classRoomType.ifPresent(classRoomTypeRepository.delete(classRoomType));
+            classRoomType.ifPresent(classRoomTypeRepository::delete);
         }catch (RuntimeException e){
             log.error("Failed to delete classroom type with id: {}", classRoomTypeId);
             throw new ServiceException("Error deleting classroom type");
         }
     }
+
+
 
 }

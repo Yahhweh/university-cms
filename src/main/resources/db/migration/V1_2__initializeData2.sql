@@ -169,79 +169,77 @@ INSERT INTO public.address (id, city, street, country, phone_number, house_numbe
 -- Data for Name: class_room_type; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.class_room_type (id, name, capacity) VALUES
-                                                            (1, 'Auditorium', 200),
-                                                            (2, 'Conference Room', 50),
-                                                            (3, 'Hall', 150),
-                                                            (4, 'Seminar Room', 30),
-                                                            (5, 'Study Room', 20),
-                                                            (6, 'Laboratory', 25),
-                                                            (7, 'Music Room', 15),
-                                                            (8, 'Art Studio', 20),
-                                                            (9, 'Workshop', 25),
-                                                            (10, 'Darkroom', 10),
-                                                            (11, 'Library', 100),
-                                                            (12, 'Study Area', 40),
-                                                            (13, 'Working Room', 30),
-                                                            (14, 'Sport Room', 40);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (1, 'Lecture Hall', 100);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (2, 'Seminar Room', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (3, 'Computer Lab', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (4, 'Physics Lab', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (5, 'Chemistry Lab', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (6, 'Biology Lab', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (7, 'Art Studio', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (8, 'Music Room', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (10, 'Conference Room', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (11, 'Library Hall', 100);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (12, 'Study Room', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (13, 'Workshop', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (14, 'Darkroom', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (15, 'Auditorium', 30);
+
 
 --
 -- Data for Name: class_room; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES
---Building A (3 floors): Hall, Seminar rooms, Study rooms;
-(18, 'A-101', 3),
-(19, 'A-102', 3),
-(20, 'A-201', 4),
-(21, 'A-202', 4),
-(22, 'A-203', 4),
-(23, 'A-301', 5),
-(24, 'A-302', 5),
-(25, 'A-303', 5),
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (1, 'B-101', 4);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (2, 'A-201', 1);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (3, 'B-301', 3);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (4, 'B-401', 9);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (5, 'B-501', 7);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (6, 'B-102', 10);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (7, 'A-202', 1);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (8, 'B-302', 5);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (10, 'B-502', 12);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (11, 'B-103', 10);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (12, 'B-203', 13);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (13, 'A-303', 11);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (14, 'B-403', 15);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (15, 'B-503', 6);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (16, 'B-104', 13);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (17, 'B-204', 10);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (18, 'B-304', 14);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (19, 'B-404', 4);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (20, 'B-504', 12);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (21, 'B-105', 10);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (22, 'B-205', 4);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (23, 'B-305', 14);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (24, 'B-405', 12);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (25, 'B-505', 13);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (26, 'B-106', 12);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (27, 'B-206', 13);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (28, 'B-306', 6);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (29, 'B-406', 9);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (30, 'B-506', 9);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (31, 'B-107', 6);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (32, 'A-207', 1);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (33, 'B-307', 14);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (34, 'B-407', 14);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (35, 'B-507', 8);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (36, 'B-108', 8);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (37, 'B-208', 10);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (38, 'B-308', 10);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (39, 'B-408', 15);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (40, 'B-508', 10);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (41, 'B-109', 14);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (42, 'B-209', 5);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (43, 'B-309', 9);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (44, 'B-409', 9);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (45, 'B-509', 15);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (46, 'B-110', 9);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (47, 'B-210', 6);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (48, 'A-310', 1);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (49, 'B-410', 9);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (50, 'B-510', 3);
 
--- Building B (7 floors): All labs, Music room, Art studio, Workshop, Darkroom
-(26, 'B-101', 6),
-(27, 'B-102', 6),
-(28, 'B-103', 6),
-(29, 'B-201', 6),
-(30, 'B-202', 6),
-(31, 'B-203', 6),
-(32, 'B-301', 6),
-(33, 'B-302', 6),
-(34, 'B-303', 7),
-(35, 'B-401', 7),
-(36, 'B-402', 8),
-(37, 'B-403', 8),
-(38, 'B-501', 9),
-(39, 'B-502', 9),
-(40, 'B-601', 10),
-(41, 'B-602', 10),
-(42, 'B-701', 6),
-(43, 'B-702', 6),
 
--- Building C (2 floors): Library on floor 1, Working rooms on floor 2
-(44, 'C-101', 11),
-(45, 'C-102', 12),
-(46, 'C-103', 12),
-(47, 'C-201', 13),
-(48, 'C-202', 13),
-(49, 'C-203', 13),
-(50, 'C-204', 13),
-
--- Building D (1 floor): 3 Sport rooms
-(51, 'D-101', 14),
-(52, 'D-102', 14),
-(53, 'D-103', 14);
-
---Building E (2 floors): 2 Auditoriums only on 1 first floor and 5 conference rooms of second
-(1, 'E-101', 1),
-(2, 'E-102', 1),
-(3, 'E-201', 2),
-(4, 'E-202', 2),
-(5, 'E-203', 2),
-(6, 'E-204', 2),
-(7, 'E-205', 2),
 --
 -- Data for Name: duration; Type: TABLE DATA; Schema: public; Owner: postgres
 --

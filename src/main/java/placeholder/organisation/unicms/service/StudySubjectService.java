@@ -49,7 +49,7 @@ public class StudySubjectService {
     public void removeStudySubject(long studySubjectId){
         try {
             Optional<StudySubject> studySubject = studySubjectRepository.findById(studySubjectId);
-            studySubject.ifPresent(studySubjectRepository.delete(studySubject));
+            studySubject.ifPresent(studySubjectRepository::delete);
         }catch (RuntimeException e){
             log.error("Failed to delete study subject with id: {}", studySubjectId);
             throw new ServiceException("Error deleting study subject");
