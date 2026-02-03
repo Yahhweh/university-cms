@@ -3,7 +3,8 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.dao.StudentDao;
+import placeholder.organisation.unicms.entity.ClassRoom;
+import placeholder.organisation.unicms.repository.StudentRepository;
 import placeholder.organisation.unicms.entity.Student;
 
 import java.util.List;
@@ -14,20 +15,20 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class StudentService {
 
-    private final StudentDao studentDao;
+    private final StudentRepository studentRepository;
 
-    public StudentService(StudentDao studentDao) {
-        this.studentDao = studentDao;
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
     }
 
     public List<Student> findAllStudents() {
-        List<Student> students = studentDao.findAll();
+        List<Student> students = studentRepository.findAll();
         log.debug("Found {} students in DB", students.size());
         return students;
     }
 
     public Optional<Student> findStudent(long studentId) {
-        Optional<Student> student = studentDao.findById(studentId);
+        Optional<Student> student = studentRepository.findById(studentId);
         student.ifPresent(value -> log.debug("Found student: {}", value));
         return student;
     }
@@ -38,7 +39,7 @@ public class StudentService {
             log.error("Attempt to save a null student object");
             throw new IllegalArgumentException("Student cannot be null");
         }
-        studentDao.save(student);
+        studentRepository.save(student);
         log.info("Student saved successfully. Name: {}, Surname: {}", student.getName(), student.getSureName());
     }
 
@@ -48,18 +49,28 @@ public class StudentService {
             log.error("Attempt to update student with null object or ID");
             throw new IllegalArgumentException("Student and Student ID cannot be null");
         }
-        studentDao.save(student);
+        studentRepository.save(student);
         log.info("Student updated successfully. ID: {}, Name: {}", student.getId(), student.getName());
     }
 
     @Transactional
     public void deleteStudent(long studentId) {
-        Optional<Student> student = studentDao.findById(studentId);
+        Optional<Student> student = studentRepository.findById(studentId);
         if (student.isEmpty()) {
             log.warn("Student with ID {} not found for deletion", studentId);
             return;
         }
-        studentDao.delete(student.get());
+        studentRepository.delete(student.get());
         log.info("Student deleted. ID: {}", studentId);
+    }
+
+    public void removeStudent(long studentId){
+        try {
+            Optional<Student> student = studentRepository.findById(studentId);
+            student.ifPresent(studentRepository.delete(student));
+        }catch (RuntimeException e){
+            log.error("Failed to delete student with id: {}", studentId);
+            throw new ServiceException("Error deleting student");
+        }
     }
 }

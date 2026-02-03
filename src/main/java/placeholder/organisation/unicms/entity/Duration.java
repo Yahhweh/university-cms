@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
-import java.util.TimeZone;
 
 @Table(name = "duration")
 @Entity

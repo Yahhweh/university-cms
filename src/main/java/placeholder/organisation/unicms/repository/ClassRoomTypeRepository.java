@@ -1,12 +1,15 @@
-package placeholder.organisation.unicms.dao;
+package placeholder.organisation.unicms.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import placeholder.organisation.unicms.entity.ClassRoomType;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 @Repository
-public interface ClassRoomTypeDao extends JpaRepository<ClassRoomType, Long> {
+public interface ClassRoomTypeRepository extends JpaRepository<ClassRoomType, Long> {
     Optional<ClassRoomType> findByName(String name);
+
+    Consumer<? super ClassRoomType> delete(Optional<ClassRoomType> classRoomType);
 }

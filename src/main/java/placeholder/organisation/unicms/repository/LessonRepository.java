@@ -1,4 +1,4 @@
-package placeholder.organisation.unicms.dao;
+package placeholder.organisation.unicms.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,9 +9,11 @@ import placeholder.organisation.unicms.entity.PersonType;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 @Repository
-public interface LessonDao extends JpaRepository<Lesson, Long> {
+public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
     List<Lesson> findByLecturerId(Long lecturerId);
 
@@ -66,4 +68,6 @@ public interface LessonDao extends JpaRepository<Lesson, Long> {
             return findInRangeForLecturer(fromDate, toDate, personId);
         }
     }
+
+    Consumer<? super Lesson> delete(Optional<Lesson> lesson);
 }

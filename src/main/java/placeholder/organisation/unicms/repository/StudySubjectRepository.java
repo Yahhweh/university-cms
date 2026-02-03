@@ -1,12 +1,15 @@
-package placeholder.organisation.unicms.dao;
+package placeholder.organisation.unicms.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import placeholder.organisation.unicms.entity.StudySubject;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 @Repository
-public interface StudySubjectDao extends JpaRepository<StudySubject, Long> {
+public interface StudySubjectRepository extends JpaRepository<StudySubject, Long> {
     Optional<StudySubject> findByName(String name);
+
+    Consumer<? super StudySubject> delete(Optional<StudySubject> studySubject);
 }

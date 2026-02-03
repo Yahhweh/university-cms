@@ -3,7 +3,8 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.dao.GroupDao;
+import placeholder.organisation.unicms.entity.ClassRoom;
+import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.entity.Group;
 
 import java.util.List;
@@ -14,27 +15,37 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class GroupService {
 
-    GroupDao groupDao;
+    private final GroupRepository groupRepository;
 
-    public GroupService(GroupDao groupDao) {
-        this.groupDao = groupDao;
+    public GroupService(GroupRepository groupRepository) {
+        this.groupRepository = groupRepository;
     }
 
     public List<Group> findAllGroups() {
-        List<Group> groups = groupDao.findAll();
+        List<Group> groups = groupRepository.findAll();
         log.debug("Found {} groups", groups.size());
         return groups;
     }
 
     @Transactional
     public void createGroup(Group group) {
-        groupDao.save(group);
+        groupRepository.save(group);
         log.debug("Group saved successfully. Name: {}", group.getName());
     }
 
     public Optional<Group> findGroup(long id) {
-        Optional<Group> group = groupDao.findById(id);
+        Optional<Group> group = groupRepository.findById(id);
         group.ifPresent(value -> log.debug("Found group {}", value));
         return group;
+    }
+
+    public void removeGroup(long groupId){
+        try {
+            Optional<Group> group = groupRepository.findById(groupId);
+            group.ifPresent(groupRepository.delete(group));
+        }catch (RuntimeException e){
+            log.error("Failed to delete group with id: {}", groupId);
+            throw new ServiceException("Error deleting group");
+        }
     }
 }
