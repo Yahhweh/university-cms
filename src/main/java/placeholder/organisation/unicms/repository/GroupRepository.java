@@ -9,5 +9,4 @@ import java.util.function.Consumer;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
-    Consumer<? super Group> delete(Optional<Group> group);
 }

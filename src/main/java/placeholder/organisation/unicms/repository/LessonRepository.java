@@ -69,5 +69,4 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
         }
     }
 
-    Consumer<? super Lesson> delete(Optional<Lesson> lesson);
 }

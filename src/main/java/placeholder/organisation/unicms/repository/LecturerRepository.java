@@ -11,5 +11,4 @@ import java.util.function.Consumer;
 public interface LecturerRepository extends JpaRepository<Lecturer, Long> {
     Optional<Lecturer> findByNameAndSureName(String name, String sureName);
 
-    Consumer<? super Lecturer> delete(Optional<Lecturer> lecturer);
 }

@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -19,11 +21,12 @@ public class ClassRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     @Size(min = 3, max = 35)
-    @Pattern(regexp = "^[a-zA-Z]-[0-9]+$", message = "Name must contain on letters")
+    @Pattern(regexp = "^[a-zA-Z]-[0-9]+$", message = "Room must be between 3 and 35 characters")
     String room;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_room_type_id", referencedColumnName = "id",
             foreignKey = @ForeignKey(name = "fk_classroom_type"))
+    @NotNull
     ClassRoomType classRoomType;
 
 }

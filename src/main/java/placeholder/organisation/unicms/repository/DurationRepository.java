@@ -9,5 +9,4 @@ import java.util.function.Consumer;
 
 @Repository
 public interface DurationRepository extends JpaRepository<Duration, Long> {
-    Consumer<? super Duration> delete(Optional<Duration> duration);
 }

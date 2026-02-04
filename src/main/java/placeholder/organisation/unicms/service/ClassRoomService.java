@@ -7,6 +7,7 @@ import placeholder.organisation.unicms.entity.ClassRoomType;
 import placeholder.organisation.unicms.repository.ClassRoomRepository;
 import placeholder.organisation.unicms.entity.ClassRoom;
 import placeholder.organisation.unicms.repository.ClassRoomTypeRepository;
+import placeholder.organisation.unicms.service.validation.ClassRoomValidation;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,16 +19,11 @@ import java.util.regex.Pattern;
 public class ClassRoomService {
 
     private final ClassRoomRepository classRoomRepository;
+    private final ClassRoomValidation classRoomValidation;
 
-    private static final List<String> typesForE = List.of("Auditorium", "Conference Room");
-    private static final List<String> typesForA = List.of("Hall", "Seminar Room", "Study Room");
-    private static final List<String> typesForB = List.of("Laboratory", "Music Room", "Art Studio", "Workshop", "Darkroom");
-    private static final List<String> typesForC = List.of("Library", "Study Area", "Working Room");
-    private static final List<String> typesForD = List.of("Sport Room");
-
-
-    public ClassRoomService(ClassRoomRepository classRoomRepository) {
+    public ClassRoomService(ClassRoomRepository classRoomRepository, ClassRoomValidation classRoomValidation) {
         this.classRoomRepository = classRoomRepository;
+        this.classRoomValidation = classRoomValidation;
 
     }
 
@@ -44,7 +40,7 @@ public class ClassRoomService {
 
     @Transactional
     public void createClassRoom(ClassRoom classRoom) {
-        if(!isClassRoomInCorrectCorpus(classRoom)) throw  new ServiceException("Error in validation of classroom");
+        if(!classRoomValidation.isClassRoomInCorrectCorpus(classRoom)) throw  new ServiceException("Error in validation of classroom");
         classRoomRepository.save(classRoom);
         log.debug("Classroom saved successfully. Name: {}}", classRoom.getRoom());
     }
@@ -72,28 +68,11 @@ public class ClassRoomService {
     }
 
     @Transactional
-    public void removeClassRoom(long classRoomId){
-        try {
-            Optional<ClassRoom> classRoom = classRoomRepository.findById(classRoomId);
-            classRoom.ifPresent(classRoomRepository::delete);
-        }catch (RuntimeException e){
-            log.error("Failed to delete classroom with id: {}", classRoomId);
-            throw new ServiceException("Error deleting classroom");
+    public void removeClassRoom(long classRoomId) {
+        if (!classRoomRepository.existsById(classRoomId)) {
+            throw new ServiceException("Classroom not found with id: " + classRoomId);
         }
-    }
-
-    private boolean isClassRoomInCorrectCorpus(ClassRoom classRoom){
-        ClassRoomType classRoomType = classRoom.getClassRoomType();
-        String room = classRoom.getRoom();
-        String realCorpus = String.valueOf(room.charAt(0));
-
-        if(classRoomType == null) return false;
-        if(realCorpus.equals("A") && typesForA.contains(classRoomType.getName())) return true;
-        else if(realCorpus.equals("B") && typesForB.contains(classRoomType.getName())) return true;
-        else if(realCorpus.equals("C") && typesForC.contains(classRoomType.getName())) return true;
-        else if(realCorpus.equals("D") && typesForD.contains(classRoomType.getName())) return true;
-        else if(realCorpus.equals("E") && typesForE.contains(classRoomType.getName())) return true;
-        else return false;
+        classRoomRepository.deleteById(classRoomId);
     }
 
 }

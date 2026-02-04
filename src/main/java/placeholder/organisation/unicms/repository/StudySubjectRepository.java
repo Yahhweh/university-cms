@@ -11,5 +11,4 @@ import java.util.function.Consumer;
 public interface StudySubjectRepository extends JpaRepository<StudySubject, Long> {
     Optional<StudySubject> findByName(String name);
 
-    Consumer<? super StudySubject> delete(Optional<StudySubject> studySubject);
 }

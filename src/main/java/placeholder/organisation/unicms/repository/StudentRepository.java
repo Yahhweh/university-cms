@@ -9,5 +9,4 @@ import java.util.function.Consumer;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
-    Consumer<? super Student> delete(Optional<Student> student);
 }

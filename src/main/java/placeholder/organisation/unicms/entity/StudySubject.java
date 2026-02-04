@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Pattern;
+
 @Table(name = "study_subject")
 @Data
 @Entity
@@ -20,6 +22,7 @@ public class StudySubject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+    @Pattern(regexp = "^[A-Z][a-z]+$")
     @Column(name = "name", nullable = false)
     String name;
 

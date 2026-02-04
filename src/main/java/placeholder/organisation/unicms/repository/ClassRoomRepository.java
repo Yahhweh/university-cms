@@ -11,5 +11,4 @@ import java.util.function.Consumer;
 public interface ClassRoomRepository extends JpaRepository<ClassRoom, Long> {
     Optional<ClassRoom> findByRoom(String name);
 
-    Consumer<? super ClassRoom> delete(Optional<ClassRoom> classRoom);
 }

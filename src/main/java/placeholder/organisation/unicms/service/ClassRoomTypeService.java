@@ -3,7 +3,6 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.ClassRoom;
 import placeholder.organisation.unicms.repository.ClassRoomTypeRepository;
 import placeholder.organisation.unicms.entity.ClassRoomType;
 
@@ -46,16 +45,11 @@ public class ClassRoomTypeService {
         return classRoomType;
     }
 
-    public void removeClassRoomType(long classRoomTypeId){
-        try {
-            Optional<ClassRoomType> classRoomType = classRoomTypeRepository.findById(classRoomTypeId);
-            classRoomType.ifPresent(classRoomTypeRepository::delete);
-        }catch (RuntimeException e){
-            log.error("Failed to delete classroom type with id: {}", classRoomTypeId);
-            throw new ServiceException("Error deleting classroom type");
+    @Transactional
+    public void removeClassRoomType(long classRoomId) {
+        if (!classRoomTypeRepository.existsById(classRoomId)) {
+            throw new ServiceException("Classroom type not found with id: " + classRoomId);
         }
+        classRoomTypeRepository.deleteById(classRoomId);
     }
-
-
-
 }

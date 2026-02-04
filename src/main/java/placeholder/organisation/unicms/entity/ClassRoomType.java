@@ -28,7 +28,7 @@ public class ClassRoomType {
     Long id;
     @Column(name = "name")
     @Size(min = 2, max = 35)
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Name must contain on letters")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "Name must contain only letters")
     String name;
     @Column(name = "capacity")
     Long capacity;

@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Data
@@ -17,6 +21,7 @@ public class Group {
     @Column(name = "id")
     private Long id;
 
+    @Pattern(regexp = "^[A-Z]-[0-9]+$", message = "Wrong group format")
     @Column(name = "name")
     String name;
 }

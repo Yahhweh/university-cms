@@ -72,68 +72,64 @@ public class LessonService {
 
     @Transactional
     public void changeDuration(Long lessonId, Long durationId) {
-        Lesson lesson = findLesson(lessonId);
+        Optional<Lesson> lesson = findLesson(lessonId);
         Duration dbDuration = durationRepository.findById(durationId)
                 .orElseThrow(() -> new IllegalArgumentException("Duration not found: " + durationId));
 
-        if (!dbDuration.equals(lesson.getDuration())) {
-            lesson.setDuration(dbDuration);
+        if (!dbDuration.equals(lesson.get().getDuration())) {
+            lesson.get().setDuration(dbDuration);
             log.info("Updated Lesson {} -> Duration {}", lessonId, durationId);
         }
     }
 
     @Transactional
     public void changeClassroom(Long lessonId, Long classroomId) {
-        Lesson lesson = findLesson(lessonId);
+        Optional<Lesson> lesson = findLesson(lessonId);
         ClassRoom dbClassroom = classRoomRepository.findById(classroomId)
                 .orElseThrow(() -> new IllegalArgumentException("Classroom not found: " + classroomId));
 
-        if (!dbClassroom.equals(lesson.getClassRoom())) {
-            lesson.setClassRoom(dbClassroom);
+        if (!dbClassroom.equals(lesson.get().getClassRoom())) {
+            lesson.get().setClassRoom(dbClassroom);
             log.info("Updated Lesson {} -> Classroom {}", lessonId, classroomId);
         }
     }
 
     @Transactional
     public void changeGroup(Long lessonId, Long groupId) {
-        Lesson lesson = findLesson(lessonId);
+        Optional<Lesson> lesson = findLesson(lessonId);
         Group dbGroup = groupRepository.findById(groupId)
                 .orElseThrow(() -> new IllegalArgumentException("Group not found: " + groupId));
 
-        if (!dbGroup.equals(lesson.getGroup())) {
-            lesson.setGroup(dbGroup);
+        if (!dbGroup.equals(lesson.get().getGroup())) {
+            lesson.get().setGroup(dbGroup);
             log.info("Updated Lesson {} -> Group {}", lessonId, groupId);
         }
     }
 
     @Transactional
     public void changeStudySubject(Long lessonId, Long subjectId) {
-        Lesson lesson = findLesson(lessonId);
+        Optional<Lesson> lesson = findLesson(lessonId);
         StudySubject dbSubject = studySubjectRepository.findById(subjectId)
                 .orElseThrow(() -> new IllegalArgumentException("Subject not found: " + subjectId));
 
-        if (!dbSubject.equals(lesson.getStudySubject())) {
-            lesson.setStudySubject(dbSubject);
+        if (!dbSubject.equals(lesson.get().getStudySubject())) {
+            lesson.get().setStudySubject(dbSubject);
             log.info("Updated Lesson {} -> Subject {}", lessonId, subjectId);
         }
     }
 
     @Transactional
     public void changeLecturer(Long lessonId, Long lecturerId) {
-        Lesson lesson = findLesson(lessonId);
+        Optional<Lesson> lesson = findLesson(lessonId);
         Lecturer dbLecturer = lecturerRepository.findById(lecturerId)
                 .orElseThrow(() -> new IllegalArgumentException("Lecturer not found: " + lecturerId));
 
-        if (!dbLecturer.equals(lesson.getLecturer())) {
-            lesson.setLecturer(dbLecturer);
+        if (!dbLecturer.equals(lesson.get().getLecturer())) {
+            lesson.get().setLecturer(dbLecturer);
             log.info("Updated Lesson {} -> Lecturer {}", lessonId, lecturerId);
         }
     }
 
-    public Lesson findLesson(Long id) {
-        return lessonRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Lesson not found: " + id));
-    }
 
     public List<Lesson> findLessonsInRange(LocalDate startDate, LocalDate endDate, long personId, PersonType type) {
         List<Lesson> lessons = lessonRepository.findInRange(startDate, endDate, personId, type);
@@ -147,14 +143,12 @@ public class LessonService {
         return lessons;
     }
 
-    public void removeLesson(long lessonId){
-        try {
-            Optional<Lesson> lesson = lessonRepository.findById(lessonId);
-            lesson.ifPresent(lessonRepository::delete);
-        }catch (RuntimeException e){
-            log.error("Failed to delete lesson with id: {}", lessonId);
-            throw new ServiceException("Error deleting lesson");
+    @Transactional
+    public void removeLesson(long lessonId) {
+        if (!lessonRepository.existsById(lessonId)) {
+            throw new ServiceException("Lesson not found with id: " + lessonId);
         }
+        lessonRepository.deleteById(lessonId);
     }
 
 }

@@ -46,14 +46,12 @@ public class StudySubjectService {
         return subject;
     }
 
-    public void removeStudySubject(long studySubjectId){
-        try {
-            Optional<StudySubject> studySubject = studySubjectRepository.findById(studySubjectId);
-            studySubject.ifPresent(studySubjectRepository::delete);
-        }catch (RuntimeException e){
-            log.error("Failed to delete study subject with id: {}", studySubjectId);
-            throw new ServiceException("Error deleting study subject");
+    @Transactional
+    public void removeStudySubject(long studySubjectId) {
+        if (!studySubjectRepository.existsById(studySubjectId)) {
+            throw new ServiceException("Study subject not found with id: " + studySubjectId);
         }
+        studySubjectRepository.deleteById(studySubjectId);
     }
 
 }

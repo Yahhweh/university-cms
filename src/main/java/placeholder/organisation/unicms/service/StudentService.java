@@ -64,13 +64,11 @@ public class StudentService {
         log.info("Student deleted. ID: {}", studentId);
     }
 
-    public void removeStudent(long studentId){
-        try {
-            Optional<Student> student = studentRepository.findById(studentId);
-            student.ifPresent(studentRepository::delete);
-        }catch (RuntimeException e){
-            log.error("Failed to delete student with id: {}", studentId);
-            throw new ServiceException("Error deleting student");
+    @Transactional
+    public void removeStudent(long studentId) {
+        if (!studentRepository.existsById(studentId)) {
+            throw new ServiceException("Student not found with id: " + studentId);
         }
+        studentRepository.deleteById(studentId);
     }
 }

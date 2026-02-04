@@ -177,13 +177,17 @@ INSERT INTO public.class_room_type (id, name, capacity) VALUES (5, 'Chemistry La
 INSERT INTO public.class_room_type (id, name, capacity) VALUES (6, 'Biology Lab', 30);
 INSERT INTO public.class_room_type (id, name, capacity) VALUES (7, 'Art Studio', 30);
 INSERT INTO public.class_room_type (id, name, capacity) VALUES (8, 'Music Room', 30);
-INSERT INTO public.class_room_type (id, name, capacity) VALUES (10, 'Conference Room', 30);
-INSERT INTO public.class_room_type (id, name, capacity) VALUES (11, 'Library Hall', 100);
-INSERT INTO public.class_room_type (id, name, capacity) VALUES (12, 'Study Room', 30);
-INSERT INTO public.class_room_type (id, name, capacity) VALUES (13, 'Workshop', 30);
-INSERT INTO public.class_room_type (id, name, capacity) VALUES (14, 'Darkroom', 30);
-INSERT INTO public.class_room_type (id, name, capacity) VALUES (15, 'Auditorium', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (9, 'Conference Room', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (10, 'Library Hall', 100);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (11, 'Study Room', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (12, 'Workshop', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (13, 'Darkroom', 30);
+INSERT INTO public.class_room_type (id, name, capacity) VALUES (14, 'Auditorium', 30);
 
+
+--
+-- Data for Name: class_room; Type: TABLE DATA; Schema: public; Owner: postgres
+--
 
 --
 -- Data for Name: class_room; Type: TABLE DATA; Schema: public; Owner: postgres
@@ -192,47 +196,48 @@ INSERT INTO public.class_room_type (id, name, capacity) VALUES (15, 'Auditorium'
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (1, 'B-101', 4);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (2, 'A-201', 1);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (3, 'B-301', 3);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (4, 'B-401', 9);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (5, 'B-501', 7);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (6, 'B-102', 10);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (4, 'E-512', 11);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (6, 'B-102', 9);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (7, 'A-202', 1);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (8, 'B-302', 5);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (10, 'B-502', 12);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (11, 'B-103', 10);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (12, 'B-203', 13);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (13, 'A-303', 11);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (14, 'B-403', 15);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (9, 'E-511', 11);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (10, 'B-502', 11);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (11, 'B-103', 9);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (12, 'B-203', 12);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (13, 'A-303', 10);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (14, 'B-403', 14);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (15, 'B-503', 6);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (16, 'B-104', 13);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (17, 'B-204', 10);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (18, 'B-304', 14);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (16, 'B-104', 12);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (17, 'B-204', 9);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (18, 'B-304', 13);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (19, 'B-404', 4);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (20, 'B-504', 12);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (21, 'B-105', 10);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (20, 'B-504', 11);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (21, 'B-105', 9);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (22, 'B-205', 4);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (23, 'B-305', 14);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (24, 'B-405', 12);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (25, 'B-505', 13);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (26, 'B-106', 12);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (27, 'B-206', 13);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (23, 'B-305', 13);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (24, 'B-405', 11);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (25, 'B-505', 12);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (26, 'B-106', 11);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (27, 'B-206', 12);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (28, 'B-306', 6);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (29, 'B-406', 9);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (30, 'B-506', 9);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (31, 'B-107', 6);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (32, 'A-207', 1);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (33, 'B-307', 14);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (34, 'B-407', 14);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (33, 'B-307', 13);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (34, 'B-407', 13);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (35, 'B-507', 8);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (36, 'B-108', 8);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (37, 'B-208', 10);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (38, 'B-308', 10);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (39, 'B-408', 15);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (40, 'B-508', 10);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (41, 'B-109', 14);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (37, 'B-208', 9);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (38, 'B-308', 9);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (39, 'B-408', 14);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (40, 'B-508', 9);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (41, 'B-109', 13);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (42, 'B-209', 5);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (43, 'B-309', 9);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (44, 'B-409', 9);
-INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (45, 'B-509', 15);
+INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (45, 'B-509', 14);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (46, 'B-110', 9);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (47, 'B-210', 6);
 INSERT INTO public.class_room (id, room, class_room_type_id) VALUES (48, 'A-310', 1);
