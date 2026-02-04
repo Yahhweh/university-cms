@@ -4,11 +4,15 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import placeholder.organisation.unicms.entity.ClassRoom;
+import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.repository.RepositoryException;
 import placeholder.organisation.unicms.repository.LecturerRepository;
 import placeholder.organisation.unicms.repository.StudySubjectRepository;
 import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.StudySubject;
+import placeholder.organisation.unicms.service.createDTO.GroupDTO;
+import placeholder.organisation.unicms.service.createDTO.LecturerDTO;
+import placeholder.organisation.unicms.service.mapper.LecturerMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,10 +23,12 @@ import java.util.Optional;
 public class LecturerService {
     private final LecturerRepository lecturerRepository;
     private final StudySubjectRepository studySubjectRepository;
+    private final LecturerMapper lecturerMapper;
 
-    public LecturerService(LecturerRepository lecturerRepository, StudySubjectRepository studySubjectRepository) {
+    public LecturerService(LecturerRepository lecturerRepository, StudySubjectRepository studySubjectRepository, LecturerMapper lecturerMapper) {
         this.lecturerRepository = lecturerRepository;
         this.studySubjectRepository = studySubjectRepository;
+        this.lecturerMapper = lecturerMapper;
     }
 
     public List<Lecturer> findAllLecturers() {
@@ -87,4 +93,15 @@ public class LecturerService {
         lecturerRepository.deleteById(lecturerId);
     }
 
+    @Transactional
+    public void updateLecturer(long lecturerId, LecturerDTO lecturerDTO) {
+        Lecturer lecturer = lecturerRepository.findById(lecturerId)
+                .orElseThrow(() -> new ServiceException("Lecturer not found with id: " + lecturerId));
+        try {
+            lecturerMapper.updateEntityFromDto(lecturerDTO, lecturer);
+        } catch (Exception e) {
+            log.error("Failed to map DTO to Entity for lecturer id: {}", lecturerId, e);
+            throw new ServiceException("Error updating group ", e);
+        }
+    }
 }

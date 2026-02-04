@@ -4,8 +4,12 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.ClassRoom;
+import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.repository.StudySubjectRepository;
 import placeholder.organisation.unicms.entity.StudySubject;
+import placeholder.organisation.unicms.service.createDTO.StudentDTO;
+import placeholder.organisation.unicms.service.createDTO.StudySubjectDTO;
+import placeholder.organisation.unicms.service.mapper.StudySubjectMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +20,11 @@ import java.util.Optional;
 public class StudySubjectService {
 
     private final StudySubjectRepository studySubjectRepository;
+    private final StudySubjectMapper studySubjectMapper;
 
-    public StudySubjectService(StudySubjectRepository studySubjectRepository) {
+    public StudySubjectService(StudySubjectRepository studySubjectRepository, StudySubjectMapper studySubjectMapper) {
         this.studySubjectRepository = studySubjectRepository;
+        this.studySubjectMapper = studySubjectMapper;
     }
 
     public List<StudySubject> findAllSubjects() {
@@ -54,4 +60,15 @@ public class StudySubjectService {
         studySubjectRepository.deleteById(studySubjectId);
     }
 
+    @Transactional
+    public void updateStudySubject(long studySubjectId, StudySubjectDTO studySubjectDTO) {
+        StudySubject studySubject = studySubjectRepository.findById(studySubjectId)
+                .orElseThrow(() -> new ServiceException("Study subject not found with id: " + studySubjectId));
+        try {
+            studySubjectMapper.updateEntityFromDto(studySubjectDTO, studySubject);
+        } catch (Exception e) {
+            log.error("Failed to map DTO to Entity for study subject id: {}", studySubjectId, e);
+            throw new ServiceException("Error updating study subject ", e);
+        }
+    }
 }

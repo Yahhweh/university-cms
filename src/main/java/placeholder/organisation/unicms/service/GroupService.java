@@ -4,8 +4,12 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.ClassRoom;
+import placeholder.organisation.unicms.entity.Duration;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.entity.Group;
+import placeholder.organisation.unicms.service.createDTO.DurationDTO;
+import placeholder.organisation.unicms.service.createDTO.GroupDTO;
+import placeholder.organisation.unicms.service.mapper.GroupMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +20,11 @@ import java.util.Optional;
 public class GroupService {
 
     private final GroupRepository groupRepository;
+    private final GroupMapper groupMapper;
 
-    public GroupService(GroupRepository groupRepository) {
+    public GroupService(GroupRepository groupRepository, GroupMapper groupMapper) {
         this.groupRepository = groupRepository;
+        this.groupMapper = groupMapper;
     }
 
     public List<Group> findAllGroups() {
@@ -45,5 +51,17 @@ public class GroupService {
             throw new ServiceException("Group not found with id: " + groupId);
         }
         groupRepository.deleteById(groupId);
+    }
+
+    @Transactional
+    public void updateGroup(long groupId, GroupDTO groupDTO) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new ServiceException("Group not found with id: " + groupId));
+        try {
+            groupMapper.updateEntityFromDto(groupDTO, group);
+        } catch (Exception e) {
+            log.error("Failed to map DTO to Entity for group id: {}", groupId, e);
+            throw new ServiceException("Error updating group", e);
+        }
     }
 }

@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.repository.*;
+import placeholder.organisation.unicms.service.createDTO.LecturerDTO;
+import placeholder.organisation.unicms.service.createDTO.LessonDTO;
+import placeholder.organisation.unicms.service.mapper.LessonMapper;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,21 +19,11 @@ import java.util.Optional;
 public class LessonService {
 
     private final LessonRepository lessonRepository;
-    private final DurationRepository durationRepository;
-    private final ClassRoomRepository classRoomRepository;
-    private final GroupRepository groupRepository;
-    private final StudySubjectRepository studySubjectRepository;
-    private final LecturerRepository lecturerRepository;
-    private final StudentRepository studentRepository;
+    private final LessonMapper lessonMapper;
 
-    public LessonService(LessonRepository lessonRepository, StudentRepository studentRepository, DurationRepository durationRepository, ClassRoomRepository classRoomRepository, GroupRepository groupRepository, StudySubjectRepository studySubjectRepository, LecturerRepository lecturerRepository) {
+    public LessonService(LessonRepository lessonRepository, LessonMapper lessonMapper) {
         this.lessonRepository = lessonRepository;
-        this.durationRepository = durationRepository;
-        this.classRoomRepository = classRoomRepository;
-        this.groupRepository = groupRepository;
-        this.studySubjectRepository = studySubjectRepository;
-        this.lecturerRepository = lecturerRepository;
-        this.studentRepository = studentRepository;
+        this.lessonMapper = lessonMapper;
     }
 
     public List<Lesson> findAllLessons() {
@@ -70,67 +63,6 @@ public class LessonService {
         log.info("Lesson saved successfully. Name: {}", lesson.getStudySubject());
     }
 
-    @Transactional
-    public void changeDuration(Long lessonId, Long durationId) {
-        Optional<Lesson> lesson = findLesson(lessonId);
-        Duration dbDuration = durationRepository.findById(durationId)
-                .orElseThrow(() -> new IllegalArgumentException("Duration not found: " + durationId));
-
-        if (!dbDuration.equals(lesson.get().getDuration())) {
-            lesson.get().setDuration(dbDuration);
-            log.info("Updated Lesson {} -> Duration {}", lessonId, durationId);
-        }
-    }
-
-    @Transactional
-    public void changeClassroom(Long lessonId, Long classroomId) {
-        Optional<Lesson> lesson = findLesson(lessonId);
-        ClassRoom dbClassroom = classRoomRepository.findById(classroomId)
-                .orElseThrow(() -> new IllegalArgumentException("Classroom not found: " + classroomId));
-
-        if (!dbClassroom.equals(lesson.get().getClassRoom())) {
-            lesson.get().setClassRoom(dbClassroom);
-            log.info("Updated Lesson {} -> Classroom {}", lessonId, classroomId);
-        }
-    }
-
-    @Transactional
-    public void changeGroup(Long lessonId, Long groupId) {
-        Optional<Lesson> lesson = findLesson(lessonId);
-        Group dbGroup = groupRepository.findById(groupId)
-                .orElseThrow(() -> new IllegalArgumentException("Group not found: " + groupId));
-
-        if (!dbGroup.equals(lesson.get().getGroup())) {
-            lesson.get().setGroup(dbGroup);
-            log.info("Updated Lesson {} -> Group {}", lessonId, groupId);
-        }
-    }
-
-    @Transactional
-    public void changeStudySubject(Long lessonId, Long subjectId) {
-        Optional<Lesson> lesson = findLesson(lessonId);
-        StudySubject dbSubject = studySubjectRepository.findById(subjectId)
-                .orElseThrow(() -> new IllegalArgumentException("Subject not found: " + subjectId));
-
-        if (!dbSubject.equals(lesson.get().getStudySubject())) {
-            lesson.get().setStudySubject(dbSubject);
-            log.info("Updated Lesson {} -> Subject {}", lessonId, subjectId);
-        }
-    }
-
-    @Transactional
-    public void changeLecturer(Long lessonId, Long lecturerId) {
-        Optional<Lesson> lesson = findLesson(lessonId);
-        Lecturer dbLecturer = lecturerRepository.findById(lecturerId)
-                .orElseThrow(() -> new IllegalArgumentException("Lecturer not found: " + lecturerId));
-
-        if (!dbLecturer.equals(lesson.get().getLecturer())) {
-            lesson.get().setLecturer(dbLecturer);
-            log.info("Updated Lesson {} -> Lecturer {}", lessonId, lecturerId);
-        }
-    }
-
-
     public List<Lesson> findLessonsInRange(LocalDate startDate, LocalDate endDate, long personId, PersonType type) {
         List<Lesson> lessons = lessonRepository.findInRange(startDate, endDate, personId, type);
         log.debug("Using range filter {} lessons found", lessons.size());
@@ -151,4 +83,15 @@ public class LessonService {
         lessonRepository.deleteById(lessonId);
     }
 
+    @Transactional
+    public void updateLesson(long lessonId, LessonDTO lessonDTO) {
+        Lesson lesson = lessonRepository.findById(lessonId)
+                .orElseThrow(() -> new ServiceException("Lesson not found with id: " + lessonId));
+        try {
+            lessonMapper.updateEntityFromDto(lessonDTO, lesson);
+        } catch (Exception e) {
+            log.error("Failed to map DTO to Entity for lesson id: {}", lessonId, e);
+            throw new ServiceException("Error updating lesson ", e);
+        }
+    }
 }

@@ -4,8 +4,13 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.ClassRoom;
+import placeholder.organisation.unicms.entity.Lesson;
+import placeholder.organisation.unicms.entity.StudySubject;
 import placeholder.organisation.unicms.repository.StudentRepository;
 import placeholder.organisation.unicms.entity.Student;
+import placeholder.organisation.unicms.service.createDTO.LessonDTO;
+import placeholder.organisation.unicms.service.createDTO.StudentDTO;
+import placeholder.organisation.unicms.service.mapper.StudentMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +21,11 @@ import java.util.Optional;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final StudentMapper studentMapper;
 
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository, StudentMapper studentMapper) {
         this.studentRepository = studentRepository;
+        this.studentMapper = studentMapper;
     }
 
     public List<Student> findAllStudents() {
@@ -70,5 +77,17 @@ public class StudentService {
             throw new ServiceException("Student not found with id: " + studentId);
         }
         studentRepository.deleteById(studentId);
+    }
+
+    @Transactional
+    public void updateStudent(long studentId, StudentDTO studentDTO) {
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ServiceException("Student not found with id: " + studentId));
+        try {
+            studentMapper.updateEntityFromDto(studentDTO, student);
+        } catch (Exception e) {
+            log.error("Failed to map DTO to Entity for student id: {}", studentId, e);
+            throw new ServiceException("Error updating student ", e);
+        }
     }
 }

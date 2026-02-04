@@ -4,14 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import placeholder.organisation.unicms.entity.Degree;
 
-import java.util.Set;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class LecturerCreateDTO extends PersonCreateDTO {
-    private Integer salary;
-    private Set<StudySubjectCreateDTO> studySubjects;
+public class StudentDTO extends PersonDTO {
+
+    @Valid
+    private GroupDTO group;
+
+    @NotNull
+    private Degree degree;
 }

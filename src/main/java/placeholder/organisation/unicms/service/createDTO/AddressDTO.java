@@ -5,21 +5,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddressCreateDTO {
+public class AddressDTO {
+    @Null
     private Long id;
 
     @NotBlank
-    @Size(min = 2, max = 100, message = "City must be between 2 and 100 characters")
+    @Size(min = 2, max = 100)
     private String city;
 
     @NotBlank
-    @Size(min = 2, max = 100, message = "Street must be between 2 and 100 characters")
+    @Size(min = 2, max = 100)
     private String street;
 
     @NotBlank
@@ -27,11 +29,11 @@ public class AddressCreateDTO {
     private String phoneNumber;
 
     @NotBlank
-    @Size(min = 2, max = 100, message = "Country must be between 2 and 100 characters")
+    @Size(min = 2, max = 100)
     private String country;
 
     @NotBlank
-    @Size(max = 20, message = "House number must not exceed 20 characters")
+    @Size(max = 20)
     private String houseNumber;
 
     @NotBlank()

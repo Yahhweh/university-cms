@@ -1,17 +1,18 @@
 package placeholder.organisation.unicms.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.ClassRoomType;
 import placeholder.organisation.unicms.repository.ClassRoomRepository;
 import placeholder.organisation.unicms.entity.ClassRoom;
-import placeholder.organisation.unicms.repository.ClassRoomTypeRepository;
+import placeholder.organisation.unicms.service.createDTO.ClassRoomDTO;
+import placeholder.organisation.unicms.service.createDTO.ClassRoomTypeDTO;
+import placeholder.organisation.unicms.service.mapper.ClassRoomMapper;
 import placeholder.organisation.unicms.service.validation.ClassRoomValidation;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 @Service
 @Log4j2
@@ -20,11 +21,12 @@ public class ClassRoomService {
 
     private final ClassRoomRepository classRoomRepository;
     private final ClassRoomValidation classRoomValidation;
+    private final ClassRoomMapper classRoomMapper;
 
-    public ClassRoomService(ClassRoomRepository classRoomRepository, ClassRoomValidation classRoomValidation) {
+    public ClassRoomService(ClassRoomRepository classRoomRepository, ClassRoomValidation classRoomValidation, ClassRoomMapper classRoomMapper) {
         this.classRoomRepository = classRoomRepository;
         this.classRoomValidation = classRoomValidation;
-
+        this.classRoomMapper = classRoomMapper;
     }
 
     public List<ClassRoom> findAllRooms() {
@@ -75,4 +77,15 @@ public class ClassRoomService {
         classRoomRepository.deleteById(classRoomId);
     }
 
+    @Transactional
+    public void updateClassRoom(long classRoomId, ClassRoomDTO classRoomDTO) {
+        ClassRoom classRoom = classRoomRepository.findById(classRoomId)
+                .orElseThrow(() -> new ServiceException("ClassRoom not found with id: " + classRoomId));
+        try {
+            classRoomMapper.updateEntityFromDto(classRoomDTO, classRoom);
+        } catch (Exception e) {
+            log.error("Failed to map DTO to Entity for classroom id: {}", classRoomId, e);
+            throw new ServiceException("Error updating classroom", e);
+        }
+    }
 }
