@@ -1,4 +1,4 @@
-package placeholder.organisation.unicms.service.createDTO;
+package placeholder.organisation.unicms.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,8 +11,13 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClassRoomDTO {
-    @Null
-    private Long id;
+    public ClassRoomDTO(String room) {
+        this.room = room;
+    }
+
+    public ClassRoomDTO(ClassRoomTypeDTO classRoomType) {
+        this.classRoomType = classRoomType;
+    }
 
     @NotBlank()
     @Size(min = 3, max = 35)

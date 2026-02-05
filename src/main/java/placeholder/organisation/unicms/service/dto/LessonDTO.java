@@ -1,6 +1,7 @@
-package placeholder.organisation.unicms.service.createDTO;
+package placeholder.organisation.unicms.service.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,8 +14,29 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LessonDTO {
-    @Null
-    private Long id;
+    public LessonDTO(DurationDTO duration) {
+        this.duration = duration;
+    }
+
+    public LessonDTO(StudySubjectDTO studySubject) {
+        this.studySubject = studySubject;
+    }
+
+    public LessonDTO(GroupDTO group) {
+        this.group = group;
+    }
+
+    public LessonDTO(LecturerDTO lecturer) {
+        this.lecturer = lecturer;
+    }
+
+    public LessonDTO(ClassRoomDTO classRoom) {
+        this.classRoom = classRoom;
+    }
+
+    public LessonDTO(LocalDate date) {
+        this.date = date;
+    }
 
     @NotNull
     @Valid

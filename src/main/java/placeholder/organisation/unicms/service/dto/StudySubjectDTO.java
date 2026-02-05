@@ -1,4 +1,4 @@
-package placeholder.organisation.unicms.service.createDTO;
+package placeholder.organisation.unicms.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,15 +7,14 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroupDTO {
-    @Null
-    private Long id;
-
+public class StudySubjectDTO {
     @NotBlank
-    @Pattern(regexp = "^[A-Z]-[0-9]+$", message = "Group name must follow format: UppercaseLetter-Number (e.g., A-101)")
+    @Size(min = 2, max = 100)
+    @Pattern(regexp = "^[A-Z][a-zA-Z\\s]+$", message = "Subject name must start with uppercase letter")
     private String name;
 }

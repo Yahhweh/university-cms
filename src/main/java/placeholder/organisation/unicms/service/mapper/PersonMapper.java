@@ -1,13 +1,12 @@
 package placeholder.organisation.unicms.service.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import placeholder.organisation.unicms.entity.Person;
-import placeholder.organisation.unicms.service.createDTO.PersonDTO;
+import placeholder.organisation.unicms.service.dto.PersonDTO;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR, componentModel = "spring")
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        componentModel = "spring",
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface PersonMapper {
     PersonDTO toDto(Person person);
 

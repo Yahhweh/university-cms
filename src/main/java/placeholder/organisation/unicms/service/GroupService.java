@@ -3,12 +3,9 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.ClassRoom;
-import placeholder.organisation.unicms.entity.Duration;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.entity.Group;
-import placeholder.organisation.unicms.service.createDTO.DurationDTO;
-import placeholder.organisation.unicms.service.createDTO.GroupDTO;
+import placeholder.organisation.unicms.service.dto.GroupDTO;
 import placeholder.organisation.unicms.service.mapper.GroupMapper;
 
 import java.util.List;
@@ -59,6 +56,7 @@ public class GroupService {
                 .orElseThrow(() -> new ServiceException("Group not found with id: " + groupId));
         try {
             groupMapper.updateEntityFromDto(groupDTO, group);
+            groupRepository.save(group);
         } catch (Exception e) {
             log.error("Failed to map DTO to Entity for group id: {}", groupId, e);
             throw new ServiceException("Error updating group", e);

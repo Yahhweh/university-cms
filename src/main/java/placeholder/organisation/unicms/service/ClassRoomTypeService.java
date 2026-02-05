@@ -3,12 +3,9 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.ClassRoom;
 import placeholder.organisation.unicms.repository.ClassRoomTypeRepository;
 import placeholder.organisation.unicms.entity.ClassRoomType;
-import placeholder.organisation.unicms.service.createDTO.ClassRoomDTO;
-import placeholder.organisation.unicms.service.createDTO.ClassRoomTypeDTO;
-import placeholder.organisation.unicms.service.mapper.ClassRoomMapper;
+import placeholder.organisation.unicms.service.dto.ClassRoomTypeDTO;
 import placeholder.organisation.unicms.service.mapper.ClassRoomTypeMapper;
 
 import java.util.List;
@@ -66,6 +63,7 @@ public class ClassRoomTypeService {
                 .orElseThrow(() -> new ServiceException("ClassRoom type not found with id: " + classRoomTypeId));
         try {
             classRoomTypeMapper.updateEntityFromDto(classRoomTypeDTO, classRoom);
+            classRoomTypeRepository.save(classRoom);
         } catch (Exception e) {
             log.error("Failed to map DTO to Entity for classroom id: {}", classRoomTypeId, e);
             throw new ServiceException("Error updating classroom", e);

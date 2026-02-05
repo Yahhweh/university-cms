@@ -1,13 +1,11 @@
 package placeholder.organisation.unicms.service.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import placeholder.organisation.unicms.entity.ClassRoomType;
-import placeholder.organisation.unicms.service.createDTO.ClassRoomTypeDTO;
+import placeholder.organisation.unicms.service.dto.ClassRoomTypeDTO;
 
-@Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR, componentModel = "spring")
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, componentModel = "spring")
 public interface ClassRoomTypeMapper {
     ClassRoomTypeDTO toDto(ClassRoomType classRoom);
     @Mapping(target = "id", ignore = true)

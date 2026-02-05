@@ -5,8 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.repository.*;
-import placeholder.organisation.unicms.service.createDTO.LecturerDTO;
-import placeholder.organisation.unicms.service.createDTO.LessonDTO;
+import placeholder.organisation.unicms.service.dto.LessonDTO;
 import placeholder.organisation.unicms.service.mapper.LessonMapper;
 
 import java.time.LocalDate;
@@ -89,6 +88,7 @@ public class LessonService {
                 .orElseThrow(() -> new ServiceException("Lesson not found with id: " + lessonId));
         try {
             lessonMapper.updateEntityFromDto(lessonDTO, lesson);
+            lessonRepository.save(lesson);
         } catch (Exception e) {
             log.error("Failed to map DTO to Entity for lesson id: {}", lessonId, e);
             throw new ServiceException("Error updating lesson ", e);

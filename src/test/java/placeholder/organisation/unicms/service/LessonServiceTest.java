@@ -2,14 +2,20 @@ package placeholder.organisation.unicms.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.repository.*;
+import placeholder.organisation.unicms.service.dto.LessonDTO;
+import placeholder.organisation.unicms.service.dto.StudySubjectDTO;
+import placeholder.organisation.unicms.service.mapper.LessonMapper;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -18,6 +24,7 @@ import java.util.Set;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
+import static org.assertj.core.api.AssertionsForClassTypes.in;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -25,117 +32,10 @@ import static org.mockito.Mockito.when;
 class LessonServiceTest {
     @Mock
     LessonRepository lessonRepositoryMock;
-    @Mock
-    DurationRepository durationRepositoryMock;
-    @Mock
-    ClassRoomRepository classRoomRepositoryMock;
-    @Mock
-    GroupRepository groupRepositoryMock;
-    @Mock
-    StudySubjectRepository studySubjectRepositoryMock;
-    @Mock
-    LecturerRepository lecturerRepositoryMock;
+    @Spy
+    LessonMapper lessonMapper = Mappers.getMapper(LessonMapper.class);
     @InjectMocks
     LessonService lessonService;
-
-
-    @Test
-    void changeDuration_exists() {
-        long durationId = 2;
-        long lessonId = 1;
-        Duration newDuration = new Duration(2L, LocalTime.now().plusHours(1), LocalTime.now().plusHours(1));
-        Lesson lesson = getLesson();
-
-        when(durationRepositoryMock.findById(durationId)).thenReturn(Optional.of(newDuration));
-        when(lessonRepositoryMock.findById(lessonId)).thenReturn(Optional.ofNullable(lesson));
-
-        assertThat(lesson.getDuration()).isEqualTo(getOldDuration());
-
-        lessonService.changeDuration(lessonId, durationId);
-
-        verify(durationRepositoryMock).findById(durationId);
-        verify(lessonRepositoryMock).findById(lessonId);
-
-
-        assertThat(lesson.getDuration()).isEqualTo(newDuration);
-    }
-
-    @Test
-    void changeClassroom() {
-        long classRoomId = 2;
-        long lessonId = 1;
-        Lesson lesson = getLesson();
-        ClassRoom newRoom = new ClassRoom(2L, "311", new ClassRoomType(1L, "same", 50L));
-
-        when(classRoomRepositoryMock.findById(classRoomId)).thenReturn(Optional.of(newRoom));
-        when(lessonRepositoryMock.findById(lessonId)).thenReturn(Optional.of(lesson));
-
-        assertThat(lesson.getClassRoom()).isEqualTo(getOldClassRoom());
-
-        lessonService.changeClassroom(lessonId, classRoomId);
-
-        verify(lessonRepositoryMock).findById(lessonId);
-        verify(classRoomRepositoryMock).findById(classRoomId);
-        assertThat(lesson.getClassRoom()).isEqualTo(newRoom);
-    }
-
-    @Test
-    void changeGroup() {
-        long groupId = 2L;
-        long lessonId = 1L;
-        Lesson lesson = getLesson();
-        Group newGroup = new Group(2L, "12A");
-
-        when(groupRepositoryMock.findById(groupId)).thenReturn(Optional.of(newGroup));
-        when(lessonRepositoryMock.findById(lessonId)).thenReturn(Optional.ofNullable(lesson));
-
-        assertThat(lesson.getGroup()).isEqualTo(getOldGroup());
-
-        lessonService.changeGroup(lessonId, groupId);
-
-        verify(groupRepositoryMock).findById(groupId);
-        verify(lessonRepositoryMock).findById(lessonId);
-
-        assertThat(lesson.getGroup()).isEqualTo(newGroup);
-    }
-
-    @Test
-    void changeStudySubject() {
-        long subjectId = 2L;
-        long lessonId = 1L;
-        Lesson lesson = getLesson();
-        StudySubject newSubject = new StudySubject(subjectId, "Mathematics");
-
-        when(studySubjectRepositoryMock.findById(subjectId)).thenReturn(Optional.of(newSubject));
-        when(lessonRepositoryMock.findById(lessonId)).thenReturn(Optional.of(lesson));
-
-        assertThat(lesson.getStudySubject()).isEqualTo(getOldSubject());
-
-        lessonService.changeStudySubject(lessonId, subjectId);
-
-        verify(lessonRepositoryMock).findById(lessonId);
-        verify(studySubjectRepositoryMock).findById(subjectId);
-        assertThat(lesson.getStudySubject()).isEqualTo(newSubject);
-    }
-
-    @Test
-    void changeLecturer() {
-        long lecturerId = 3L;
-        long lessonId = 1L;
-        Lesson lesson = getLesson();
-        Lecturer newLecturer = new Lecturer((int) lecturerId, Set.of(getOldSubject()));
-
-        when(lecturerRepositoryMock.findById(lecturerId)).thenReturn(Optional.of(newLecturer));
-        when(lessonRepositoryMock.findById(lessonId)).thenReturn(Optional.of(lesson));
-
-        assertThat(lesson.getLecturer()).isEqualTo(getLecturer());
-
-        lessonService.changeLecturer(lessonId, lecturerId);
-
-        verify(lessonRepositoryMock).findById(lessonId);
-        verify(lecturerRepositoryMock).findById(lecturerId);
-        assertThat(lesson.getLecturer()).isEqualTo(newLecturer);
-    }
 
     @Test
     void findLessonsInRange_shouldReturnLessons_whenDataExists() {
@@ -172,32 +72,47 @@ class LessonServiceTest {
         verify(lessonRepositoryMock).findByDateAndRole(date, personId, type);
     }
 
-    private static Duration getOldDuration() {
-        return new Duration(1L, LocalTime.of(12, 12), LocalTime.of(13, 13));
-    }
+    @Test
+    void updateLesson_changesObject_whenCorrectDtoIsGiven() {
+        Lesson initial = getLesson();
+        LessonDTO lessonDTO = getLessonDto();
+        long id = initial.getId();
 
-    private static StudySubject getOldSubject() {
-        return new StudySubject(1L, "Lesson");
-    }
+        when(lessonRepositoryMock.findById(id)).thenReturn(Optional.of(initial));
 
-    private static Group getOldGroup() {
-        return new Group(1L, "1s");
-    }
+        lessonService.updateLesson(id, lessonDTO);
 
-    private static Lecturer getLecturer() {
-        return new Lecturer(2, Set.of(getOldSubject()));
-    }
+        verify(lessonMapper).updateEntityFromDto(lessonDTO, initial);
+        verify(lessonRepositoryMock).save(initial);
 
-    private static ClassRoom getOldClassRoom() {
-        return new ClassRoom(1L, "214", new ClassRoomType(1L, "type", 50L));
+        assertThat(initial.getStudySubject().getName()).isEqualTo(lessonDTO.getStudySubject().getName());
     }
 
     Lesson getLesson() {
-        StudySubject subject = getOldSubject();
-        Duration duration = getOldDuration();
-        Group group = getOldGroup();
-        Lecturer lecturer = getLecturer();
-        ClassRoom classRoom = getOldClassRoom();
-        return new Lesson(1L, duration, subject, group, lecturer, classRoom, LocalDate.of(2025, 10, 12));
+        return new Lesson(1L, getDuration(), new StudySubject(1L, "Math"), getGroup(), getLecturer(), getClassRoom(), LocalDate.now());
     }
-}
+
+    LessonDTO getLessonDto() {
+        return new LessonDTO(new StudySubjectDTO("Physics"));
+    }
+
+    Lecturer getLecturer() {
+        Lecturer lecturer = new Lecturer();
+        lecturer.setId(1L);
+        lecturer.setName("Petr");
+        lecturer.setSureName("Petrov");
+        lecturer.setSalary(40000);
+        return lecturer;
+    }
+
+    Group getGroup() {
+        return new Group(1L, "A-122");
+    }
+
+    Duration getDuration() {
+        return new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00));
+    }
+
+    ClassRoom getClassRoom() {
+        return new ClassRoom(1L, "A-101", new ClassRoomType(1L, "Hall", 100L));
+    }}

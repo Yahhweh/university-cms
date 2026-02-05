@@ -1,4 +1,4 @@
-package placeholder.organisation.unicms.service.createDTO;
+package placeholder.organisation.unicms.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

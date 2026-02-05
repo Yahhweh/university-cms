@@ -3,13 +3,9 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.ClassRoom;
-import placeholder.organisation.unicms.entity.Lesson;
-import placeholder.organisation.unicms.entity.StudySubject;
 import placeholder.organisation.unicms.repository.StudentRepository;
 import placeholder.organisation.unicms.entity.Student;
-import placeholder.organisation.unicms.service.createDTO.LessonDTO;
-import placeholder.organisation.unicms.service.createDTO.StudentDTO;
+import placeholder.organisation.unicms.service.dto.StudentDTO;
 import placeholder.organisation.unicms.service.mapper.StudentMapper;
 
 import java.util.List;
@@ -85,6 +81,7 @@ public class StudentService {
                 .orElseThrow(() -> new ServiceException("Student not found with id: " + studentId));
         try {
             studentMapper.updateEntityFromDto(studentDTO, student);
+            studentRepository.save(student);
         } catch (Exception e) {
             log.error("Failed to map DTO to Entity for student id: {}", studentId, e);
             throw new ServiceException("Error updating student ", e);

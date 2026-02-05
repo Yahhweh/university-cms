@@ -3,15 +3,12 @@ package placeholder.organisation.unicms.service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import placeholder.organisation.unicms.entity.ClassRoom;
-import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.repository.RepositoryException;
 import placeholder.organisation.unicms.repository.LecturerRepository;
 import placeholder.organisation.unicms.repository.StudySubjectRepository;
 import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.StudySubject;
-import placeholder.organisation.unicms.service.createDTO.GroupDTO;
-import placeholder.organisation.unicms.service.createDTO.LecturerDTO;
+import placeholder.organisation.unicms.service.dto.LecturerDTO;
 import placeholder.organisation.unicms.service.mapper.LecturerMapper;
 
 import java.util.List;
@@ -99,6 +96,7 @@ public class LecturerService {
                 .orElseThrow(() -> new ServiceException("Lecturer not found with id: " + lecturerId));
         try {
             lecturerMapper.updateEntityFromDto(lecturerDTO, lecturer);
+            lecturerRepository.save(lecturer);
         } catch (Exception e) {
             log.error("Failed to map DTO to Entity for lecturer id: {}", lecturerId, e);
             throw new ServiceException("Error updating group ", e);
