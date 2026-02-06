@@ -42,7 +42,7 @@ public abstract class Person {
     @Column(name = "gender")
     private GenderType gender;
     @Column(name = "email")
-    @Pattern(regexp = "^[a-z]+\\.[a-z]+\\d*@[a-z]+\\.university\\.com$", message = "Email must follow this type name.surename@student.university.com")
+    @Pattern(regexp = "^[a-z]+\\.[a-z]+\\d*@[a-z]+\\.university\\.com$", message = "Email must follow this type name.surename@student.university.com or name.surename@lecturer.university.com")
     private String email;
 
     @OneToOne(fetch = FetchType.LAZY)

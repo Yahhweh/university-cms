@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Pattern;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ import java.util.Set;
 public class Lecturer extends Person {
 
     @Column(name = "salary")
+    @Pattern(regexp = "^[0-9]+$")
     private Integer salary;
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "lecturer_study_subject",

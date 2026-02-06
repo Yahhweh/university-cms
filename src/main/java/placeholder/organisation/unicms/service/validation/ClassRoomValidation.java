@@ -3,6 +3,9 @@ package placeholder.organisation.unicms.service.validation;
 import org.springframework.stereotype.Component;
 import placeholder.organisation.unicms.entity.ClassRoom;
 import placeholder.organisation.unicms.entity.ClassRoomType;
+import placeholder.organisation.unicms.repository.ClassRoomRepository;
+import placeholder.organisation.unicms.repository.GroupRepository;
+import placeholder.organisation.unicms.repository.LessonRepository;
 
 import java.util.List;
 

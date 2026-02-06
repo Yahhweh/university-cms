@@ -117,23 +117,23 @@ class LecturerServiceTest {
         verify(lecturerMapper).updateEntityFromDto(changes, initial);
         verify(lecturerRepository).save(initial);
 
-        assertThat(initial.getName()).isEqualTo("Ivan");
+        assertThat(initial.getName()).isEqualTo("Jane");
         assertThat(initial.getSalary()).isEqualTo(55000);
     }
 
     Lecturer getLecturer() {
         Lecturer lecturer = new Lecturer();
         lecturer.setId(1L);
-        lecturer.setName("Petr");
-        lecturer.setSureName("Petrov");
+        lecturer.setName("John");
+        lecturer.setSureName("Doe");
         lecturer.setSalary(40000);
         return lecturer;
     }
 
     LecturerDTO getLecturerDto() {
         LecturerDTO dto = new LecturerDTO();
-        dto.setName("Ivan");
-        dto.setSureName("Ivanov");
+        dto.setName("Jane");
+        dto.setSureName("Doe");
         dto.setSalary(55000);
         return dto;
     }
