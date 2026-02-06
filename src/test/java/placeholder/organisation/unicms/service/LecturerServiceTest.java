@@ -105,7 +105,7 @@ class LecturerServiceTest {
     }
 
     @Test
-    void updateLecturer_whenValidLecturerDTO_thenLecturerIsUpdated() {
+    void updateLecturer_whenValidLecturerDTO_thanLecturerIsUpdated() {
         Lecturer initial = getLecturer();
         LecturerDTO changes = getLecturerDto();
         long id = initial.getId();
