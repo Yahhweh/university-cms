@@ -6,8 +6,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.*;
-import placeholder.organisation.unicms.repository.GroupRepository;
-import placeholder.organisation.unicms.service.ServiceException;
+import placeholder.organisation.unicms.excpetion.EntityValidationException;
+import placeholder.organisation.unicms.repository.ClassRoomRepository;
+import placeholder.organisation.unicms.repository.StudentRepository;
 import placeholder.organisation.unicms.repository.LessonRepository;
 
 import java.time.LocalDate;
@@ -24,7 +25,10 @@ class LessonValidationTest {
     @Mock
     LessonRepository lessonRepository;
     @Mock
-    GroupRepository groupRepository;
+    StudentRepository studentRepository;
+    @Mock
+    ClassRoomRepository classRoomRepository;
+
 
     @InjectMocks
     LessonValidation lessonValidation;
@@ -56,7 +60,7 @@ class LessonValidationTest {
 
 
         assertThatThrownBy(() -> lessonValidation.validateLesson(newLesson))
-                .isInstanceOf(ServiceException.class);
+                .isInstanceOf(EntityValidationException.class);
     }
     @Test
     void isLecturerDoesntHasLecturesInTheSameTime_shouldNotThrowException_whenNewLessonIsOnDifferentDate() {
@@ -83,13 +87,13 @@ class LessonValidationTest {
         when(lessonRepository.findAllLessonsRelatedToLecturer(getLecturer().getId()))
                 .thenReturn(List.of(existingLesson));
 
-        when(lessonRepository.findFreeClassRooms(
+        when(classRoomRepository.findFreeClassRooms(
                 newLesson.getDate(),
                 newLesson.getDuration().getStart(),
                 newLesson.getDuration().getEnd()))
                 .thenReturn(List.of(getSecondClassRoom()));
 
-        when(groupRepository.findStudentsByGroupId(newLesson.getGroup().getId()))
+        when(studentRepository.findStudentsByGroup(newLesson.getGroup()))
                 .thenReturn(new ArrayList<>());
 
         assertDoesNotThrow(() -> lessonValidation.validateLesson(newLesson));
@@ -120,13 +124,13 @@ class LessonValidationTest {
         when(lessonRepository.findAllLessonsRelatedToLecturer(getLecturer().getId()))
                 .thenReturn(List.of(existingLesson));
 
-        when(lessonRepository.findFreeClassRooms(
+        when(classRoomRepository.findFreeClassRooms(
                 newLesson.getDate(),
                 newLesson.getDuration().getStart(),
                 newLesson.getDuration().getEnd()))
                 .thenReturn(List.of(getSecondClassRoom()));
 
-        when(groupRepository.findStudentsByGroupId(newLesson.getGroup().getId()))
+        when(studentRepository.findStudentsByGroup(newLesson.getGroup()))
                 .thenReturn(new ArrayList<>());
 
         assertDoesNotThrow(() -> lessonValidation.validateLesson(newLesson));
@@ -147,13 +151,13 @@ class LessonValidationTest {
         when(lessonRepository.findAllLessonsRelatedToLecturer(getLecturer().getId()))
                 .thenReturn(List.of());
 
-        when(lessonRepository.findFreeClassRooms(
+        when(classRoomRepository.findFreeClassRooms(
                 newLesson.getDate(),
                 newLesson.getDuration().getStart(),
                 newLesson.getDuration().getEnd()))
                 .thenReturn(List.of(getClassRoom()));
 
-        when(groupRepository.findStudentsByGroupId(newLesson.getGroup().getId()))
+        when(studentRepository.findStudentsByGroup(newLesson.getGroup()))
                 .thenReturn(new ArrayList<>());
 
         assertDoesNotThrow(() -> lessonValidation.validateLesson(newLesson));
@@ -180,9 +184,9 @@ class LessonValidationTest {
             students.add(new Student());
         }
 
-        when(groupRepository.findStudentsByGroupId(group.getId())).thenReturn(students);
+        when(studentRepository.findStudentsByGroup(group)).thenReturn(students);
 
-        when(lessonRepository.findFreeClassRooms(
+        when(classRoomRepository.findFreeClassRooms(
                 newLesson.getDate(),
                 newLesson.getDuration().getStart(),
                 newLesson.getDuration().getEnd()))
@@ -192,7 +196,7 @@ class LessonValidationTest {
                 .thenReturn(List.of());
 
         assertThatThrownBy(() -> lessonValidation.validateLesson(newLesson))
-                .isInstanceOf(ServiceException.class);
+                .isInstanceOf(EntityValidationException.class);
     }
 
     @Test
@@ -215,9 +219,9 @@ class LessonValidationTest {
             students.add(new Student());
         }
 
-        when(groupRepository.findStudentsByGroupId(group.getId())).thenReturn(students);
+        when(studentRepository.findStudentsByGroup(group)).thenReturn(students);
 
-        when(lessonRepository.findFreeClassRooms(
+        when(classRoomRepository.findFreeClassRooms(
                 newLesson.getDate(),
                 newLesson.getDuration().getStart(),
                 newLesson.getDuration().getEnd()))
@@ -246,7 +250,7 @@ class LessonValidationTest {
 
         List<ClassRoom> freeClassRooms = List.of(anotherClassRoom);
 
-        when(lessonRepository.findFreeClassRooms(
+        when(classRoomRepository.findFreeClassRooms(
                 newLesson.getDate(),
                 newLesson.getDuration().getStart(),
                 newLesson.getDuration().getEnd()))
@@ -256,7 +260,7 @@ class LessonValidationTest {
                 .thenReturn(List.of());
 
         assertThatThrownBy(() -> lessonValidation.validateLesson(newLesson))
-                .isInstanceOf(ServiceException.class);
+                .isInstanceOf(EntityValidationException.class);
     }
 
     @Test
@@ -275,13 +279,13 @@ class LessonValidationTest {
 
         List<ClassRoom> freeClassRooms = List.of(classRoom, getSecondClassRoom());
 
-        when(lessonRepository.findFreeClassRooms(
+        when(classRoomRepository.findFreeClassRooms(
                 newLesson.getDate(),
                 newLesson.getDuration().getStart(),
                 newLesson.getDuration().getEnd()))
                 .thenReturn(freeClassRooms);
 
-        when(groupRepository.findStudentsByGroupId(group.getId()))
+        when(studentRepository.findStudentsByGroup(group))
                 .thenReturn(new ArrayList<>());
 
         when(lessonRepository.findAllLessonsRelatedToLecturer(getLecturer().getId()))

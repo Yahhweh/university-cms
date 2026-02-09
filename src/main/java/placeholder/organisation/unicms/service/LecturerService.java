@@ -3,7 +3,8 @@ package placeholder.organisation.unicms.service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import placeholder.organisation.unicms.repository.RepositoryException;
+import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
+import placeholder.organisation.unicms.excpetion.ServiceException;
 import placeholder.organisation.unicms.repository.LecturerRepository;
 import placeholder.organisation.unicms.repository.StudySubjectRepository;
 import placeholder.organisation.unicms.entity.Lecturer;
@@ -53,39 +54,34 @@ public class LecturerService {
     }
 
     public void assignSubjectToLecturer(long subjectId, long lecturerId) {
-        try {
-            Optional<StudySubject> subject = studySubjectRepository.findById(subjectId);
-            Optional<Lecturer> lecturer = lecturerRepository.findById(lecturerId);
-            if (subject.isPresent() && lecturer.isPresent()) {
-                if (lecturer.get().getStudySubjects().add(subject.get())) {
+            StudySubject subject = studySubjectRepository.findById(subjectId).orElseThrow(
+                    () -> new  EntityNotFoundException(StudySubject.class, String.valueOf(subjectId)));
+            Lecturer lecturer = lecturerRepository.findById(lecturerId).orElseThrow(
+                    () -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId))
+            );
+                if (lecturer.getStudySubjects().add(subject)) {
                     log.info("Lecturer assigned to keep this subject. lecturerId: {}, subjectId: {}", lecturerId, subjectId);
                 }
             }
-        } catch (RepositoryException e) {
-            throw new ServiceException("Failed to add subject to lecturer, lecturer id: " + lecturerId
-                    + " subject id: " + subjectId, e);
-        }
-    }
 
     public void removeSubjectToLecturer(long subjectId, long lecturerId) {
-        try {
-            Optional<StudySubject> subject = studySubjectRepository.findById(subjectId);
-            Optional<Lecturer> lecturer = lecturerRepository.findById(lecturerId);
-            if (subject.isPresent() && lecturer.isPresent()) {
-                if (lecturer.get().getStudySubjects().remove(subject.get())) {
-                    log.info("Lecturer is not to keeping this subject. lecturerId: {}, subjectId: {}", lecturerId, subjectId);
-                }
-            }
-        } catch (RepositoryException e) {
-            throw new ServiceException("Failed to remove subject from lecturer, lecturer id: " + lecturerId
-                    + " subject id: " + subjectId, e);
+        StudySubject subject = studySubjectRepository.findById(subjectId)
+                .orElseThrow(() -> new EntityNotFoundException(StudySubject.class, String.valueOf(subjectId)));
+
+        Lecturer lecturer = lecturerRepository.findById(lecturerId)
+                .orElseThrow(() -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId)));
+
+        boolean isRemoved = lecturer.getStudySubjects().remove(subject);
+        if (!isRemoved) {
+            throw new ServiceException("Subject " + subjectId + " is not related to lecturer " + lecturerId);
         }
+        log.info("Subject {} removed from lecturer {}", subjectId, lecturerId);
     }
 
     @Transactional
     public void removeLecturer(long lecturerId) {
         if (!lecturerRepository.existsById(lecturerId)) {
-            throw new ServiceException("Lecturer not found with id: " + lecturerId);
+            throw new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId));
         }
         lecturerRepository.deleteById(lecturerId);
     }
@@ -93,13 +89,9 @@ public class LecturerService {
     @Transactional
     public void updateLecturer(long lecturerId, LecturerDTO lecturerDTO) {
         Lecturer lecturer = lecturerRepository.findById(lecturerId)
-                .orElseThrow(() -> new ServiceException("Lecturer not found with id: " + lecturerId));
-        try {
-            lecturerMapper.updateEntityFromDto(lecturerDTO, lecturer);
-            lecturerRepository.save(lecturer);
-        } catch (Exception e) {
-            log.error("Failed to map DTO to Entity for lecturer id: {}", lecturerId, e);
-            throw new ServiceException("Error updating group ", e);
-        }
+                .orElseThrow(() -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId)));
+        lecturerMapper.updateEntityFromDto(lecturerDTO, lecturer);
+        lecturerRepository.save(lecturer);
+        log.debug("Lecturer updated successfully. ID: {}", lecturerId);
     }
 }

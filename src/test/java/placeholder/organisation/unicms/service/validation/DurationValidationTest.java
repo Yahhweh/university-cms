@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import placeholder.organisation.unicms.entity.Duration;
-import placeholder.organisation.unicms.service.ServiceException;
+import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
+import placeholder.organisation.unicms.excpetion.EntityValidationException;
+import placeholder.organisation.unicms.excpetion.ServiceException;
 import placeholder.organisation.unicms.service.dto.DurationDTO;
 
 import java.time.LocalTime;
@@ -29,7 +29,7 @@ class DurationValidationTest {
     void validateDuration_ThrowsException_whenDurationIsMoreThan90(){
         Duration duration = getDuration();
         duration.setEnd(LocalTime.of(14, 00));
-        assertThrows(ServiceException.class, () -> durationValidation.validateDuration(duration));
+        assertThrows(EntityValidationException.class, () -> durationValidation.validateDuration(duration));
     }
 
     @Test
@@ -37,7 +37,7 @@ class DurationValidationTest {
         Duration duration = getDuration();
         duration.setStart(LocalTime.of(15, 20));
 
-        assertThrows(ServiceException.class, () -> durationValidation.validateDuration(duration));
+        assertThrows(EntityValidationException.class, () -> durationValidation.validateDuration(duration));
     }
 
     Duration getDuration(){

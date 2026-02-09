@@ -9,6 +9,8 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.ClassRoom;
 import placeholder.organisation.unicms.entity.ClassRoomType;
+import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
+import placeholder.organisation.unicms.excpetion.EntityValidationException;
 import placeholder.organisation.unicms.repository.ClassRoomRepository;
 import placeholder.organisation.unicms.repository.ClassRoomTypeRepository;
 import placeholder.organisation.unicms.service.dto.ClassRoomDTO;
@@ -21,8 +23,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ClassRoomTypeServiceTest {
@@ -47,7 +48,36 @@ class ClassRoomTypeServiceTest {
         verify(classRoomTypeRepository).save(initialClassRoomType);
 
         assertThat(initialClassRoomType.getName()).isEqualTo(getClassRoomTypeDTO().getName());
+    }
 
+    @Test
+    void createClassRoomType_shouldSave_whenCorrectClassRoomTypeGiven() {
+        ClassRoomType classRoomType = getClassRoomType();
+
+        assertDoesNotThrow(() -> classRoomTypeService.createClassroomType(classRoomType));
+
+        verify(classRoomTypeRepository).save(classRoomType);
+    }
+
+    @Test
+    void removeClassRoomType_shouldRemoveClassRoomType_WhenClassRoomTypeExists() {
+        ClassRoomType classRoomType = getClassRoomType();
+
+        when(classRoomTypeRepository.existsById(classRoomType.getId())).thenReturn(true);
+
+        classRoomTypeService.removeClassRoomType(classRoomType.getId());
+
+        verify(classRoomTypeRepository).deleteById(classRoomType.getId());
+    }
+
+    @Test
+    void removeClassRoomType_shouldThrowEntityNotFound_WhenClassRoomTypeDoesNotExist() {
+        long id = 22L;
+
+        when(classRoomTypeRepository.existsById(id)).thenReturn(false);
+
+        assertThrows(EntityNotFoundException.class, () -> classRoomTypeService.removeClassRoomType(id));
+        verify(classRoomTypeRepository).existsById(id);
     }
 
     ClassRoomType getClassRoomType() {

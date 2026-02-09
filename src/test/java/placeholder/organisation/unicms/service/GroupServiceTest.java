@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.Group;
+import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.service.dto.GroupDTO;
 import placeholder.organisation.unicms.service.mapper.GroupMapper;
@@ -45,6 +46,35 @@ class GroupServiceTest {
         assertThat(initial.getName()).isEqualTo("G-1");
     }
 
+    @Test
+    void createGroup_shouldSave_whenCorrectGroupGiven() {
+        Group group = getGroup();
+
+        assertDoesNotThrow(() -> groupService.createGroup(group));
+
+        verify(groupRepository).save(group);
+    }
+
+    @Test
+    void removeGroup_shouldRemoveGroup_WhenGroupExists() {
+        Group group = getGroup();
+
+        when(groupRepository.existsById(group.getId())).thenReturn(true);
+
+        groupService.removeGroup(group.getId());
+
+        verify(groupRepository).deleteById(group.getId());
+    }
+
+    @Test
+    void removeGroup_shouldThrowEntityNotFound_WhenGroupDoesNotExist() {
+        long id = 22L;
+
+        when(groupRepository.existsById(id)).thenReturn(false);
+
+        assertThrows(EntityNotFoundException.class, () -> groupService.removeGroup(id));
+        verify(groupRepository).existsById(id);
+    }
     Group getGroup() {
         return new Group(1L, "A-122");
     }

@@ -68,14 +68,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
             "WHERE l.lecturer.id = :lectuerer_id")
     List<Lesson> findAllLessonsRelatedToLecturer(@Param("lecturer_id") Long lecturerId);
 
-    @Query("SELECT cr FROM ClassRoom cr WHERE cr.id NOT IN " +
-            "(SELECT l.classRoom.id FROM Lesson l " +
-            "WHERE l.date = :date " +
-            "AND l.duration.start < :endTime " +
-            "AND l.duration.end > :startTime)")
-    List<ClassRoom> findFreeClassRooms(@Param("date") LocalDate date,
-                                       @Param("startTime") LocalTime startTime,
-                                       @Param("endTime") LocalTime endTime);
+
     default List<Lesson> findInRange(LocalDate fromDate, LocalDate toDate, Long personId, PersonType role) {
         if (role == PersonType.Student) {
             return findInRangeForStudent(fromDate, toDate, personId);

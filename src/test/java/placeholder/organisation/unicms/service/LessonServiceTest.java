@@ -8,10 +8,13 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.*;
+import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
+import placeholder.organisation.unicms.excpetion.EntityValidationException;
 import placeholder.organisation.unicms.repository.*;
 import placeholder.organisation.unicms.service.dto.LessonDTO;
 import placeholder.organisation.unicms.service.dto.StudySubjectDTO;
 import placeholder.organisation.unicms.service.mapper.LessonMapper;
+import placeholder.organisation.unicms.service.validation.LessonValidation;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -25,8 +28,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
 import static org.assertj.core.api.AssertionsForClassTypes.in;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class LessonServiceTest {
@@ -34,6 +38,8 @@ class LessonServiceTest {
     LessonRepository lessonRepositoryMock;
     @Spy
     LessonMapper lessonMapper = Mappers.getMapper(LessonMapper.class);
+    @Mock
+    LessonValidation lessonValidation;
     @InjectMocks
     LessonService lessonService;
 
@@ -88,6 +94,47 @@ class LessonServiceTest {
         assertThat(initial.getStudySubject().getName()).isEqualTo(lessonDTO.getStudySubject().getName());
     }
 
+    @Test
+    void createLesson_shouldThrowEntityValidationException_whenWrongLessonGiven() {
+        Lesson lesson = getLesson();
+        lesson.getClassRoom().getClassRoomType().setCapacity(0L);
+
+        doThrow(EntityValidationException.class).when(lessonValidation).validateLesson(lesson);
+
+        assertThrows(EntityValidationException.class, () -> lessonService.createLesson(lesson));
+    }
+
+    @Test
+    void createLesson_shouldSave_whenCorrectLessonGiven() {
+        Lesson lesson = getLesson();
+
+        assertDoesNotThrow(() -> lessonService.createLesson(lesson));
+
+        verify(lessonValidation).validateLesson(lesson);
+        verify(lessonRepositoryMock).save(lesson);
+    }
+
+    @Test
+    void removeLesson_shouldRemoveLesson_WhenLessonExists() {
+        Lesson lesson = getLesson();
+
+        when(lessonRepositoryMock.existsById(lesson.getId())).thenReturn(true);
+
+        lessonService.removeLesson(lesson.getId());
+
+        verify(lessonRepositoryMock).deleteById(lesson.getId());
+    }
+
+    @Test
+    void removeLesson_shouldThrowEntityNotFound_WhenLessonDoesNotExist() {
+        long id = 22L;
+
+        when(lessonRepositoryMock.existsById(id)).thenReturn(false);
+
+        assertThrows(EntityNotFoundException.class, () -> lessonService.removeLesson(id));
+        verify(lessonRepositoryMock).existsById(id);
+    }
+
     Lesson getLesson() {
         return new Lesson(1L, getDuration(), new StudySubject(1L, "Math"), getGroup(), getLecturer(), getClassRoom(), LocalDate.now());
     }
@@ -104,6 +151,7 @@ class LessonServiceTest {
         lecturer.setSalary(40000);
         return lecturer;
     }
+
 
     Group getGroup() {
         return new Group(1L, "A-122");

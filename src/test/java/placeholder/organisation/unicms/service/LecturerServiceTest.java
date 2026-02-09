@@ -8,7 +8,8 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.mockito.junit.jupiter.MockitoExtension;
-import placeholder.organisation.unicms.repository.RepositoryException;
+import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
+import placeholder.organisation.unicms.excpetion.ServiceException;
 import placeholder.organisation.unicms.repository.LecturerRepository;
 import placeholder.organisation.unicms.repository.StudySubjectRepository;
 import placeholder.organisation.unicms.entity.Lecturer;
@@ -16,13 +17,13 @@ import placeholder.organisation.unicms.entity.StudySubject;
 import placeholder.organisation.unicms.service.dto.LecturerDTO;
 import placeholder.organisation.unicms.service.mapper.LecturerMapper;
 
+import javax.security.auth.Subject;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,9 +65,9 @@ class LecturerServiceTest {
         long subjectId = 1L;
         long lecturerId = 2L;
 
-        when(studySubjectRepository.findById(subjectId)).thenThrow(new RepositoryException("Database error"));
+        when(studySubjectRepository.findById(subjectId)).thenThrow(new EntityNotFoundException(Subject.class, "1"));
 
-        assertThrows(ServiceException.class, () ->
+        assertThrows(EntityNotFoundException.class, () ->
                 lecturerService.assignSubjectToLecturer(subjectId, lecturerId)
         );
     }
@@ -97,7 +98,7 @@ class LecturerServiceTest {
         long subjectId = 1L;
         long lecturerId = 2L;
 
-        when(studySubjectRepository.findById(subjectId)).thenThrow(new RepositoryException(""));
+        when(studySubjectRepository.findById(subjectId)).thenThrow(new ServiceException(""));
 
         assertThrows(ServiceException.class, () ->
                 lecturerService.removeSubjectToLecturer(subjectId, lecturerId)
@@ -119,6 +120,36 @@ class LecturerServiceTest {
 
         assertThat(initial.getName()).isEqualTo("Jane");
         assertThat(initial.getSalary()).isEqualTo(55000);
+    }
+
+    @Test
+    void createLecturer_shouldSave_whenCorrectLecturerGiven() {
+        Lecturer lecturer = getLecturer();
+
+        assertDoesNotThrow(() -> lecturerService.createLecturer(lecturer));
+
+        verify(lecturerRepository).save(lecturer);
+    }
+
+    @Test
+    void removeLecturer_shouldRemoveLecturer_WhenLecturerExists() {
+        Lecturer lecturer = getLecturer();
+
+        when(lecturerRepository.existsById(lecturer.getId())).thenReturn(true);
+
+        lecturerService.removeLecturer(lecturer.getId());
+
+        verify(lecturerRepository).deleteById(lecturer.getId());
+    }
+
+    @Test
+    void removeLecturer_shouldThrowEntityNotFound_WhenLecturerDoesNotExist() {
+        long id = 22L;
+
+        when(lecturerRepository.existsById(id)).thenReturn(false);
+
+        assertThrows(EntityNotFoundException.class, () -> lecturerService.removeLecturer(id));
+        verify(lecturerRepository).existsById(id);
     }
 
     Lecturer getLecturer() {

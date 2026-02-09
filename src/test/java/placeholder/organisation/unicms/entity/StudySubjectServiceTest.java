@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import placeholder.organisation.unicms.entity.StudySubject;
 import placeholder.organisation.unicms.repository.StudySubjectRepository;
 import placeholder.organisation.unicms.service.StudySubjectService;
 import placeholder.organisation.unicms.service.dto.StudySubjectDTO;

@@ -1,4 +1,4 @@
-package placeholder.organisation.unicms.service;
+package placeholder.organisation.unicms.excpetion;
 
 public class ServiceException extends RuntimeException {
 

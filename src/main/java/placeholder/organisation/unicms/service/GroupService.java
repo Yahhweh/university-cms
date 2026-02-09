@@ -3,6 +3,7 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.service.dto.GroupDTO;
@@ -10,7 +11,6 @@ import placeholder.organisation.unicms.service.mapper.GroupMapper;
 
 import java.util.List;
 import java.util.Optional;
-
 @Service
 @Log4j2
 @Transactional(readOnly = true)
@@ -33,33 +33,30 @@ public class GroupService {
     @Transactional
     public void createGroup(Group group) {
         groupRepository.save(group);
-        log.debug("Group saved successfully. Name: {}", group.getName());
+        log.debug("Group saved successfully: {}", group.getName());
     }
 
     public Optional<Group> findGroup(long id) {
-        Optional<Group> group = groupRepository.findById(id);
-        group.ifPresent(value -> log.debug("Found group {}", value));
-        return group;
+        return groupRepository.findById(id);
     }
 
     @Transactional
     public void removeGroup(long groupId) {
         if (!groupRepository.existsById(groupId)) {
-            throw new ServiceException("Group not found with id: " + groupId);
+            throw new EntityNotFoundException(Group.class, String.valueOf(groupId));
         }
         groupRepository.deleteById(groupId);
     }
 
     @Transactional
     public void updateGroup(long groupId, GroupDTO groupDTO) {
+        // Логика "Найди или выброси" (Throw early)
         Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new ServiceException("Group not found with id: " + groupId));
-        try {
-            groupMapper.updateEntityFromDto(groupDTO, group);
-            groupRepository.save(group);
-        } catch (Exception e) {
-            log.error("Failed to map DTO to Entity for group id: {}", groupId, e);
-            throw new ServiceException("Error updating group", e);
-        }
+                .orElseThrow(() -> new EntityNotFoundException(Group.class, String.valueOf(groupId)));
+
+        groupMapper.updateEntityFromDto(groupDTO, group);
+        groupRepository.save(group);
+
+        log.debug("Group updated successfully. ID: {}", groupId);
     }
 }

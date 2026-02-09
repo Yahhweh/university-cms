@@ -24,8 +24,7 @@ public class ClassRoom {
     @Pattern(regexp = "^[a-zA-Z]-[0-9]+$", message = "Room must be between 3 and 35 characters")
     String room;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "class_room_type_id", referencedColumnName = "id",
-            foreignKey = @ForeignKey(name = "fk_classroom_type"))
+    @JoinColumn(name = "class_room_type_id", referencedColumnName = "id")
     @NotNull
     ClassRoomType classRoomType;
 

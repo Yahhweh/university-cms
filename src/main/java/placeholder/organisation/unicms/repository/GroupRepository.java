@@ -13,6 +13,4 @@ import java.util.function.Consumer;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
-    @Query("SELECT s FROM Student s WHERE s.group.id = :groupId")
-    List<Student> findStudentsByGroupId(@Param("groupId") Long groupId);
 }
