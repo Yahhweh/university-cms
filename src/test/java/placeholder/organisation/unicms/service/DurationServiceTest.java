@@ -9,12 +9,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.Duration;
-import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
-import placeholder.organisation.unicms.excpetion.EntityValidationException;
 import placeholder.organisation.unicms.repository.DurationRepository;
 import placeholder.organisation.unicms.service.dto.DurationDTO;
 import placeholder.organisation.unicms.service.mapper.DurationMapper;
-import placeholder.organisation.unicms.service.validation.DurationValidation;
+import placeholder.organisation.unicms.service.validation.DurationValidator;
 
 import java.time.LocalTime;
 import java.util.Optional;
@@ -29,7 +27,7 @@ class DurationServiceTest {
     @Spy
     DurationMapper durationMapper = Mappers.getMapper(DurationMapper.class);
     @Mock
-    DurationValidation durationValidation;
+    DurationValidator durationValidator;
     @InjectMocks
     DurationService durationService;
 
@@ -49,15 +47,32 @@ class DurationServiceTest {
         assertThat(initial.getStart()).isEqualTo(changes.getStart());
         assertThat(initial.getEnd()).isEqualTo(changes.getEnd());
     }
+
     @Test
     void createDuration_shouldThrowEntityValidationException_whenWrongDurationGiven() {
         Duration duration = getDuration();
         duration.setStart(LocalTime.of(7, 30));
         duration.setEnd(LocalTime.of(5, 20));
 
-        doThrow(EntityValidationException.class).when(durationValidation).validateDuration(duration);
+        doThrow(EntityValidationException.class).when(durationValidator).validateDuration(duration);
 
         assertThrows(EntityValidationException.class, () -> durationService.createDuration(duration));
+    }
+
+    @Test
+    void updateDuration_shouldThrowEntityValidationException_whenWrongDTOGiven() {
+        Duration duration = getDuration();
+        DurationDTO durationDTO = getDurationDto();
+
+        durationDTO.setStart(LocalTime.of(9, 0, 0));
+        durationDTO.setEnd(LocalTime.of(10, 0, 0));
+
+        when(durationRepository.findById(duration.getId())).thenReturn(Optional.of(duration));
+        doThrow(EntityValidationException.class).when(durationValidator).validateDuration(any(Duration.class));
+
+        assertThrows(EntityValidationException.class, () ->
+                durationService.updateDuration(duration.getId(), durationDTO)
+        );
     }
 
     @Test
@@ -66,7 +81,7 @@ class DurationServiceTest {
 
         assertDoesNotThrow(() -> durationService.createDuration(duration));
 
-        verify(durationValidation).validateDuration(duration);
+        verify(durationValidator).validateDuration(duration);
         verify(durationRepository).save(duration);
     }
 

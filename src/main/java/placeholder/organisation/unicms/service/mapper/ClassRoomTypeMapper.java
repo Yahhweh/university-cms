@@ -8,6 +8,7 @@ import placeholder.organisation.unicms.service.dto.ClassRoomTypeDTO;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, componentModel = "spring")
 public interface ClassRoomTypeMapper {
     ClassRoomTypeDTO toDto(ClassRoomType classRoom);
+
     @Mapping(target = "id", ignore = true)
     void updateEntityFromDto(ClassRoomTypeDTO dto, @MappingTarget ClassRoomType entity);
 }

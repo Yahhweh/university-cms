@@ -8,8 +8,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.mockito.junit.jupiter.MockitoExtension;
-import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
-import placeholder.organisation.unicms.excpetion.ServiceException;
 import placeholder.organisation.unicms.repository.LecturerRepository;
 import placeholder.organisation.unicms.repository.StudySubjectRepository;
 import placeholder.organisation.unicms.entity.Lecturer;

@@ -4,11 +4,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.*;
-import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
 import placeholder.organisation.unicms.repository.*;
 import placeholder.organisation.unicms.service.dto.LessonDTO;
 import placeholder.organisation.unicms.service.mapper.LessonMapper;
-import placeholder.organisation.unicms.service.validation.LessonValidation;
+import placeholder.organisation.unicms.service.validation.LessonValidator;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -20,12 +19,18 @@ public class LessonService {
 
     private final LessonRepository lessonRepository;
     private final LessonMapper lessonMapper;
-    private final LessonValidation lessonValidation;
+    private final LessonValidator lessonValidator;
+    private final StudentRepository studentRepository;
+    private final LecturerRepository lecturerRepository;
 
-    public LessonService(LessonRepository lessonRepository, LessonMapper lessonMapper, LessonValidation lessonValidation) {
+    public LessonService(LessonRepository lessonRepository, LessonMapper lessonMapper,
+                         LessonValidator lessonValidator, StudentRepository studentRepository,
+                         LecturerRepository lecturerRepository) {
         this.lessonRepository = lessonRepository;
         this.lessonMapper = lessonMapper;
-        this.lessonValidation = lessonValidation;
+        this.lessonValidator = lessonValidator;
+        this.lecturerRepository = lecturerRepository;
+        this.studentRepository = studentRepository;
     }
 
     public List<Lesson> findAllLessons() {
@@ -42,17 +47,27 @@ public class LessonService {
 
     @Transactional
     public void createLesson(Lesson lesson) {
-        lessonValidation.validateLesson(lesson);
+        lessonValidator.validateLesson(lesson);
         lessonRepository.save(lesson);
         log.info("Lesson saved successfully: {}", lesson.getStudySubject());
     }
 
-    public List<Lesson> findLessonsInRange(LocalDate startDate, LocalDate endDate, long personId, PersonType type) {
-        return lessonRepository.findInRange(startDate, endDate, personId, type);
+    public List<Lesson> findLessonsInRange(LocalDate startDate, LocalDate endDate, long personId) {
+        if(studentRepository.existsById(personId)) {
+            return lessonRepository.findInRangeForStudent(startDate, endDate, personId);
+        } else if(lecturerRepository.existsById(personId)) {
+            return lessonRepository.findInRangeForLecturer(startDate, endDate, personId);
+        }
+        throw new IllegalArgumentException("Person with id " + personId + " is neither student nor lecturer");
     }
 
-    public List<Lesson> findByDate(LocalDate date, long personId, PersonType type) {
-        return lessonRepository.findByDateAndRole(date, personId, type);
+    public List<Lesson> findByDate(LocalDate date, long personId) {
+        if(studentRepository.existsById(personId)) {
+            return lessonRepository.findByDateForStudent(date, personId);
+        } else if(lecturerRepository.existsById(personId)) {
+            return lessonRepository.findByDateForLecturer(date, personId);
+        }
+        throw new IllegalArgumentException("Person with id " + personId + " is neither student nor lecturer");
     }
 
     @Transactional
@@ -69,6 +84,8 @@ public class LessonService {
                 .orElseThrow(() -> new EntityNotFoundException(Lesson.class, String.valueOf(lessonId)));
 
         lessonMapper.updateEntityFromDto(lessonDTO, lesson);
+
+        lessonValidator.validateLesson(lesson);
         lessonRepository.save(lesson);
 
         log.debug("Lesson updated successfully. ID: {}", lessonId);

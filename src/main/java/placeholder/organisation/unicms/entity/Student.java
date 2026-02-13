@@ -13,10 +13,8 @@ import org.springframework.lang.Nullable;
 @Table(name = "student")
 @AllArgsConstructor
 @NoArgsConstructor
-@DiscriminatorValue("Student")
 @PrimaryKeyJoinColumn(name = "id")
 public class Student extends Person {
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = true,
             referencedColumnName = "id")

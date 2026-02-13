@@ -16,20 +16,21 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClassRoomType {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    Long id;
+
+    @Column(name = "name")
+    @Size(min = 2, max = 35, message = "{classroomtype.name.size}")
+    @Pattern(regexp = "^[a-zA-Z]+$", message = "{classroomtype.name.pattern}")
+    String name;
+
+    @Column(name = "capacity")
+    Long capacity;
 
     public ClassRoomType(String name, Long capacity) {
         this.name = name;
         this.capacity = capacity;
     }
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    Long id;
-    @Column(name = "name")
-    @Size(min = 2, max = 35)
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Name must contain only letters")
-    String name;
-    @Column(name = "capacity")
-    Long capacity;
 }

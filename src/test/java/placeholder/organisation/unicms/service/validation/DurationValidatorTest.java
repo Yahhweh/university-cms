@@ -5,9 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.Duration;
-import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
-import placeholder.organisation.unicms.excpetion.EntityValidationException;
-import placeholder.organisation.unicms.excpetion.ServiceException;
+import placeholder.organisation.unicms.service.EntityValidationException;
 import placeholder.organisation.unicms.service.dto.DurationDTO;
 
 import java.time.LocalTime;
@@ -15,21 +13,21 @@ import java.time.LocalTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class DurationValidationTest {
+class DurationValidatorTest {
     @InjectMocks
-    DurationValidation durationValidation;
+    DurationValidator durationValidator;
 
     @Test
     void validateDuration_doesNotThrowsException_whenDurationIsBetween45And90(){
         Duration duration = getDuration();
-        assertDoesNotThrow(() -> durationValidation.validateDuration(duration));
+        assertDoesNotThrow(() -> durationValidator.validateDuration(duration));
     }
 
     @Test
     void validateDuration_ThrowsException_whenDurationIsMoreThan90(){
         Duration duration = getDuration();
         duration.setEnd(LocalTime.of(14, 00));
-        assertThrows(EntityValidationException.class, () -> durationValidation.validateDuration(duration));
+        assertThrows(EntityValidationException.class, () -> durationValidator.validateDuration(duration));
     }
 
     @Test
@@ -37,7 +35,7 @@ class DurationValidationTest {
         Duration duration = getDuration();
         duration.setStart(LocalTime.of(15, 20));
 
-        assertThrows(EntityValidationException.class, () -> durationValidation.validateDuration(duration));
+        assertThrows(EntityValidationException.class, () -> durationValidator.validateDuration(duration));
     }
 
     Duration getDuration(){

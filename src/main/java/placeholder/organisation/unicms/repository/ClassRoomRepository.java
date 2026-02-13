@@ -16,13 +16,15 @@ import java.util.function.Consumer;
 public interface ClassRoomRepository extends JpaRepository<ClassRoom, Long> {
     Optional<ClassRoom> findByRoom(String name);
 
-    @Query("SELECT cr FROM ClassRoom cr WHERE cr.id NOT IN " +
-            "(SELECT l.classRoom.id FROM Lesson l " +
-            "WHERE l.date = :date " +
-            "AND l.duration.start < :endTime " +
-            "AND l.duration.end > :startTime)")
-    List<ClassRoom> findFreeClassRooms(@Param("date") LocalDate date,
-                                       @Param("startTime") LocalTime startTime,
-                                       @Param("endTime") LocalTime endTime);
-
+    @Query("SELECT cr FROM ClassRoom cr " +
+            "WHERE NOT EXISTS (" +
+            "    SELECT l FROM Lesson l " +
+            "    WHERE l.classRoom = cr " +
+            "    AND l.date = :date " +
+            "    AND l.duration.start < :end " +
+            "    AND l.duration.end > :start" +
+            ")")
+    List<ClassRoom> isClassRoomFree(@Param("date") LocalDate date,
+                                    @Param("start") LocalTime start,
+                                    @Param("end") LocalTime end);
 }

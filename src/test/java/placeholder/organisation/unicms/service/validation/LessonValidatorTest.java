@@ -6,11 +6,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.*;
-import placeholder.organisation.unicms.excpetion.EntityValidationException;
+import placeholder.organisation.unicms.service.EntityValidationException;
 import placeholder.organisation.unicms.repository.ClassRoomRepository;
 import placeholder.organisation.unicms.repository.StudentRepository;
 import placeholder.organisation.unicms.repository.LessonRepository;
 
+import javax.validation.constraints.AssertTrue;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -19,9 +20,10 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.when;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-class LessonValidationTest {
+class LessonValidatorTest {
     @Mock
     LessonRepository lessonRepository;
     @Mock
@@ -31,7 +33,7 @@ class LessonValidationTest {
 
 
     @InjectMocks
-    LessonValidation lessonValidation;
+    LessonValidator lessonValidator;
 
     @Test
     void isLecturerDoesntHasLecturesInTheSameTime_shouldThrowException_whenNewLessonOverlapsWithExistingLesson() {
@@ -55,27 +57,21 @@ class LessonValidationTest {
                 LocalDate.now()
         );
 
-        when(lessonRepository.findAllLessonsRelatedToLecturer(getLecturer().getId()))
+        when(lessonRepository.findConflictionLessonsForLecturer(getLecturer().getId(),
+                newLesson.getDate(),
+                newLesson.getDuration().getStart(),
+                newLesson.getDuration().getEnd()))
                 .thenReturn(List.of(existingLesson));
 
 
-        assertThatThrownBy(() -> lessonValidation.validateLesson(newLesson))
+        assertThatThrownBy(() -> lessonValidator.validateLesson(newLesson))
                 .isInstanceOf(EntityValidationException.class);
     }
+
     @Test
     void isLecturerDoesntHasLecturesInTheSameTime_shouldNotThrowException_whenNewLessonIsOnDifferentDate() {
-        Lesson existingLesson = new Lesson(
-                1L,
-                new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00)),
-                new StudySubject(1L, "Math"),
-                getGroup(),
-                getLecturer(),
-                getClassRoom(),
-                LocalDate.now()
-        );
-
         Lesson newLesson = new Lesson(
-                null,
+                2L,
                 new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00)),
                 new StudySubject(2L, "PE"),
                 getGroup(),
@@ -84,56 +80,19 @@ class LessonValidationTest {
                 LocalDate.now().plusDays(1)
         );
 
-        when(lessonRepository.findAllLessonsRelatedToLecturer(getLecturer().getId()))
-                .thenReturn(List.of(existingLesson));
+        when(lessonRepository.findConflictionLessonsForLecturer(getLecturer().getId(), newLesson.getDate(), newLesson.getDuration().getStart(), newLesson.getDuration().getEnd()))
+                .thenReturn(List.of());
 
-        when(classRoomRepository.findFreeClassRooms(
+        when(classRoomRepository.isClassRoomFree(
                 newLesson.getDate(),
                 newLesson.getDuration().getStart(),
                 newLesson.getDuration().getEnd()))
-                .thenReturn(List.of(getSecondClassRoom()));
+                .thenReturn(List.of());
 
         when(studentRepository.findStudentsByGroup(newLesson.getGroup()))
                 .thenReturn(new ArrayList<>());
 
-        assertDoesNotThrow(() -> lessonValidation.validateLesson(newLesson));
-    }
-
-    @Test
-    void isLecturerDoesntHasLecturesInTheSameTime_shouldNotThrowException_whenLessonsAreBackToBack() {
-        Lesson existingLesson = new Lesson(
-                1L,
-                new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00)),
-                new StudySubject(1L, "Math"),
-                getGroup(),
-                getLecturer(),
-                getClassRoom(),
-                LocalDate.now()
-        );
-
-        Lesson newLesson = new Lesson(
-                null,
-                new Duration(2L, LocalTime.of(10, 00), LocalTime.of(11, 30)),
-                new StudySubject(2L, "PE"),
-                getGroup(),
-                getLecturer(),
-                getSecondClassRoom(),
-                LocalDate.now()
-        );
-
-        when(lessonRepository.findAllLessonsRelatedToLecturer(getLecturer().getId()))
-                .thenReturn(List.of(existingLesson));
-
-        when(classRoomRepository.findFreeClassRooms(
-                newLesson.getDate(),
-                newLesson.getDuration().getStart(),
-                newLesson.getDuration().getEnd()))
-                .thenReturn(List.of(getSecondClassRoom()));
-
-        when(studentRepository.findStudentsByGroup(newLesson.getGroup()))
-                .thenReturn(new ArrayList<>());
-
-        assertDoesNotThrow(() -> lessonValidation.validateLesson(newLesson));
+        assertDoesNotThrow(() -> lessonValidator.validateLesson(newLesson));
     }
 
     @Test
@@ -148,24 +107,27 @@ class LessonValidationTest {
                 LocalDate.now()
         );
 
-        when(lessonRepository.findAllLessonsRelatedToLecturer(getLecturer().getId()))
-                .thenReturn(List.of());
-
-        when(classRoomRepository.findFreeClassRooms(
+        when(lessonRepository.findConflictionLessonsForLecturer(getLecturer().getId(),
                 newLesson.getDate(),
                 newLesson.getDuration().getStart(),
                 newLesson.getDuration().getEnd()))
-                .thenReturn(List.of(getClassRoom()));
+                .thenReturn(List.of());
+
+        when(classRoomRepository.isClassRoomFree(
+                newLesson.getDate(),
+                newLesson.getDuration().getStart(),
+                newLesson.getDuration().getEnd()))
+                .thenReturn(List.of());
 
         when(studentRepository.findStudentsByGroup(newLesson.getGroup()))
                 .thenReturn(new ArrayList<>());
 
-        assertDoesNotThrow(() -> lessonValidation.validateLesson(newLesson));
+        assertDoesNotThrow(() -> lessonValidator.validateLesson(newLesson));
     }
 
 
     @Test
-    void isGroupSizeSmallerThenClassRoomTypeCapacity_shouldThrowException_whenRoomCapacityIsLess(){
+    void isGroupSizeSmallerThenClassRoomTypeCapacity_shouldThrowException_whenRoomCapacityIsLess() {
         ClassRoom classRoom = getClassRoom();
         ClassRoomType classRoomType = classRoom.getClassRoomType();
         classRoomType.setCapacity(10L);
@@ -186,21 +148,24 @@ class LessonValidationTest {
 
         when(studentRepository.findStudentsByGroup(group)).thenReturn(students);
 
-        when(classRoomRepository.findFreeClassRooms(
+        when(classRoomRepository.isClassRoomFree(
                 newLesson.getDate(),
                 newLesson.getDuration().getStart(),
                 newLesson.getDuration().getEnd()))
-                .thenReturn(List.of(classRoom));
-
-        when(lessonRepository.findAllLessonsRelatedToLecturer(getLecturer().getId()))
                 .thenReturn(List.of());
 
-        assertThatThrownBy(() -> lessonValidation.validateLesson(newLesson))
+        when(lessonRepository.findConflictionLessonsForLecturer(getLecturer().getId(),
+                newLesson.getDate(),
+                newLesson.getDuration().getStart(),
+                newLesson.getDuration().getEnd()))
+                .thenReturn(List.of());
+
+        assertThatThrownBy(() -> lessonValidator.validateLesson(newLesson))
                 .isInstanceOf(EntityValidationException.class);
     }
 
     @Test
-    void isGroupSizeSmallerThenClassRoomTypeCapacity_shouldNOTThrowException_whenRoomCapacityIsMore(){
+    void isGroupSizeSmallerThenClassRoomTypeCapacity_shouldNOTThrowException_whenRoomCapacityIsMore() {
         ClassRoom classRoom = getClassRoom();
         ClassRoomType classRoomType = classRoom.getClassRoomType();
         classRoomType.setCapacity(10L);
@@ -221,20 +186,24 @@ class LessonValidationTest {
 
         when(studentRepository.findStudentsByGroup(group)).thenReturn(students);
 
-        when(classRoomRepository.findFreeClassRooms(
+        when(classRoomRepository.isClassRoomFree(
                 newLesson.getDate(),
                 newLesson.getDuration().getStart(),
                 newLesson.getDuration().getEnd()))
-                .thenReturn(List.of(classRoom));
-
-        when(lessonRepository.findAllLessonsRelatedToLecturer(getLecturer().getId()))
                 .thenReturn(List.of());
 
-        assertDoesNotThrow(() -> lessonValidation.validateLesson(newLesson));
+        when(lessonRepository.findConflictionLessonsForLecturer(
+                getLecturer().getId(),
+                newLesson.getDate(),
+                newLesson.getDuration().getStart(),
+                newLesson.getDuration().getEnd()))
+                .thenReturn(List.of());
+
+        assertDoesNotThrow(() -> lessonValidator.validateLesson(newLesson));
     }
 
     @Test
-    void isRoomIsFree_shouldThrowException_whenClassRoomIsBooked(){
+    void isRoomIsFree_shouldThrowException_whenClassRoomIsBooked() {
         ClassRoom classRoom = getClassRoom();
         ClassRoom anotherClassRoom = getSecondClassRoom();
         Group group = getGroup();
@@ -250,21 +219,25 @@ class LessonValidationTest {
 
         List<ClassRoom> freeClassRooms = List.of(anotherClassRoom);
 
-        when(classRoomRepository.findFreeClassRooms(
+        when(classRoomRepository.isClassRoomFree(
                 newLesson.getDate(),
                 newLesson.getDuration().getStart(),
                 newLesson.getDuration().getEnd()))
-                .thenReturn(freeClassRooms);
+                .thenReturn(List.of(new ClassRoom()));
 
-        when(lessonRepository.findAllLessonsRelatedToLecturer(getLecturer().getId()))
+        when(lessonRepository.findConflictionLessonsForLecturer(
+                getLecturer().getId(),
+                newLesson.getDate(),
+                newLesson.getDuration().getStart(),
+                newLesson.getDuration().getEnd()))
                 .thenReturn(List.of());
 
-        assertThatThrownBy(() -> lessonValidation.validateLesson(newLesson))
+        assertThatThrownBy(() -> lessonValidator.validateLesson(newLesson))
                 .isInstanceOf(EntityValidationException.class);
     }
 
     @Test
-    void isRoomIsFree_shouldNotThrowException_whenClassRoomIsFree(){
+    void isRoomIsFree_shouldNotThrowException_whenClassRoomIsFree() {
         ClassRoom classRoom = getClassRoom();
         Group group = getGroup();
 
@@ -277,21 +250,24 @@ class LessonValidationTest {
                 classRoom,
                 LocalDate.now());
 
-        List<ClassRoom> freeClassRooms = List.of(classRoom, getSecondClassRoom());
 
-        when(classRoomRepository.findFreeClassRooms(
+        when(classRoomRepository.isClassRoomFree(
                 newLesson.getDate(),
                 newLesson.getDuration().getStart(),
                 newLesson.getDuration().getEnd()))
-                .thenReturn(freeClassRooms);
+                .thenReturn(List.of());
 
         when(studentRepository.findStudentsByGroup(group))
                 .thenReturn(new ArrayList<>());
 
-        when(lessonRepository.findAllLessonsRelatedToLecturer(getLecturer().getId()))
+        when(lessonRepository.findConflictionLessonsForLecturer(
+                getLecturer().getId(),
+                newLesson.getDate(),
+                newLesson.getDuration().getStart(),
+                newLesson.getDuration().getEnd()))
                 .thenReturn(List.of());
 
-        assertDoesNotThrow(() -> lessonValidation.validateLesson(newLesson));
+        assertDoesNotThrow(() -> lessonValidator.validateLesson(newLesson));
     }
 
     Lecturer getLecturer() {

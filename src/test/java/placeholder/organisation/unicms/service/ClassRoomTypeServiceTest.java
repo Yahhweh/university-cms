@@ -7,15 +7,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import placeholder.organisation.unicms.entity.ClassRoom;
 import placeholder.organisation.unicms.entity.ClassRoomType;
-import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
-import placeholder.organisation.unicms.excpetion.EntityValidationException;
-import placeholder.organisation.unicms.repository.ClassRoomRepository;
 import placeholder.organisation.unicms.repository.ClassRoomTypeRepository;
-import placeholder.organisation.unicms.service.dto.ClassRoomDTO;
 import placeholder.organisation.unicms.service.dto.ClassRoomTypeDTO;
-import placeholder.organisation.unicms.service.mapper.ClassRoomMapper;
 import placeholder.organisation.unicms.service.mapper.ClassRoomTypeMapper;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;

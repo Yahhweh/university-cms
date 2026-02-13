@@ -6,9 +6,6 @@ DO $$
         IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'degree_type') THEN
             CREATE TYPE degree_type AS ENUM ('Bachelor', 'Master', 'Doctoral');
         END IF;
-        IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'person_type') THEN
-            CREATE TYPE person_type AS ENUM ('Student', 'Lecturer');
-        END IF;
     END $$;
 
 
@@ -53,7 +50,6 @@ CREATE TABLE IF NOT EXISTS person (
                                       address_id INTEGER NOT NULL,
                                       date_of_birth DATE NOT NULL,
                                       email VARCHAR(255) NOT NULL UNIQUE,
-                                      type person_type DEFAULT 'Student'::person_type,
                                       CONSTRAINT fk_person_address FOREIGN KEY (address_id) REFERENCES address(id)
 );
 

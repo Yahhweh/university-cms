@@ -9,6 +9,7 @@ import placeholder.organisation.unicms.service.dto.AddressDTO;
         componentModel = "spring")
 public interface AddressMapper {
     AddressDTO toDto(Address address);
+
     @Mapping(target = "id", ignore = true)
     void updateEntityFromDto(AddressDTO dto, @MappingTarget Address entity);
 }

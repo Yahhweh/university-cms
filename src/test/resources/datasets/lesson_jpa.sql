@@ -1,14 +1,14 @@
 INSERT INTO address (id, city, street, country, phone_number, house_number)
 VALUES (1, 'Vilnius', 'Sauletekio al.', 'Lithuania', '+37060000000', '11');
 
-INSERT INTO person (id, password, name, sure_name, gender, address_id, date_of_birth, email, type)
-VALUES (1,'bobo', 'John', 'Doe', 'Male', 1, '2005-01-01', 'doe@gmail.com', 'Student');
+INSERT INTO person (id, password, name, sure_name, gender, address_id, date_of_birth, email)
+VALUES (1,'bobo', 'John', 'Doe', 'Male', 1, '2005-01-01', 'doe@gmail.com');
 
-INSERT INTO person (id, password, name, sure_name, gender, address_id, date_of_birth, email, type)
-VALUES (2,'bobo', 'Darius', 'Zabuluonis', 'Male', 1, '1980-01-01', 'darius@gmail.com', 'Lecturer');
+INSERT INTO person (id, password, name, sure_name, gender, address_id, date_of_birth, email)
+VALUES (2,'bobo', 'Darius', 'Zabuluonis', 'Male', 1, '1980-01-01', 'darius@gmail.com');
 
-INSERT INTO person (id, password, name, sure_name, gender, address_id, date_of_birth, email, type)
-VALUES (3,'bobo', 'Bilbo', 'Begins', 'Male', 1, '2005-01-01', 'begins@gmail.com', 'Student');
+INSERT INTO person (id, password, name, sure_name, gender, address_id, date_of_birth, email)
+VALUES (3,'bobo', 'Bilbo', 'Begins', 'Male', 1, '2005-01-01', 'begins@gmail.com');
 
 INSERT INTO lecturer (id, salary) VALUES (2, 3000.00);
 

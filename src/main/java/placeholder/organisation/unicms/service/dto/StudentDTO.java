@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StudentDTO extends PersonDTO {
-
     @Valid
     private GroupDTO group;
 

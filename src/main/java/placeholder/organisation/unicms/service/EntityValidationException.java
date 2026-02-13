@@ -1,9 +1,9 @@
-package placeholder.organisation.unicms.excpetion;
+package placeholder.organisation.unicms.service;
 
 import lombok.Getter;
 
 @Getter
-public class EntityValidationException extends RuntimeException {
+public class EntityValidationException extends ServiceException {
     private final String entity;
     private final String identifier;
 

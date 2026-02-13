@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.Group;
-import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.service.dto.GroupDTO;
 import placeholder.organisation.unicms.service.mapper.GroupMapper;

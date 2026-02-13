@@ -1,6 +1,9 @@
 spring:
   application:
          name: uni-cms
+  messages:
+    basename: lang/messages
+    encoding: UTF-8
 
   flyway:
     enabled: true

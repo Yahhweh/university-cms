@@ -3,15 +3,12 @@ package placeholder.organisation.unicms.service.validation;
 import org.springframework.stereotype.Component;
 import placeholder.organisation.unicms.entity.ClassRoom;
 import placeholder.organisation.unicms.entity.ClassRoomType;
-import placeholder.organisation.unicms.excpetion.EntityValidationException;
-import placeholder.organisation.unicms.repository.ClassRoomRepository;
-import placeholder.organisation.unicms.repository.GroupRepository;
-import placeholder.organisation.unicms.repository.LessonRepository;
+import placeholder.organisation.unicms.service.EntityValidationException;
 
 import java.util.List;
 
 @Component
-public class ClassRoomValidation {
+public class ClassRoomValidator {
 
     private static final List<String> typesForE = List.of("Auditorium", "Conference Room");
     private static final List<String> typesForA = List.of("Hall", "Seminar Room", "Study Room");
@@ -24,12 +21,18 @@ public class ClassRoomValidation {
         String room = classRoom.getRoom();
         String realCorpus = String.valueOf(room.charAt(0));
 
-        if (classRoomType == null) return false;
-        if (realCorpus.equals("A") && typesForA.contains(classRoomType.getName())) return true;
-        else if (realCorpus.equals("B") && typesForB.contains(classRoomType.getName())) return true;
-        else if (realCorpus.equals("C") && typesForC.contains(classRoomType.getName())) return true;
-        else if (realCorpus.equals("D") && typesForD.contains(classRoomType.getName())) return true;
-        else return realCorpus.equals("E") && typesForE.contains(classRoomType.getName());
+        if (classRoomType == null) {
+            return false;
+        }
+        if (realCorpus.equals("A") && typesForA.contains(classRoomType.getName())) {
+            return true;
+        } else if (realCorpus.equals("B") && typesForB.contains(classRoomType.getName())) {
+            return true;
+        } else if (realCorpus.equals("C") && typesForC.contains(classRoomType.getName())) {
+            return true;
+        } else if (realCorpus.equals("D") && typesForD.contains(classRoomType.getName())) {
+            return true;
+        } else return realCorpus.equals("E") && typesForE.contains(classRoomType.getName());
     }
 
     public void validateClassRoom(ClassRoom classRoom) {

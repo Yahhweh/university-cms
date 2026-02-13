@@ -12,7 +12,6 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DurationDTO {
-
     @NotNull
     private LocalTime start;
 

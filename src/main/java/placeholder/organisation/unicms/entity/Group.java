@@ -15,13 +15,12 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Group {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Pattern(regexp = "^[A-Z]-[0-9]+$", message = "Wrong group format")
+    @Pattern(regexp = "^[A-Z]-[0-9]+$", message = "{group.name.pattern}")
     @Column(name = "name")
     String name;
 }

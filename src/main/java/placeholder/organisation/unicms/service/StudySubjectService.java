@@ -3,7 +3,6 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
 import placeholder.organisation.unicms.repository.StudySubjectRepository;
 import placeholder.organisation.unicms.entity.StudySubject;
 import placeholder.organisation.unicms.service.dto.StudySubjectDTO;
@@ -11,6 +10,7 @@ import placeholder.organisation.unicms.service.mapper.StudySubjectMapper;
 
 import java.util.List;
 import java.util.Optional;
+
 @Service
 @Log4j2
 @Transactional(readOnly = true)

@@ -8,7 +8,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.test.context.jdbc.Sql;
 import placeholder.organisation.unicms.entity.Lesson;
-import placeholder.organisation.unicms.entity.PersonType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -54,7 +53,7 @@ class LessonRepositoryTest {
         long groupId = 1L;
         int expectedLessonsSize = 1;
 
-        List<Lesson> lessons = lessonRepository.findByDateAndRole(lessonDate, studentId, PersonType.Student);
+        List<Lesson> lessons = lessonRepository.findByDateForStudent(lessonDate, studentId);
 
         assertThat(lessons.size()).isEqualTo(expectedLessonsSize);
         Lesson foundLesson = lessons.get(0);
@@ -68,7 +67,7 @@ class LessonRepositoryTest {
         LocalDate lessonDate = LocalDate.parse("2026-01-17");
         long studentId = 1000L;
 
-        List<Lesson> lessons = lessonRepository.findByDateAndRole(lessonDate, studentId, PersonType.Student);
+        List<Lesson> lessons = lessonRepository.findByDateForStudent(lessonDate, studentId);
 
         assertThat(lessons.isEmpty()).isTrue();
     }
@@ -78,7 +77,7 @@ class LessonRepositoryTest {
         LocalDate lessonDate = LocalDate.parse("2026-02-17");
         long studentId = 1L;
 
-        List<Lesson> lessons = lessonRepository.findByDateAndRole(lessonDate, studentId, PersonType.Student);
+        List<Lesson> lessons = lessonRepository.findByDateForStudent(lessonDate, studentId);
 
         assertThat(lessons.isEmpty()).isTrue();
     }
@@ -89,7 +88,7 @@ class LessonRepositoryTest {
         long lecturerId = 2L;
         int expectedLessonsSize = 2;
 
-        List<Lesson> lessons = lessonRepository.findByDateAndRole(lessonDate, lecturerId, PersonType.Lecturer);
+        List<Lesson> lessons = lessonRepository.findByDateForLecturer(lessonDate, lecturerId);
 
         assertThat(lessons.size()).isEqualTo(expectedLessonsSize);
         Lesson foundLesson = lessons.get(0);
@@ -104,7 +103,7 @@ class LessonRepositoryTest {
         LocalDate lessonDate = LocalDate.parse("2026-01-17");
         long lecturerId = 200L;
 
-        List<Lesson> lessons = lessonRepository.findByDateAndRole(lessonDate, lecturerId, PersonType.Lecturer);
+        List<Lesson> lessons = lessonRepository.findByDateForLecturer(lessonDate, lecturerId);
 
         assertThat(lessons.isEmpty()).isTrue();
     }
@@ -120,7 +119,7 @@ class LessonRepositoryTest {
         LocalDate fromDate = LocalDate.parse("2026-01-17");
         LocalDate toDate = LocalDate.parse("2026-01-18");
 
-        List<Lesson> lessons = lessonRepository.findInRange(fromDate, toDate, studentId, PersonType.Student);
+        List<Lesson> lessons = lessonRepository.findInRangeForStudent(fromDate, toDate, studentId);
 
 
         assertThat(lessons.size()).isEqualTo(expectedLessonsSize);
@@ -140,7 +139,7 @@ class LessonRepositoryTest {
         LocalDate fromDate = LocalDate.parse("2026-01-17");
         LocalDate toDate = LocalDate.parse("2026-01-18");
 
-        List<Lesson> lessons = lessonRepository.findInRange(fromDate, toDate, lecturerId, PersonType.Lecturer);
+        List<Lesson> lessons = lessonRepository.findInRangeForLecturer(fromDate, toDate, lecturerId);
 
         assertThat(lessons.size()).isEqualTo(expectedLessonsSize);
         assertThat(lessons.get(0).getStudySubject().getName()).isEqualTo(nameOfFirstLesson);

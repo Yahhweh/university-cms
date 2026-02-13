@@ -8,26 +8,19 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.*;
-import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
-import placeholder.organisation.unicms.excpetion.EntityValidationException;
 import placeholder.organisation.unicms.repository.*;
 import placeholder.organisation.unicms.service.dto.LessonDTO;
 import placeholder.organisation.unicms.service.dto.StudySubjectDTO;
 import placeholder.organisation.unicms.service.mapper.LessonMapper;
-import placeholder.organisation.unicms.service.validation.LessonValidation;
+import placeholder.organisation.unicms.service.validation.LessonValidator;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-
-import static org.assertj.core.api.AssertionsForClassTypes.in;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.*;
@@ -39,43 +32,123 @@ class LessonServiceTest {
     @Spy
     LessonMapper lessonMapper = Mappers.getMapper(LessonMapper.class);
     @Mock
-    LessonValidation lessonValidation;
+    LessonValidator lessonValidator;
+    @Mock
+    StudentRepository studentRepository;
+    @Mock
+    LecturerRepository lecturerRepository;
     @InjectMocks
     LessonService lessonService;
 
     @Test
-    void findLessonsInRange_shouldReturnLessons_whenDataExists() {
+    void findLessonsInRange_shouldReturnLessons_whenStudentExists() {
         LocalDate start = LocalDate.of(2025, 10, 1);
         LocalDate end = LocalDate.of(2025, 10, 31);
         long personId = 1L;
-        PersonType type = PersonType.Lecturer;
         Lesson lesson = getLesson();
 
-        when(lessonRepositoryMock.findInRange(start, end, personId, type))
+        when(studentRepository.existsById(personId)).thenReturn(true);
+        when(lessonRepositoryMock.findInRangeForStudent(start, end, personId))
                 .thenReturn(List.of(lesson));
 
-        List<Lesson> result = lessonService.findLessonsInRange(start, end, personId, type);
+        List<Lesson> result = lessonService.findLessonsInRange(start, end, personId);
 
         assertThat(result).isNotNull();
         assertThat(result.size()).isEqualTo(1);
         assertThat(result.get(0)).isEqualTo(lesson);
-        verify(lessonRepositoryMock).findInRange(start, end, personId, type);
+        verify(studentRepository).existsById(personId);
+        verify(lessonRepositoryMock).findInRangeForStudent(start, end, personId);
+        verify(lecturerRepository, never()).existsById(personId);
     }
 
     @Test
-    void findByDate_shouldReturnEmptyList_whenNoLessonsFound() {
+    void findLessonsInRange_shouldReturnLessons_whenLecturerExists() {
+        LocalDate start = LocalDate.of(2025, 10, 1);
+        LocalDate end = LocalDate.of(2025, 10, 31);
+        long personId = 2L;
+        Lesson lesson = getLesson();
+
+        when(studentRepository.existsById(personId)).thenReturn(false);
+        when(lecturerRepository.existsById(personId)).thenReturn(true);
+        when(lessonRepositoryMock.findInRangeForLecturer(start, end, personId))
+                .thenReturn(List.of(lesson));
+
+        List<Lesson> result = lessonService.findLessonsInRange(start, end, personId);
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result.get(0)).isEqualTo(lesson);
+        verify(studentRepository).existsById(personId);
+        verify(lecturerRepository).existsById(personId);
+        verify(lessonRepositoryMock).findInRangeForLecturer(start, end, personId);
+    }
+
+    @Test
+    void findLessonsInRange_shouldThrowException_whenPersonNotFound() {
+        LocalDate start = LocalDate.of(2025, 10, 1);
+        LocalDate end = LocalDate.of(2025, 10, 31);
+        long personId = 999L;
+
+        when(studentRepository.existsById(personId)).thenReturn(false);
+        when(lecturerRepository.existsById(personId)).thenReturn(false);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> lessonService.findLessonsInRange(start, end, personId));
+
+        verify(studentRepository).existsById(personId);
+        verify(lecturerRepository).existsById(personId);
+    }
+
+    @Test
+    void findByDate_shouldReturnLessons_whenStudentExists() {
         LocalDate date = LocalDate.of(2025, 12, 25);
         long personId = 1L;
-        PersonType type = PersonType.Student;
+        Lesson lesson = getLesson();
 
-        when(lessonRepositoryMock.findByDateAndRole(date, personId, type))
+        when(studentRepository.existsById(personId)).thenReturn(true);
+        when(lessonRepositoryMock.findByDateForStudent(date, personId))
+                .thenReturn(List.of(lesson));
+
+        List<Lesson> result = lessonService.findByDate(date, personId);
+
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(1);
+        verify(studentRepository).existsById(personId);
+        verify(lessonRepositoryMock).findByDateForStudent(date, personId);
+    }
+
+    @Test
+    void findByDate_shouldReturnEmptyList_whenLecturerHasNoLessons() {
+        LocalDate date = LocalDate.of(2025, 12, 25);
+        long personId = 2L;
+
+        when(studentRepository.existsById(personId)).thenReturn(false);
+        when(lecturerRepository.existsById(personId)).thenReturn(true);
+        when(lessonRepositoryMock.findByDateForLecturer(date, personId))
                 .thenReturn(List.of());
 
-        List<Lesson> result = lessonService.findByDate(date, personId, type);
+        List<Lesson> result = lessonService.findByDate(date, personId);
 
         assertThat(result).isNotNull();
         assertThat(result.isEmpty()).isTrue();
-        verify(lessonRepositoryMock).findByDateAndRole(date, personId, type);
+        verify(studentRepository).existsById(personId);
+        verify(lecturerRepository).existsById(personId);
+        verify(lessonRepositoryMock).findByDateForLecturer(date, personId);
+    }
+
+    @Test
+    void findByDate_shouldThrowException_whenPersonNotFound() {
+        LocalDate date = LocalDate.of(2025, 12, 25);
+        long personId = 999L;
+
+        when(studentRepository.existsById(personId)).thenReturn(false);
+        when(lecturerRepository.existsById(personId)).thenReturn(false);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> lessonService.findByDate(date, personId));
+
+        verify(studentRepository).existsById(personId);
+        verify(lecturerRepository).existsById(personId);
     }
 
     @Test
@@ -99,9 +172,28 @@ class LessonServiceTest {
         Lesson lesson = getLesson();
         lesson.getClassRoom().getClassRoomType().setCapacity(0L);
 
-        doThrow(EntityValidationException.class).when(lessonValidation).validateLesson(lesson);
+        doThrow(EntityValidationException.class).when(lessonValidator).validateLesson(lesson);
 
         assertThrows(EntityValidationException.class, () -> lessonService.createLesson(lesson));
+    }
+
+    @Test
+    void updateLesson_shouldThrowEntityValidationException_whenWrongLessonGiven() {
+        Lesson lesson = getLesson();
+        lesson.getClassRoom().getClassRoomType().setCapacity(0L);
+        LessonDTO lessonDto = getLessonDto();
+
+        when(lessonRepositoryMock.findById(lesson.getId())).thenReturn(Optional.of(lesson));
+
+        doThrow(EntityValidationException.class)
+                .when(lessonValidator)
+                .validateLesson(any(Lesson.class));
+
+        assertThrows(EntityValidationException.class, () ->
+                lessonService.updateLesson(lesson.getId(), lessonDto)
+        );
+
+        verify(lessonValidator, times(1)).validateLesson(any(Lesson.class));
     }
 
     @Test
@@ -110,7 +202,7 @@ class LessonServiceTest {
 
         assertDoesNotThrow(() -> lessonService.createLesson(lesson));
 
-        verify(lessonValidation).validateLesson(lesson);
+        verify(lessonValidator).validateLesson(lesson);
         verify(lessonRepositoryMock).save(lesson);
     }
 
@@ -146,12 +238,11 @@ class LessonServiceTest {
     Lecturer getLecturer() {
         Lecturer lecturer = new Lecturer();
         lecturer.setId(1L);
-        lecturer.setName("Petr");
-        lecturer.setSureName("Petrov");
+        lecturer.setName("John");
+        lecturer.setSureName("Pork");
         lecturer.setSalary(40000);
         return lecturer;
     }
-
 
     Group getGroup() {
         return new Group(1L, "A-122");
@@ -163,4 +254,5 @@ class LessonServiceTest {
 
     ClassRoom getClassRoom() {
         return new ClassRoom(1L, "A-101", new ClassRoomType(1L, "Hall", 100L));
-    }}
+    }
+}

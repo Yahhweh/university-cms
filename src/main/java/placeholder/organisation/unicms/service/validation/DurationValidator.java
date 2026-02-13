@@ -2,18 +2,18 @@ package placeholder.organisation.unicms.service.validation;
 
 import org.springframework.stereotype.Component;
 import placeholder.organisation.unicms.entity.Duration;
-import placeholder.organisation.unicms.excpetion.EntityValidationException;
+import placeholder.organisation.unicms.service.EntityValidationException;
 
 import java.time.LocalTime;
 
 @Component
-public class DurationValidation {
+public class DurationValidator {
 
-    private boolean isStartBeforeEnd(LocalTime start, LocalTime end){
+    private boolean isStartBeforeEnd(LocalTime start, LocalTime end) {
         return start.isBefore(end);
     }
 
-    private boolean isDurationInRange(LocalTime start, LocalTime end){
+    private boolean isDurationInRange(LocalTime start, LocalTime end) {
         java.time.Duration duration = java.time.Duration.between(start, end);
 
         return duration.toMinutes() >= 45 && duration.toMinutes() <= 90;

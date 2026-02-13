@@ -13,11 +13,6 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StudySubject {
-
-    public StudySubject(String name) {
-        this.name = name;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -26,4 +21,7 @@ public class StudySubject {
     @Column(name = "name", nullable = false)
     String name;
 
+    public StudySubject(String name) {
+        this.name = name;
+    }
 }

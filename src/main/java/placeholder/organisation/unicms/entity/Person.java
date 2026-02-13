@@ -15,11 +15,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(
-        name = "type",
-        discriminatorType = DiscriminatorType.STRING,
-        length = 20
-)
 public abstract class Person {
     @Id
     @Column(name = "id")
@@ -27,22 +22,23 @@ public abstract class Person {
     private Long id;
 
     @Column(name = "password")
-    @Size(min = 8, max = 50, message = "Wrong password size")
+    @Size(min = 8, max = 50, message = "{person.password.size}")
     private String password;
 
     @Column(name = "name")
-    @Pattern(regexp = "[A-Z][a-z]+$", message = "Name must starts with uppercase letter and must contain only letters")
+    @Pattern(regexp = "[A-Z][a-z]+$", message = "{person.name.pattern}")
     private String name;
 
     @Column(name = "sure_name")
-    @Pattern(regexp = "[A-Z][a-z]+$", message = "Sure name must starts with uppercase letter and must contain only letters")
+    @Pattern(regexp = "[A-Z][a-z]+$", message = "{person.surname.pattern}")
     private String sureName;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private GenderType gender;
+
     @Column(name = "email")
-    @Pattern(regexp = "^[a-z]+\\.[a-z]+\\d*@[a-z]+\\.university\\.com$", message = "Email must follow this type name.surename@student.university.com or name.surename@lecturer.university.com")
+    @Pattern(regexp = "^[a-z]+\\.[a-z]+\\d*@[a-z]+\\.university\\.com$", message = "{person.email.pattern}")
     private String email;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -53,4 +49,12 @@ public abstract class Person {
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
+
+    public boolean isLecturer(){
+        return this instanceof Lecturer;
+    }
+
+    public boolean isStudent(){
+        return this instanceof Student;
+    }
 }

@@ -4,16 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import placeholder.organisation.unicms.entity.ClassRoom;
-import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.Lesson;
-import placeholder.organisation.unicms.entity.PersonType;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
 
 @Repository
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
@@ -34,14 +29,6 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
             @Param("date") LocalDate date,
             @Param("personId") Long personId
     );
-
-    default List<Lesson> findByDateAndRole(LocalDate date, Long personId, PersonType role) {
-        if (role == PersonType.Student) {
-            return findByDateForStudent(date, personId);
-        } else {
-            return findByDateForLecturer(date, personId);
-        }
-    }
 
     @Query("SELECT l FROM Lesson l " +
             "JOIN Student s ON s.id = :personId " +
@@ -65,16 +52,13 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     );
 
     @Query("SELECT l FROM Lesson l " +
-            "WHERE l.lecturer.id = :lectuerer_id")
-    List<Lesson> findAllLessonsRelatedToLecturer(@Param("lecturer_id") Long lecturerId);
-
-
-    default List<Lesson> findInRange(LocalDate fromDate, LocalDate toDate, Long personId, PersonType role) {
-        if (role == PersonType.Student) {
-            return findInRangeForStudent(fromDate, toDate, personId);
-        } else {
-            return findInRangeForLecturer(fromDate, toDate, personId);
-        }
-    }
+            "WHERE l.lecturer.id = :lecturer_id " +
+            "AND l.date = :date " +
+            "AND l.duration.end > :start " +
+            "AND l.duration.start < :end")
+    List<Lesson> findConflictionLessonsForLecturer(@Param("lecturer_id") Long lecturerId,
+                                                 @Param("date") LocalDate date,
+                                                 @Param("start") LocalTime startTime,
+                                                 @Param("end") LocalTime endTime);
 
 }

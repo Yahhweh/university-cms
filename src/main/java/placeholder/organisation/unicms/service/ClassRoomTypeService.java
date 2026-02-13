@@ -3,7 +3,6 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
 import placeholder.organisation.unicms.repository.ClassRoomTypeRepository;
 import placeholder.organisation.unicms.entity.ClassRoomType;
 import placeholder.organisation.unicms.service.dto.ClassRoomTypeDTO;

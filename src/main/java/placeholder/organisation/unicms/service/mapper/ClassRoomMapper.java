@@ -11,6 +11,7 @@ import placeholder.organisation.unicms.service.dto.ClassRoomDTO;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ClassRoomMapper {
     ClassRoomDTO toDto(ClassRoom classRoom);
+
     @Mapping(target = "id", ignore = true)
     void updateEntityFromDto(ClassRoomDTO dto, @MappingTarget ClassRoom entity);
 }

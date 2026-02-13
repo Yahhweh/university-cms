@@ -3,8 +3,6 @@ package placeholder.organisation.unicms.service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import placeholder.organisation.unicms.excpetion.EntityNotFoundException;
-import placeholder.organisation.unicms.excpetion.ServiceException;
 import placeholder.organisation.unicms.repository.LecturerRepository;
 import placeholder.organisation.unicms.repository.StudySubjectRepository;
 import placeholder.organisation.unicms.entity.Lecturer;
@@ -54,15 +52,15 @@ public class LecturerService {
     }
 
     public void assignSubjectToLecturer(long subjectId, long lecturerId) {
-            StudySubject subject = studySubjectRepository.findById(subjectId).orElseThrow(
-                    () -> new  EntityNotFoundException(StudySubject.class, String.valueOf(subjectId)));
-            Lecturer lecturer = lecturerRepository.findById(lecturerId).orElseThrow(
-                    () -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId))
-            );
-                if (lecturer.getStudySubjects().add(subject)) {
-                    log.info("Lecturer assigned to keep this subject. lecturerId: {}, subjectId: {}", lecturerId, subjectId);
-                }
-            }
+        StudySubject subject = studySubjectRepository.findById(subjectId).orElseThrow(
+                () -> new EntityNotFoundException(StudySubject.class, String.valueOf(subjectId)));
+        Lecturer lecturer = lecturerRepository.findById(lecturerId).orElseThrow(
+                () -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId))
+        );
+        if (lecturer.getStudySubjects().add(subject)) {
+            log.info("Lecturer assigned to keep this subject. lecturerId: {}, subjectId: {}", lecturerId, subjectId);
+        }
+    }
 
     public void removeSubjectToLecturer(long subjectId, long lecturerId) {
         StudySubject subject = studySubjectRepository.findById(subjectId)

@@ -16,16 +16,16 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClassRoom {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @Size(min = 3, max = 35)
-    @Pattern(regexp = "^[a-zA-Z]-[0-9]+$", message = "Room must be between 3 and 35 characters")
+
+    @Size(min = 3, max = 35, message = "{classroom.room.size}")
+    @Pattern(regexp = "^[a-zA-Z]-[0-9]+$", message = "{classroom.room.pattern}")
     String room;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_room_type_id", referencedColumnName = "id")
-    @NotNull
+    @NotNull(message = "{classroom.type.notnull}")
     ClassRoomType classRoomType;
-
 }
