@@ -14,45 +14,42 @@ import java.util.List;
 @Component
 public class LessonValidator {
     private LessonRepository lessonRepository;
-    private GroupRepository groupRepository;
     private ClassRoomRepository classRoomRepository;
     private StudentRepository studentRepository;
 
     public void validateLesson(Lesson newLesson) {
-        if (!isLecturerDoesntHasLecturesInTheSameTime(newLesson)) {
-            throw new EntityValidationException("Contradiction in lectures time", "Lesson", String.valueOf(newLesson.getId()));
+        if (isLecturerConflict(newLesson)) {
+            throw new EntityValidationException("Contradiction in lectures time", Lesson.class, String.valueOf(newLesson.getId()));
         }
-        if (!isRoomIsFree(newLesson)) {
-            throw new EntityValidationException("classroom is not available for this time", "Lesson", String.valueOf(newLesson.getId()));
+        if (isRoomConflict(newLesson)) {
+            throw new EntityValidationException("classroom is not available for this time", Lesson.class, String.valueOf(newLesson.getId()));
         }
-        if (!isGroupSizeSmallerThenClassRoomTypeCapacity(newLesson)) {
-            throw new EntityValidationException("Group size is greater than room capacity", "Lesson", String.valueOf(newLesson.getId()));
+        if (!isGroupSizeSmallerThanClassRoomTypeCapacity(newLesson)) {
+            throw new EntityValidationException("Group size is greater than room capacity", Lesson.class, String.valueOf(newLesson.getId()));
         }
     }
 
-    public boolean isLecturerDoesntHasLecturesInTheSameTime(Lesson newLesson) {
-        List<Lesson> existingLessons = lessonRepository
+    public boolean isLecturerConflict(Lesson newLesson) {
+        return lessonRepository
                 .findConflictionLessonsForLecturer(newLesson.getLecturer().getId(),
                         newLesson.getDate(),
                         newLesson.getDuration().getStart(),
                         newLesson.getDuration().getEnd());
-
-        return existingLessons.isEmpty();
     }
 
-    private boolean isGroupSizeSmallerThenClassRoomTypeCapacity(Lesson newLesson) {
+    private boolean isGroupSizeSmallerThanClassRoomTypeCapacity(Lesson newLesson) {
         ClassRoomType classRoomType = newLesson.getClassRoom().getClassRoomType();
         List<Student> group = studentRepository.findStudentsByGroup(newLesson.getGroup());
 
         return group.size() <= classRoomType.getCapacity();
     }
 
-    private boolean isRoomIsFree(Lesson newLesson) {
-        List<ClassRoom> classRooms = classRoomRepository.isClassRoomFree(
+    private boolean isRoomConflict(Lesson newLesson) {
+        return lessonRepository.findConflicts(
                 newLesson.getDate(),
                 newLesson.getDuration().getStart(),
-                newLesson.getDuration().getEnd());
+                newLesson.getDuration().getEnd(),
+                newLesson.getClassRoom().getId());
 
-        return classRooms.isEmpty();
     }
 }

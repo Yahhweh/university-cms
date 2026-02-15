@@ -10,9 +10,11 @@ import org.springframework.test.context.jdbc.Sql;
 import placeholder.organisation.unicms.entity.Lesson;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 @DataJpaTest(
@@ -22,6 +24,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @Sql(scripts = "/datasets/lesson_jpa.sql",
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class LessonRepositoryTest {
+    private static final LocalDate TEST_DATE = LocalDate.of(2025, 10, 29);
 
     @Autowired
     LessonRepository lessonRepository;
@@ -145,5 +148,16 @@ class LessonRepositoryTest {
         assertThat(lessons.get(0).getStudySubject().getName()).isEqualTo(nameOfFirstLesson);
         assertThat(lessons.get(1).getStudySubject().getName()).isEqualTo(nameOfSecondLesson);
         assertThat(lessons.get(2).getStudySubject().getName()).isEqualTo(nameOfThirdLesson);
+    }
+
+    @Test
+    void isClassRoomFree_ReturnsConsistentResults() {
+        LocalTime startTime = LocalTime.of(13, 00);
+        LocalTime endTime = LocalTime.of(14, 30);
+        long id = 1L;
+
+        boolean isRoomFree = lessonRepository.findConflicts(TEST_DATE, startTime, endTime, id);
+
+        assertFalse(isRoomFree);
     }
 }

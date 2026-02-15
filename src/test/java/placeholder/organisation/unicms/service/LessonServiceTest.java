@@ -195,7 +195,6 @@ class LessonServiceTest {
 
         verify(lessonValidator, times(1)).validateLesson(any(Lesson.class));
     }
-
     @Test
     void createLesson_shouldSave_whenCorrectLessonGiven() {
         Lesson lesson = getLesson();

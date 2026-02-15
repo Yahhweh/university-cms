@@ -16,6 +16,14 @@ public class ClassRoomValidator {
     private static final List<String> typesForC = List.of("Library", "Study Area", "Working Room");
     private static final List<String> typesForD = List.of("Sport Room");
 
+
+    public void validateClassRoom(ClassRoom classRoom) {
+        if (!isClassRoomInCorrectCorpus(classRoom)) {
+            throw new EntityValidationException(
+                    "Classroom type is not compatible with the assigned corpus letter", ClassRoom.class, classRoom.getRoom());
+        }
+    }
+
     private boolean isClassRoomInCorrectCorpus(ClassRoom classRoom) {
         ClassRoomType classRoomType = classRoom.getClassRoomType();
         String room = classRoom.getRoom();
@@ -33,12 +41,5 @@ public class ClassRoomValidator {
         } else if (realCorpus.equals("D") && typesForD.contains(classRoomType.getName())) {
             return true;
         } else return realCorpus.equals("E") && typesForE.contains(classRoomType.getName());
-    }
-
-    public void validateClassRoom(ClassRoom classRoom) {
-        if (!isClassRoomInCorrectCorpus(classRoom)) {
-            throw new EntityValidationException(
-                    "Classroom type is not compatible with the assigned corpus letter", "ClassRoom", classRoom.getRoom());
-        }
     }
 }

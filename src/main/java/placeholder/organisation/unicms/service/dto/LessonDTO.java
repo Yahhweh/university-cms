@@ -14,6 +14,29 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LessonDTO {
+    @NotNull
+    @Valid
+    private DurationDTO duration;
+
+    @NotNull
+    @Valid
+    private StudySubjectDTO studySubject;
+
+    @NotNull
+    @Valid
+    private GroupDTO group;
+
+    @NotNull
+    @Valid
+    private LecturerDTO lecturer;
+
+    @NotNull
+    @Valid
+    private ClassRoomDTO classRoom;
+
+    @NotNull
+    private LocalDate date;
+
     public LessonDTO(DurationDTO duration) {
         this.duration = duration;
     }
@@ -38,26 +61,4 @@ public class LessonDTO {
         this.date = date;
     }
 
-    @NotNull
-    @Valid
-    private DurationDTO duration;
-
-    @NotNull
-    @Valid
-    private StudySubjectDTO studySubject;
-
-    @NotNull
-    @Valid
-    private GroupDTO group;
-
-    @NotNull
-    @Valid
-    private LecturerDTO lecturer;
-
-    @NotNull
-    @Valid
-    private ClassRoomDTO classRoom;
-
-    @NotNull
-    private LocalDate date;
 }

@@ -11,14 +11,6 @@ import javax.validation.constraints.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClassRoomDTO {
-    public ClassRoomDTO(String room) {
-        this.room = room;
-    }
-
-    public ClassRoomDTO(ClassRoomTypeDTO classRoomType) {
-        this.classRoomType = classRoomType;
-    }
-
     @NotBlank()
     @Size(min = 3, max = 35)
     @Pattern(regexp = "^[a-zA-Z]-[0-9]+$", message = "Room must follow format: Letter-Number (e.g., A-101)")
@@ -27,4 +19,13 @@ public class ClassRoomDTO {
     @NotNull()
     @Valid
     private ClassRoomTypeDTO classRoomType;
+
+    public ClassRoomDTO(String room) {
+        this.room = room;
+    }
+
+    public ClassRoomDTO(ClassRoomTypeDTO classRoomType) {
+        this.classRoomType = classRoomType;
+    }
+
 }

@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public class EntityValidationException extends ServiceException {
-    private final String entity;
+    private final Class<?> entity;
     private final String identifier;
 
-    public EntityValidationException(String message, String entity, String identifier) {
+    public EntityValidationException(String message, Class<?> entity, String identifier) {
         super(message);
         this.entity = entity;
         this.identifier = identifier;

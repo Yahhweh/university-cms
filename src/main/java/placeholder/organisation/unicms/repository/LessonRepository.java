@@ -51,14 +51,24 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
             @Param("personId") Long personId
     );
 
-    @Query("SELECT l FROM Lesson l " +
+    @Query("SELECT COUNT(l) > 0 FROM Lesson l " +
             "WHERE l.lecturer.id = :lecturer_id " +
             "AND l.date = :date " +
             "AND l.duration.end > :start " +
             "AND l.duration.start < :end")
-    List<Lesson> findConflictionLessonsForLecturer(@Param("lecturer_id") Long lecturerId,
+    boolean findConflictionLessonsForLecturer(@Param("lecturer_id") Long lecturerId,
                                                  @Param("date") LocalDate date,
                                                  @Param("start") LocalTime startTime,
                                                  @Param("end") LocalTime endTime);
+
+    @Query("SELECT COUNT(l) > 0 FROM Lesson l " +
+            "    WHERE l.classRoom.id = :id" +
+            "    AND l.date = :date " +
+            "    AND l.duration.start < :end " +
+            "    AND l.duration.end > :start")
+    boolean findConflicts(@Param("date") LocalDate date,
+                          @Param("start") LocalTime start,
+                          @Param("end") LocalTime end,
+                          @Param("id") Long id);
 
 }
