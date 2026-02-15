@@ -11,6 +11,7 @@ import org.testcontainers.shaded.org.checkerframework.checker.units.qual.C;
 import placeholder.organisation.unicms.entity.ClassRoom;
 import placeholder.organisation.unicms.entity.ClassRoomType;
 import placeholder.organisation.unicms.repository.ClassRoomRepository;
+import placeholder.organisation.unicms.repository.ClassRoomTypeRepository;
 import placeholder.organisation.unicms.service.dto.ClassRoomDTO;
 import placeholder.organisation.unicms.service.mapper.ClassRoomMapper;
 import placeholder.organisation.unicms.service.validation.ClassRoomValidator;
@@ -30,22 +31,29 @@ class ClassRoomServiceTest {
     ClassRoomRepository classRoomRepository;
     @Mock
     ClassRoomValidator classRoomValidator;
+    @Mock
+    ClassRoomTypeRepository classRoomTypeRepository;
     @InjectMocks
     ClassRoomService classRoomService;
 
     @Test
     void updateClassRoom_changeNumberOfRoom_whenDTOisGiven() {
         ClassRoom initialClassRoom = getClassRoom();
-        Long id = initialClassRoom.getId();
-
         ClassRoomDTO requestedChanges = getClassRoomDTO();
+        requestedChanges.setClassRoomTypeId(4L);
 
-        when(classRoomRepository.findById(id)).thenReturn(Optional.of(initialClassRoom));
+        ClassRoomType newType = new ClassRoomType(4L, "Physics Lab", 100L);
 
-        classRoomService.updateClassRoom(id, requestedChanges);
+        when(classRoomRepository.findById(initialClassRoom.getId()))
+                .thenReturn(Optional.of(initialClassRoom));
 
-        assertThat(initialClassRoom.getRoom()).isEqualTo("A-102");
-        verify(classRoomRepository).save(initialClassRoom);
+        when(classRoomTypeRepository.getReferenceById(4L)).thenReturn(newType);
+
+        classRoomService.updateClassRoom(initialClassRoom.getId(), requestedChanges);
+
+        assertNotNull(initialClassRoom.getClassRoomType(), "ClassRoomType should not be null after update");
+        assertThat(initialClassRoom.getClassRoomType().getId()).isEqualTo(4L);
+        assertThat(initialClassRoom.getClassRoomType().getName()).isEqualTo("Physics Lab");
     }
 
     @Test
@@ -111,6 +119,6 @@ class ClassRoomServiceTest {
     }
 
     ClassRoomDTO getClassRoomDTO() {
-        return new ClassRoomDTO("A-102");
+        return new ClassRoomDTO("B-102");
     }
 }

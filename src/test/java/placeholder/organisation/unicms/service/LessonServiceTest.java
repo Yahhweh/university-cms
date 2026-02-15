@@ -37,6 +37,8 @@ class LessonServiceTest {
     StudentRepository studentRepository;
     @Mock
     LecturerRepository lecturerRepository;
+    @Mock
+    StudySubjectRepository studySubjectRepository;
     @InjectMocks
     LessonService lessonService;
 
@@ -156,15 +158,17 @@ class LessonServiceTest {
         Lesson initial = getLesson();
         LessonDTO lessonDTO = getLessonDto();
         long id = initial.getId();
+        long studySubjectId = lessonDTO.getStudySubjectId();
 
         when(lessonRepositoryMock.findById(id)).thenReturn(Optional.of(initial));
+        when(studySubjectRepository.getReferenceById(studySubjectId)).thenReturn(new StudySubject("Physics"));
 
         lessonService.updateLesson(id, lessonDTO);
 
         verify(lessonMapper).updateEntityFromDto(lessonDTO, initial);
         verify(lessonRepositoryMock).save(initial);
 
-        assertThat(initial.getStudySubject().getName()).isEqualTo(lessonDTO.getStudySubject().getName());
+        assertThat(initial.getStudySubject().getName()).isEqualTo("Physics");
     }
 
     @Test
@@ -231,7 +235,9 @@ class LessonServiceTest {
     }
 
     LessonDTO getLessonDto() {
-        return new LessonDTO(new StudySubjectDTO("Physics"));
+        return LessonDTO.builder()
+                .studySubjectId(10L)
+                .build();
     }
 
     Lecturer getLecturer() {

@@ -12,6 +12,7 @@ import placeholder.organisation.unicms.service.validation.LessonValidator;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
 @Service
 @Log4j2
 @Transactional(readOnly = true)
@@ -22,15 +23,25 @@ public class LessonService {
     private final LessonValidator lessonValidator;
     private final StudentRepository studentRepository;
     private final LecturerRepository lecturerRepository;
+    private final DurationRepository durationRepository;
+    private final StudySubjectRepository studySubjectRepository;
+    private final GroupRepository groupRepository;
+    private final ClassRoomRepository classRoomRepository;
 
     public LessonService(LessonRepository lessonRepository, LessonMapper lessonMapper,
                          LessonValidator lessonValidator, StudentRepository studentRepository,
-                         LecturerRepository lecturerRepository) {
+                         LecturerRepository lecturerRepository, DurationRepository durationRepository,
+                         StudySubjectRepository studySubjectRepository, GroupRepository groupRepository,
+                         ClassRoomRepository classRoomRepository) {
         this.lessonRepository = lessonRepository;
         this.lessonMapper = lessonMapper;
         this.lessonValidator = lessonValidator;
         this.lecturerRepository = lecturerRepository;
         this.studentRepository = studentRepository;
+        this.durationRepository = durationRepository;
+        this.studySubjectRepository = studySubjectRepository;
+        this.groupRepository = groupRepository;
+        this.classRoomRepository = classRoomRepository;
     }
 
     public List<Lesson> findAllLessons() {
@@ -53,18 +64,18 @@ public class LessonService {
     }
 
     public List<Lesson> findLessonsInRange(LocalDate startDate, LocalDate endDate, long personId) {
-        if(studentRepository.existsById(personId)) {
+        if (studentRepository.existsById(personId)) {
             return lessonRepository.findInRangeForStudent(startDate, endDate, personId);
-        } else if(lecturerRepository.existsById(personId)) {
+        } else if (lecturerRepository.existsById(personId)) {
             return lessonRepository.findInRangeForLecturer(startDate, endDate, personId);
         }
         throw new IllegalArgumentException("Person with id " + personId + " is neither student nor lecturer");
     }
 
     public List<Lesson> findByDate(LocalDate date, long personId) {
-        if(studentRepository.existsById(personId)) {
+        if (studentRepository.existsById(personId)) {
             return lessonRepository.findByDateForStudent(date, personId);
-        } else if(lecturerRepository.existsById(personId)) {
+        } else if (lecturerRepository.existsById(personId)) {
             return lessonRepository.findByDateForLecturer(date, personId);
         }
         throw new IllegalArgumentException("Person with id " + personId + " is neither student nor lecturer");
@@ -85,9 +96,32 @@ public class LessonService {
 
         lessonMapper.updateEntityFromDto(lessonDTO, lesson);
 
+        resolveRelations(lessonDTO, lesson);
         lessonValidator.validateLesson(lesson);
+
         lessonRepository.save(lesson);
 
         log.debug("Lesson updated successfully. ID: {}", lessonId);
+    }
+
+    private void resolveRelations(LessonDTO dto, Lesson lesson) {
+        if (dto.getDurationId() != null) {
+            lesson.setDuration(durationRepository.findById(dto.getDurationId())
+                    .orElse(lesson.getDuration()));
+        }
+        if (dto.getStudySubjectId() != null) {
+            lesson.setStudySubject(studySubjectRepository.getReferenceById(dto.getStudySubjectId()));
+        }
+        if (dto.getGroupId() != null) {
+            lesson.setGroup(groupRepository.getReferenceById(dto.getGroupId()));
+        }
+
+        if (dto.getLecturerId() != null) {
+            lesson.setLecturer(lecturerRepository.getReferenceById(dto.getLecturerId()));
+        }
+
+        if (dto.getClassRoomId() != null) {
+            lesson.setClassRoom(classRoomRepository.getReferenceById(dto.getClassRoomId()));
+        }
     }
 }

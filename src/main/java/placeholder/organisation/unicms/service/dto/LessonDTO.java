@@ -13,49 +13,30 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class LessonDTO {
     @NotNull
     @Valid
-    private DurationDTO duration;
+    private Long durationId;
 
     @NotNull
     @Valid
-    private StudySubjectDTO studySubject;
+    private Long studySubjectId;
 
     @NotNull
     @Valid
-    private GroupDTO group;
+    private Long groupId;
 
     @NotNull
     @Valid
-    private LecturerDTO lecturer;
+    private Long lecturerId;
 
     @NotNull
     @Valid
-    private ClassRoomDTO classRoom;
+    private Long classRoomId;
 
     @NotNull
     private LocalDate date;
-
-    public LessonDTO(DurationDTO duration) {
-        this.duration = duration;
-    }
-
-    public LessonDTO(StudySubjectDTO studySubject) {
-        this.studySubject = studySubject;
-    }
-
-    public LessonDTO(GroupDTO group) {
-        this.group = group;
-    }
-
-    public LessonDTO(LecturerDTO lecturer) {
-        this.lecturer = lecturer;
-    }
-
-    public LessonDTO(ClassRoomDTO classRoom) {
-        this.classRoom = classRoom;
-    }
 
     public LessonDTO(LocalDate date) {
         this.date = date;

@@ -14,34 +14,33 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 class DurationValidatorTest {
-    @InjectMocks
-    DurationValidator durationValidator;
+
+    private final DurationValidator durationValidator = new DurationValidator(45, 90);
 
     @Test
-    void validateDuration_doesNotThrowsException_whenDurationIsBetween45And90(){
+    void validateDuration_shouldNotThrowException_whenDurationIsValid() {
         Duration duration = getDuration();
         assertDoesNotThrow(() -> durationValidator.validateDuration(duration));
     }
 
     @Test
-    void validateDuration_ThrowsException_whenDurationIsMoreThan90(){
+    void validateDuration_shouldThrowException_whenStartIsAfterEnd() {
         Duration duration = getDuration();
-        duration.setEnd(LocalTime.of(14, 00));
+        duration.setStart(LocalTime.of(11, 0));
+        duration.setEnd(LocalTime.of(10, 0));
+
         assertThrows(EntityValidationException.class, () -> durationValidator.validateDuration(duration));
     }
 
     @Test
-    void validateDuration_ThrowsException_whenStartAfterEnd(){
+    void validateDuration_shouldThrowException_whenDurationIsLessThan45Minutes() {
         Duration duration = getDuration();
-        duration.setStart(LocalTime.of(15, 20));
+        duration.setEnd(LocalTime.of(9, 0));
 
         assertThrows(EntityValidationException.class, () -> durationValidator.validateDuration(duration));
     }
 
-    Duration getDuration(){
-        return new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00));
-    }
-    DurationDTO getDurationDto(){
-        return new DurationDTO(LocalTime.of(10, 00), LocalTime.of(11, 30));
+    private Duration getDuration() {
+        return new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 0));
     }
 }

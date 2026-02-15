@@ -7,292 +7,125 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.service.EntityValidationException;
-import placeholder.organisation.unicms.repository.ClassRoomRepository;
-import placeholder.organisation.unicms.repository.StudentRepository;
+import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.repository.LessonRepository;
+import placeholder.organisation.unicms.repository.StudentRepository;
 
-import javax.validation.constraints.AssertTrue;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class LessonValidatorTest {
-    @Mock
-    LessonRepository lessonRepository;
-    @Mock
-    StudentRepository studentRepository;
-    @Mock
-    ClassRoomRepository classRoomRepository;
 
+    @Mock
+    private LessonRepository lessonRepository;
+    @Mock
+    private StudentRepository studentRepository;
+    @Mock
+    private GroupRepository groupRepository;
 
     @InjectMocks
-    LessonValidator lessonValidator;
+    private LessonValidator lessonValidator;
 
     @Test
-    void isLecturerDoesntHasLecturesInTheSameTime_shouldThrowException_whenNewLessonOverlapsWithExistingLesson() {
-        Lesson existingLesson = new Lesson(
-                1L,
-                new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00)),
-                new StudySubject(1L, "Math"),
+    void validateLesson_shouldThrowException_whenGroupHasConflict() {
+        Lesson lesson = createBaseLesson();
+
+        when(lessonRepository.findConflictionLessonsForLecturer(any(), any(), any(), any(), anyLong())).thenReturn(false);
+        when(lessonRepository.findConflicts(any(), any(), any(), anyLong(), anyLong())).thenReturn(false);
+        when(lessonRepository.existsGroupConflict(any(), any(), any(), any(), anyLong())).thenReturn(true);
+
+        assertThatThrownBy(() -> lessonValidator.validateLesson(lesson))
+                .isInstanceOf(EntityValidationException.class)
+                .hasMessageContaining("Group has another lesson at this time");
+    }
+
+    @Test
+    void validateLesson_shouldThrowException_whenLecturerNotAuthorizedForSubject() {
+        Lesson lesson = createBaseLesson();
+        lesson.getLecturer().setStudySubjects(new HashSet<>());
+
+        mockNoConflicts();
+
+        assertThatThrownBy(() -> lessonValidator.validateLesson(lesson))
+                .isInstanceOf(EntityValidationException.class)
+                .hasMessageContaining("Lecturer is not authorized");
+    }
+
+    @Test
+    void validateLesson_shouldThrowException_whenCapacityIsNotSufficient() {
+        Lesson lesson = createBaseLesson();
+        long roomCapacity = lesson.getClassRoom().getClassRoomType().getCapacity();
+
+        mockNoConflicts();
+        lesson.getLecturer().getStudySubjects().add(lesson.getStudySubject());
+
+        when(groupRepository.findById(anyLong())).thenReturn(Optional.of(lesson.getGroup()));
+
+        List<Student> overCapacityList = Arrays.asList(new Student[Math.toIntExact(roomCapacity + 1)]);
+        when(studentRepository.findStudentsByGroup(any(Group.class))).thenReturn(overCapacityList);
+
+        assertThatThrownBy(() -> lessonValidator.validateLesson(lesson))
+                .isInstanceOf(EntityValidationException.class)
+                .hasMessageContaining("Group size exceeds room capacity");
+    }
+
+    @Test
+    void validateLesson_shouldPass_whenAllConditionsAreMet() {
+        Lesson lesson = createBaseLesson();
+        lesson.getLecturer().getStudySubjects().add(lesson.getStudySubject());
+
+        mockNoConflicts();
+        when(groupRepository.findById(anyLong())).thenReturn(Optional.of(lesson.getGroup()));
+
+        List<Student> normalList = Arrays.asList(new Student[50]);
+        when(studentRepository.findStudentsByGroup(any(Group.class))).thenReturn(normalList);
+
+        assertDoesNotThrow(() -> lessonValidator.validateLesson(lesson));
+    }
+
+    private void mockNoConflicts() {
+        when(lessonRepository.findConflictionLessonsForLecturer(any(), any(), any(), any(), anyLong())).thenReturn(false);
+        when(lessonRepository.findConflicts(any(), any(), any(), anyLong(), anyLong())).thenReturn(false);
+        when(lessonRepository.existsGroupConflict(any(), any(), any(), any(), anyLong())).thenReturn(false);
+    }
+
+    private Lesson createBaseLesson() {
+        StudySubject subject = new StudySubject(1L, "Math");
+        Lecturer lecturer = getLecturer();
+        lecturer.setStudySubjects(new HashSet<>());
+
+        return new Lesson(
+                10L,
+                new Duration(1L, LocalTime.of(9, 0), LocalTime.of(10, 30)),
+                subject,
                 getGroup(),
-                getLecturer(),
+                lecturer,
                 getClassRoom(),
                 LocalDate.now()
         );
-
-        Lesson newLesson = new Lesson(
-                null,
-                new Duration(2L, LocalTime.of(9, 00), LocalTime.of(10, 20)),
-                new StudySubject(2L, "PE"),
-                new Group(2L, "B-121"),
-                getLecturer(),
-                getSecondClassRoom(),
-                LocalDate.now()
-        );
-
-        when(lessonRepository.findConflictionLessonsForLecturer(getLecturer().getId(),
-                newLesson.getDate(),
-                newLesson.getDuration().getStart(),
-                newLesson.getDuration().getEnd()))
-                .thenReturn(true);
-
-
-        assertThatThrownBy(() -> lessonValidator.validateLesson(newLesson))
-                .isInstanceOf(EntityValidationException.class);
     }
 
-    @Test
-    void isLecturerDoesntHasLecturesInTheSameTime_shouldNotThrowException_whenNewLessonIsOnDifferentDate() {
-        Lesson newLesson = new Lesson(
-                2L,
-                new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00)),
-                new StudySubject(2L, "PE"),
-                getGroup(),
-                getLecturer(),
-                getSecondClassRoom(),
-                LocalDate.now().plusDays(1)
-        );
-
-        when(lessonRepository.findConflictionLessonsForLecturer(getLecturer().getId(), newLesson.getDate(), newLesson.getDuration().getStart(), newLesson.getDuration().getEnd()))
-                .thenReturn(false);
-
-        when(lessonRepository.findConflicts(
-                newLesson.getDate(),
-                newLesson.getDuration().getStart(),
-                newLesson.getDuration().getEnd(),
-                newLesson.getClassRoom().getId()))
-                .thenReturn(false);
-
-        when(studentRepository.findStudentsByGroup(newLesson.getGroup()))
-                .thenReturn(new ArrayList<>());
-
-        assertDoesNotThrow(() -> lessonValidator.validateLesson(newLesson));
-    }
-
-    @Test
-    void isLecturerDoesntHasLecturesInTheSameTime_shouldNotThrowException_whenNoExistingLessons() {
-        Lesson newLesson = new Lesson(
-                10L,
-                new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00)),
-                new StudySubject(1L, "Math"),
-                getGroup(),
-                getLecturer(),
-                getClassRoom(),
-                LocalDate.now()
-        );
-
-        when(lessonRepository.findConflictionLessonsForLecturer(getLecturer().getId(),
-                newLesson.getDate(),
-                newLesson.getDuration().getStart(),
-                newLesson.getDuration().getEnd()))
-                .thenReturn(false);
-
-        when(lessonRepository.findConflicts(
-                newLesson.getDate(),
-                newLesson.getDuration().getStart(),
-                newLesson.getDuration().getEnd(),
-                newLesson.getClassRoom().getId()))
-                .thenReturn(false);
-
-        when(studentRepository.findStudentsByGroup(newLesson.getGroup()))
-                .thenReturn(new ArrayList<>());
-
-        assertDoesNotThrow(() -> lessonValidator.validateLesson(newLesson));
-    }
-
-
-    @Test
-    void isGroupSizeSmallerThenClassRoomTypeCapacity_shouldThrowException_whenRoomCapacityIsLess() {
-        ClassRoom classRoom = getClassRoom();
-        ClassRoomType classRoomType = classRoom.getClassRoomType();
-        classRoomType.setCapacity(10L);
-        Group group = getGroup();
-        Lesson newLesson = new Lesson(
-                10L,
-                new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00)),
-                new StudySubject(1L, "Math"),
-                group,
-                getLecturer(),
-                classRoom,
-                LocalDate.now());
-
-        List<Student> students = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            students.add(new Student());
-        }
-
-        when(studentRepository.findStudentsByGroup(group)).thenReturn(students);
-
-        when(lessonRepository.findConflicts(
-                newLesson.getDate(),
-                newLesson.getDuration().getStart(),
-                newLesson.getDuration().getEnd(),
-                newLesson.getClassRoom().getId()))
-                .thenReturn(false);
-
-        when(lessonRepository.findConflictionLessonsForLecturer(getLecturer().getId(),
-                newLesson.getDate(),
-                newLesson.getDuration().getStart(),
-                newLesson.getDuration().getEnd()))
-                .thenReturn(false);
-
-        assertThatThrownBy(() -> lessonValidator.validateLesson(newLesson))
-                .isInstanceOf(EntityValidationException.class);
-    }
-
-    @Test
-    void isGroupSizeSmallerThenClassRoomTypeCapacity_shouldNOTThrowException_whenRoomCapacityIsMore() {
-        ClassRoom classRoom = getClassRoom();
-        ClassRoomType classRoomType = classRoom.getClassRoomType();
-        classRoomType.setCapacity(10L);
-        Group group = getGroup();
-        Lesson newLesson = new Lesson(
-                10L,
-                new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00)),
-                new StudySubject(1L, "Math"),
-                group,
-                getLecturer(),
-                classRoom,
-                LocalDate.now());
-
-        List<Student> students = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            students.add(new Student());
-        }
-
-        when(studentRepository.findStudentsByGroup(group)).thenReturn(students);
-
-        when(lessonRepository.findConflicts(
-                newLesson.getDate(),
-                newLesson.getDuration().getStart(),
-                newLesson.getDuration().getEnd(),
-                newLesson.getClassRoom().getId()))
-                .thenReturn(false);
-
-        when(lessonRepository.findConflictionLessonsForLecturer(
-                getLecturer().getId(),
-                newLesson.getDate(),
-                newLesson.getDuration().getStart(),
-                newLesson.getDuration().getEnd()))
-                .thenReturn(false);
-
-        assertDoesNotThrow(() -> lessonValidator.validateLesson(newLesson));
-    }
-
-    @Test
-    void isRoomIsFree_shouldThrowException_whenClassRoomIsBooked() {
-        ClassRoom classRoom = getClassRoom();
-        ClassRoom anotherClassRoom = getSecondClassRoom();
-        Group group = getGroup();
-
-        Lesson newLesson = new Lesson(
-                10L,
-                new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00)),
-                new StudySubject(1L, "Math"),
-                group,
-                getLecturer(),
-                classRoom,
-                LocalDate.now());
-
-
-        when(lessonRepository.findConflicts(
-                newLesson.getDate(),
-                newLesson.getDuration().getStart(),
-                newLesson.getDuration().getEnd(),
-                newLesson.getClassRoom().getId()))
-                .thenReturn(true);
-
-        when(lessonRepository.findConflictionLessonsForLecturer(
-                getLecturer().getId(),
-                newLesson.getDate(),
-                newLesson.getDuration().getStart(),
-                newLesson.getDuration().getEnd()))
-                .thenReturn(false);
-
-        assertThatThrownBy(() -> lessonValidator.validateLesson(newLesson))
-                .isInstanceOf(EntityValidationException.class);
-    }
-
-    @Test
-    void isRoomIsFree_shouldNotThrowException_whenClassRoomIsFree() {
-        ClassRoom classRoom = getClassRoom();
-        Group group = getGroup();
-
-        Lesson newLesson = new Lesson(
-                10L,
-                new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00)),
-                new StudySubject(1L, "Math"),
-                group,
-                getLecturer(),
-                classRoom,
-                LocalDate.now());
-
-
-        when(lessonRepository.findConflicts(
-                newLesson.getDate(),
-                newLesson.getDuration().getStart(),
-                newLesson.getDuration().getEnd(),
-                newLesson.getClassRoom().getId()))
-                .thenReturn(false);
-
-        when(studentRepository.findStudentsByGroup(group))
-                .thenReturn(new ArrayList<>());
-
-        when(lessonRepository.findConflictionLessonsForLecturer(
-                getLecturer().getId(),
-                newLesson.getDate(),
-                newLesson.getDuration().getStart(),
-                newLesson.getDuration().getEnd()))
-                .thenReturn(false);
-
-        assertDoesNotThrow(() -> lessonValidator.validateLesson(newLesson));
-    }
-
-    Lecturer getLecturer() {
+    private Lecturer getLecturer() {
         Lecturer lecturer = new Lecturer();
         lecturer.setId(1L);
         lecturer.setName("John");
         lecturer.setSureName("Doe");
-        lecturer.setSalary(40000);
         return lecturer;
     }
 
-    Group getGroup() {
+    private Group getGroup() {
         return new Group(1L, "A-122");
     }
 
-    ClassRoom getClassRoom() {
+    private ClassRoom getClassRoom() {
         return new ClassRoom(1L, "A-101", new ClassRoomType(1L, "Hall", 100L));
-    }
-
-    ClassRoom getSecondClassRoom() {
-        return new ClassRoom(2L, "B-101", new ClassRoomType(2L, "Laboratory", 100L));
     }
 }

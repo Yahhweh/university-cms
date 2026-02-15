@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 @Sql(scripts = "/datasets/lesson_jpa.sql",
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class LessonRepositoryTest {
-    private static final LocalDate TEST_DATE = LocalDate.of(2025, 10, 29);
+    private static final LocalDate TEST_DATE = LocalDate.of(2026, 1, 17);
 
     @Autowired
     LessonRepository lessonRepository;
@@ -151,13 +151,53 @@ class LessonRepositoryTest {
     }
 
     @Test
-    void isClassRoomFree_ReturnsConsistentResults() {
-        LocalTime startTime = LocalTime.of(13, 00);
-        LocalTime endTime = LocalTime.of(14, 30);
-        long id = 1L;
+    void findConflicts_shouldReturnTrue_whenRoomIsOccupied() {
+        LocalTime startTime = LocalTime.of(9, 0);
+        LocalTime endTime = LocalTime.of(10, 0);
+        Long roomId = 1L;
 
-        boolean isRoomFree = lessonRepository.findConflicts(TEST_DATE, startTime, endTime, id);
+        boolean hasConflict = lessonRepository.findConflicts(TEST_DATE, startTime, endTime, roomId, null);
 
-        assertFalse(isRoomFree);
+        assertThat(hasConflict).isTrue();
+    }
+
+    @Test
+    void findConflicts_shouldReturnFalse_whenOverlappingIdMatchesExcludeId() {
+        LocalTime startTime = LocalTime.of(13, 30);
+        LocalTime endTime = LocalTime.of(15, 00);
+        Long roomId = 1L;
+        Long existingLessonId = 1L;
+
+        boolean hasConflict = lessonRepository.findConflicts(TEST_DATE, startTime, endTime, roomId, existingLessonId);
+
+        assertThat(hasConflict).isFalse();
+    }
+
+    @Test
+    void findConflictionLessonsForLecturer_shouldIgnoreCurrentLessonDuringUpdate() {
+        Long lecturerId = 2L;
+        Long existingLessonId = 1L;
+        LocalTime start = LocalTime.of(13, 30);
+        LocalTime end = LocalTime.of(15, 00);
+
+        boolean hasConflict = lessonRepository.findConflictionLessonsForLecturer(
+                lecturerId, TEST_DATE, start, end, existingLessonId);
+
+        assertThat(hasConflict).isFalse();
+    }
+
+    @Test
+    void findConflictionLessonsForLecturer_shouldDetectConflictWithOtherLessonDuringUpdate() {
+
+        Long lecturerId = 2L;
+        Long lessonBeingUpdated = 1L;
+
+        LocalTime start = LocalTime.of(11, 0);
+        LocalTime end = LocalTime.of(12, 0);
+
+        boolean hasConflict = lessonRepository.findConflictionLessonsForLecturer(
+                lecturerId, TEST_DATE, start, end, lessonBeingUpdated);
+
+        assertThat(hasConflict).isTrue();
     }
 }

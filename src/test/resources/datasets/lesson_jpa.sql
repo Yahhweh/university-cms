@@ -10,6 +10,7 @@ VALUES (2,'bobo', 'Darius', 'Zabuluonis', 'Male', 1, '1980-01-01', 'darius@gmail
 INSERT INTO person (id, password, name, sure_name, gender, address_id, date_of_birth, email)
 VALUES (3,'bobo', 'Bilbo', 'Begins', 'Male', 1, '2005-01-01', 'begins@gmail.com');
 
+
 INSERT INTO lecturer (id, salary) VALUES (2, 3000.00);
 
 INSERT INTO "group" (id, name) VALUES (1,'ITfu-25/1');

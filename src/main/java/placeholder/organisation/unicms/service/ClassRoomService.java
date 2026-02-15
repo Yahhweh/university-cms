@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.repository.ClassRoomRepository;
 import placeholder.organisation.unicms.entity.ClassRoom;
+import placeholder.organisation.unicms.repository.ClassRoomTypeRepository;
 import placeholder.organisation.unicms.service.dto.ClassRoomDTO;
 import placeholder.organisation.unicms.service.mapper.ClassRoomMapper;
 import placeholder.organisation.unicms.service.validation.ClassRoomValidator;
@@ -19,11 +20,14 @@ public class ClassRoomService {
     private final ClassRoomRepository classRoomRepository;
     private final ClassRoomValidator classRoomValidator;
     private final ClassRoomMapper classRoomMapper;
+    private final ClassRoomTypeRepository classRoomTypeRepository;
 
-    public ClassRoomService(ClassRoomRepository classRoomRepository, ClassRoomValidator classRoomValidator, ClassRoomMapper classRoomMapper) {
+    public ClassRoomService(ClassRoomRepository classRoomRepository, ClassRoomValidator classRoomValidator,
+                            ClassRoomMapper classRoomMapper, ClassRoomTypeRepository classRoomTypeRepository) {
         this.classRoomRepository = classRoomRepository;
         this.classRoomValidator = classRoomValidator;
         this.classRoomMapper = classRoomMapper;
+        this.classRoomTypeRepository = classRoomTypeRepository;
     }
 
     public List<ClassRoom> findAllRooms() {
@@ -62,9 +66,16 @@ public class ClassRoomService {
                 .orElseThrow(() -> new EntityNotFoundException(ClassRoom.class, String.valueOf(classRoomId)));
 
         classRoomMapper.updateEntityFromDto(classRoomDTO, classRoom);
+        resolveRelations(classRoomDTO, classRoom);
 
         classRoomValidator.validateClassRoom(classRoom);
         classRoomRepository.save(classRoom);
         log.debug("Classroom updated successfully. ID: {}", classRoomId);
+    }
+
+    void resolveRelations(ClassRoomDTO dto, ClassRoom entity){
+        if(dto.getClassRoomTypeId() != null){
+            entity.setClassRoomType(classRoomTypeRepository.getReferenceById(dto.getClassRoomTypeId()));
+        }
     }
 }

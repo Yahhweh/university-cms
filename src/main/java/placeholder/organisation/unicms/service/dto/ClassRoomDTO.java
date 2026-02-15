@@ -18,14 +18,14 @@ public class ClassRoomDTO {
 
     @NotNull()
     @Valid
-    private ClassRoomTypeDTO classRoomType;
+    private Long classRoomTypeId;
 
     public ClassRoomDTO(String room) {
         this.room = room;
     }
 
-    public ClassRoomDTO(ClassRoomTypeDTO classRoomType) {
-        this.classRoomType = classRoomType;
+    public ClassRoomDTO(long classRoomTypeId) {
+        this.classRoomTypeId = classRoomTypeId;
     }
 
 }

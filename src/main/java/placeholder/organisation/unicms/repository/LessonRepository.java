@@ -52,23 +52,42 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
     );
 
     @Query("SELECT COUNT(l) > 0 FROM Lesson l " +
+            "JOIN l.duration d " +
             "WHERE l.lecturer.id = :lecturer_id " +
             "AND l.date = :date " +
-            "AND l.duration.end > :start " +
-            "AND l.duration.start < :end")
-    boolean findConflictionLessonsForLecturer(@Param("lecturer_id") Long lecturerId,
-                                                 @Param("date") LocalDate date,
-                                                 @Param("start") LocalTime startTime,
-                                                 @Param("end") LocalTime endTime);
+            "AND d.end > :start " +
+            "AND d.start < :end " +
+            "AND (:excludeId IS NULL OR l.id <> :excludeId)")
+    boolean findConflictionLessonsForLecturer(
+            @Param("lecturer_id") Long lecturerId,
+            @Param("date") LocalDate date,
+            @Param("start") LocalTime startTime,
+            @Param("end") LocalTime endTime,
+            @Param("excludeId") Long excludeId);
+
+        @Query("SELECT COUNT(l) > 0 FROM Lesson l " +
+                "WHERE l.classRoom.id = :id " +
+                "AND l.date = :date " +
+                "AND l.duration.start < :end " +
+                "AND l.duration.end > :start " +
+                "AND (:excludeId IS NULL OR l.id <> :excludeId)")
+        boolean findConflicts(
+                @Param("date") LocalDate date,
+                @Param("start") LocalTime start,
+                @Param("end") LocalTime end,
+                @Param("id") Long id,
+                @Param("excludeId") Long excludeId);
 
     @Query("SELECT COUNT(l) > 0 FROM Lesson l " +
-            "    WHERE l.classRoom.id = :id" +
-            "    AND l.date = :date " +
-            "    AND l.duration.start < :end " +
-            "    AND l.duration.end > :start")
-    boolean findConflicts(@Param("date") LocalDate date,
-                          @Param("start") LocalTime start,
-                          @Param("end") LocalTime end,
-                          @Param("id") Long id);
-
-}
+            "WHERE l.group.id = :groupId " +
+            "AND l.date = :date " +
+            "AND l.duration.start < :end " +
+            "AND l.duration.end > :start " +
+            "AND (:excludeId IS NULL OR l.id <> :excludeId)")
+    boolean existsGroupConflict(
+            @Param("groupId") Long groupId,
+            @Param("date") LocalDate date,
+            @Param("start") LocalTime start,
+            @Param("end") LocalTime end,
+            @Param("excludeId") Long excludeId);
+    }
