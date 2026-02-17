@@ -8,6 +8,7 @@ import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.repository.LessonRepository;
 import placeholder.organisation.unicms.repository.StudentRepository;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
 @Component
@@ -24,6 +25,9 @@ public class LessonValidator {
 
     public void validateLesson(Lesson lesson, long lessonId) {
 
+        if(!isLectureOnWorkingDays(lesson)){
+            throw new EntityValidationException("Lecture on weekends.", Lesson.class, String.valueOf(lessonId));
+        }
         if (hasLecturerTimeConflict(lesson, lessonId)) {
             throw new EntityValidationException("Lecturer has another lesson at this time", Lesson.class, String.valueOf(lessonId));
         }
@@ -75,5 +79,10 @@ public class LessonValidator {
     private boolean isCapacitySufficient(Lesson lesson) {
         long capacity = lesson.getClassRoom().getClassRoomType().getCapacity();
         return studentRepository.findStudentsByGroup(groupRepository.findById(lesson.getGroup().getId()).get()).size() <= capacity;
+    }
+
+    private boolean isLectureOnWorkingDays(Lesson lesson){
+        DayOfWeek day =  lesson.getDate().getDayOfWeek();
+        return DayOfWeek.SATURDAY != day && DayOfWeek.SUNDAY != day;
     }
 }

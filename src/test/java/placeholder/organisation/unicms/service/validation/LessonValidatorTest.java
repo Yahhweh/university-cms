@@ -5,6 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.service.EntityValidationException;
 import placeholder.organisation.unicms.repository.GroupRepository;
@@ -52,7 +54,7 @@ class LessonValidatorTest {
         Lesson lesson = createBaseLesson();
         lesson.getLecturer().setStudySubjects(new HashSet<>());
 
-        mockNoConflicts();
+        lesson.getLecturer().getStudySubjects().clear();
 
         assertThatThrownBy(() -> lessonValidator.validateLesson(lesson, -1L))
                 .isInstanceOf(EntityValidationException.class)
@@ -62,9 +64,9 @@ class LessonValidatorTest {
     @Test
     void validateLesson_shouldThrowException_whenCapacityIsNotSufficient() {
         Lesson lesson = createBaseLesson();
+
         long roomCapacity = lesson.getClassRoom().getClassRoomType().getCapacity();
 
-        mockNoConflicts();
         lesson.getLecturer().getStudySubjects().add(lesson.getStudySubject());
 
         when(groupRepository.findById(anyLong())).thenReturn(Optional.of(lesson.getGroup()));
@@ -78,20 +80,41 @@ class LessonValidatorTest {
     }
 
     @Test
-    void validateLesson_shouldPass_whenAllConditionsAreMet() {
+    void validateLesson_shouldThrowException_whenLectureOnSaturday(){
         Lesson lesson = createBaseLesson();
+        lesson.setDate(LocalDate.of(2026, 2, 15));
+
+        assertThatThrownBy(() -> lessonValidator.validateLesson(lesson, -1L))
+                .isInstanceOf(EntityValidationException.class)
+                .hasMessageContaining("Lecture on weekends");
+    }
+
+    @Test
+    void validateLesson_shouldPass_whenLectureOnMonday(){
+        Lesson lesson = createBaseLesson();
+        lesson.setDate(LocalDate.of(2026, 2, 17));
+
+        mockNoConflicts(lesson);
+
         lesson.getLecturer().getStudySubjects().add(lesson.getStudySubject());
-
-        mockNoConflicts();
-        when(groupRepository.findById(anyLong())).thenReturn(Optional.of(lesson.getGroup()));
-
-        List<Student> normalList = Arrays.asList(new Student[50]);
-        when(studentRepository.findStudentsByGroup(any(Group.class))).thenReturn(normalList);
 
         assertDoesNotThrow(() -> lessonValidator.validateLesson(lesson, -1L));
     }
 
-    private void mockNoConflicts() {
+    @Test
+    void validateLesson_shouldPass_whenAllConditionsAreMet() {
+        Lesson lesson = createBaseLesson();
+        lesson.getLecturer().getStudySubjects().add(lesson.getStudySubject());
+
+        mockNoConflicts(lesson);
+        assertDoesNotThrow(() -> lessonValidator.validateLesson(lesson, -1L));
+    }
+
+    private void mockNoConflicts(Lesson lesson) {
+        when(groupRepository.findById(anyLong())).thenReturn(Optional.of(lesson.getGroup()));
+        List<Student> normalList = Arrays.asList(new Student[50]);
+
+        when(studentRepository.findStudentsByGroup(any(Group.class))).thenReturn(normalList);
         when(lessonRepository.findConflictionLessonsForLecturer(any(), any(), any(), any(), anyLong())).thenReturn(false);
         when(lessonRepository.findRoomConflictsInTime(any(), any(), any(), anyLong(), anyLong())).thenReturn(false);
         when(lessonRepository.findGroupConflictInTime(any(), any(), any(), any(), anyLong())).thenReturn(false);
@@ -109,7 +132,7 @@ class LessonValidatorTest {
                 getGroup(),
                 lecturer,
                 getClassRoom(),
-                LocalDate.now()
+                LocalDate.of(2026, 2, 17)
         );
     }
 
