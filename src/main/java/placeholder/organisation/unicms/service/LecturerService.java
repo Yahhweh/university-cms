@@ -3,13 +3,16 @@ package placeholder.organisation.unicms.service;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.repository.LecturerRepository;
 import placeholder.organisation.unicms.repository.StudySubjectRepository;
 import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.StudySubject;
 import placeholder.organisation.unicms.service.dto.LecturerDTO;
+import placeholder.organisation.unicms.service.dto.LessonDTO;
 import placeholder.organisation.unicms.service.mapper.LecturerMapper;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,7 +92,20 @@ public class LecturerService {
         Lecturer lecturer = lecturerRepository.findById(lecturerId)
                 .orElseThrow(() -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId)));
         lecturerMapper.updateEntityFromDto(lecturerDTO, lecturer);
+        resolveRelations(lecturerDTO, lecturer);
         lecturerRepository.save(lecturer);
         log.debug("Lecturer updated successfully. ID: {}", lecturerId);
+    }
+
+    private void resolveRelations(LecturerDTO dto, Lecturer lecturer) {
+        if (dto.getStudySubjectIds() != null && !dto.getStudySubjectIds().isEmpty()) {
+            List<StudySubject> subjects = studySubjectRepository.findAllById(dto.getStudySubjectIds());
+
+            if (subjects.size() != dto.getStudySubjectIds().size()) {
+                throw new EntityNotFoundException(Lecturer.class, lecturer.getName());
+            }
+
+            lecturer.setStudySubjects(new HashSet<>(subjects));
+        }
     }
 }

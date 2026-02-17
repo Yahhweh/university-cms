@@ -8,9 +8,8 @@ import placeholder.organisation.unicms.service.dto.LecturerDTO;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface LecturerMapper {
 
-    @Mapping(target = "password", ignore = true)
     Lecturer toEntity(LecturerDTO dto);
 
-    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "studySubjects", ignore = true)
     void updateEntityFromDto(LecturerDTO dto, @MappingTarget Lecturer entity);
 }

@@ -24,5 +24,5 @@ public class LecturerDTO extends PersonDTO {
     @NotNull
     @Size(min = 1)
     @Valid
-    private Set<StudySubjectDTO> studySubjects;
+    private Set<Long> studySubjectIds;
 }
