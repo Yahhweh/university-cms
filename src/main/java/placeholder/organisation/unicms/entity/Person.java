@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Person {
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,11 +51,4 @@ public abstract class Person {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    public boolean isLecturer(){
-        return this instanceof Lecturer;
-    }
-
-    public boolean isStudent(){
-        return this instanceof Student;
-    }
 }

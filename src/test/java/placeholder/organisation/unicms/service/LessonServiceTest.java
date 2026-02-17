@@ -10,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.repository.*;
 import placeholder.organisation.unicms.service.dto.LessonDTO;
-import placeholder.organisation.unicms.service.dto.StudySubjectDTO;
 import placeholder.organisation.unicms.service.mapper.LessonMapper;
 import placeholder.organisation.unicms.service.validation.LessonValidator;
 
@@ -21,6 +20,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import static org.assertj.core.api.AssertionsForClassTypes.in;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.*;
@@ -126,7 +126,7 @@ class LessonServiceTest {
 
         when(studentRepository.existsById(personId)).thenReturn(false);
         when(lecturerRepository.existsById(personId)).thenReturn(true);
-        when(lessonRepositoryMock.findByDateForLecturer(date, personId))
+        when(lessonRepositoryMock.findByDateAndLecturerId(date, personId))
                 .thenReturn(List.of());
 
         List<Lesson> result = lessonService.findByDate(date, personId);
@@ -135,7 +135,7 @@ class LessonServiceTest {
         assertThat(result.isEmpty()).isTrue();
         verify(studentRepository).existsById(personId);
         verify(lecturerRepository).existsById(personId);
-        verify(lessonRepositoryMock).findByDateForLecturer(date, personId);
+        verify(lessonRepositoryMock).findByDateAndLecturerId(date, personId);
     }
 
     @Test
@@ -167,6 +167,7 @@ class LessonServiceTest {
 
         verify(lessonMapper).updateEntityFromDto(lessonDTO, initial);
         verify(lessonRepositoryMock).save(initial);
+        verify(lessonValidator).validateLesson(initial, id);
 
         assertThat(initial.getStudySubject().getName()).isEqualTo("Physics");
     }
@@ -176,7 +177,7 @@ class LessonServiceTest {
         Lesson lesson = getLesson();
         lesson.getClassRoom().getClassRoomType().setCapacity(0L);
 
-        doThrow(EntityValidationException.class).when(lessonValidator).validateLesson(lesson);
+        doThrow(EntityValidationException.class).when(lessonValidator).validateLesson(lesson, -1L);
 
         assertThrows(EntityValidationException.class, () -> lessonService.createLesson(lesson));
     }
@@ -191,13 +192,13 @@ class LessonServiceTest {
 
         doThrow(EntityValidationException.class)
                 .when(lessonValidator)
-                .validateLesson(any(Lesson.class));
+                .validateLesson(any(Lesson.class), anyLong());
 
         assertThrows(EntityValidationException.class, () ->
                 lessonService.updateLesson(lesson.getId(), lessonDto)
         );
 
-        verify(lessonValidator, times(1)).validateLesson(any(Lesson.class));
+        verify(lessonValidator, times(1)).validateLesson(any(Lesson.class), anyLong());
     }
     @Test
     void createLesson_shouldSave_whenCorrectLessonGiven() {
@@ -205,7 +206,8 @@ class LessonServiceTest {
 
         assertDoesNotThrow(() -> lessonService.createLesson(lesson));
 
-        verify(lessonValidator).validateLesson(lesson);
+        verify(lessonValidator).validateLesson(lesson, -
+                1L);
         verify(lessonRepositoryMock).save(lesson);
     }
 

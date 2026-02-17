@@ -62,7 +62,7 @@ public class LecturerService {
         }
     }
 
-    public void removeSubjectToLecturer(long subjectId, long lecturerId) {
+    public void removeSubjectFromLecturer(long subjectId, long lecturerId) {
         StudySubject subject = studySubjectRepository.findById(subjectId)
                 .orElseThrow(() -> new EntityNotFoundException(StudySubject.class, String.valueOf(subjectId)));
 

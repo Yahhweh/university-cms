@@ -58,7 +58,7 @@ public class LessonService {
 
     @Transactional
     public void createLesson(Lesson lesson) {
-        lessonValidator.validateLesson(lesson);
+        lessonValidator.validateLesson(lesson, -1L);
         lessonRepository.save(lesson);
         log.info("Lesson saved successfully: {}", lesson.getStudySubject());
     }
@@ -76,7 +76,7 @@ public class LessonService {
         if (studentRepository.existsById(personId)) {
             return lessonRepository.findByDateForStudent(date, personId);
         } else if (lecturerRepository.existsById(personId)) {
-            return lessonRepository.findByDateForLecturer(date, personId);
+            return lessonRepository.findByDateAndLecturerId(date, personId);
         }
         throw new IllegalArgumentException("Person with id " + personId + " is neither student nor lecturer");
     }
@@ -97,7 +97,8 @@ public class LessonService {
         lessonMapper.updateEntityFromDto(lessonDTO, lesson);
 
         resolveRelations(lessonDTO, lesson);
-        lessonValidator.validateLesson(lesson);
+
+        lessonValidator.validateLesson(lesson, lessonId);
 
         lessonRepository.save(lesson);
 

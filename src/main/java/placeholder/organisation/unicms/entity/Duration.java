@@ -19,8 +19,10 @@ public class Duration {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "start")
     LocalTime start;
+
     @Column(name = "\"end\"")
     LocalTime end;
 }

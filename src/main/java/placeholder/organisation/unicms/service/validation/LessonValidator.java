@@ -22,23 +22,17 @@ public class LessonValidator {
         this.groupRepository = groupRepository;
     }
 
-    public void validateLesson(Lesson lesson) {
-        Long lessonId = lesson.getId();
+    public void validateLesson(Lesson lesson, long lessonId) {
 
-        if (!lesson.getDuration().getStart().isBefore(lesson.getDuration().getEnd())) {
-            throw new EntityValidationException("Start time must be before end time", Lesson.class, String.valueOf(lessonId));
-        }
-
-        if (isLecturerConflict(lesson, lessonId)) {
+        if (hasLecturerTimeConflict(lesson, lessonId)) {
             throw new EntityValidationException("Lecturer has another lesson at this time", Lesson.class, String.valueOf(lessonId));
         }
-        if (isRoomConflict(lesson, lessonId)) {
+        if (hasRoomTimeConflict(lesson, lessonId)) {
             throw new EntityValidationException("Classroom is occupied", Lesson.class, String.valueOf(lessonId));
         }
-        if (isGroupConflict(lesson, lessonId)) {
+        if (hasGroupTimeConflict(lesson, lessonId)) {
             throw new EntityValidationException("Group has another lesson at this time", Lesson.class, String.valueOf(lessonId));
         }
-
         if (!isLecturerAuthorized(lesson)) {
             throw new EntityValidationException("Lecturer is not authorized to teach this subject", Lesson.class, String.valueOf(lessonId));
         }
@@ -47,7 +41,7 @@ public class LessonValidator {
         }
     }
 
-    private boolean isLecturerConflict(Lesson lesson, Long excludeId) {
+    private boolean hasLecturerTimeConflict(Lesson lesson, Long excludeId) {
         return lessonRepository.findConflictionLessonsForLecturer(
                 lesson.getLecturer().getId(),
                 lesson.getDate(),
@@ -56,8 +50,8 @@ public class LessonValidator {
                 excludeId);
     }
 
-    private boolean isRoomConflict(Lesson lesson, Long excludeId) {
-        return lessonRepository.findConflicts(
+    private boolean hasRoomTimeConflict(Lesson lesson, Long excludeId) {
+        return lessonRepository.findRoomConflictsInTime(
                 lesson.getDate(),
                 lesson.getDuration().getStart(),
                 lesson.getDuration().getEnd(),
@@ -65,8 +59,8 @@ public class LessonValidator {
                 excludeId);
     }
 
-    private boolean isGroupConflict(Lesson lesson, Long excludeId) {
-        return lessonRepository.existsGroupConflict(
+    private boolean hasGroupTimeConflict(Lesson lesson, Long excludeId) {
+        return lessonRepository.findGroupConflictInTime(
                 lesson.getGroup().getId(),
                 lesson.getDate(),
                 lesson.getDuration().getStart(),

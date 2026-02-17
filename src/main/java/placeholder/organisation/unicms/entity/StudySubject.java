@@ -17,6 +17,7 @@ public class StudySubject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
     @Pattern(regexp = "^[A-Z][a-z]+$")
     @Column(name = "name", nullable = false)
     String name;

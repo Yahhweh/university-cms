@@ -84,7 +84,7 @@ class LecturerServiceTest {
         when(studySubjectRepository.findById(subjectId)).thenReturn(Optional.of(subject));
         when(lecturerRepository.findById(lecturerId)).thenReturn(Optional.of(lecturer));
 
-        lecturerService.removeSubjectToLecturer(subjectId, lecturerId);
+        lecturerService.removeSubjectFromLecturer(subjectId, lecturerId);
 
         assertTrue(lecturer.getStudySubjects().isEmpty());
         verify(studySubjectRepository).findById(subjectId);
@@ -92,14 +92,14 @@ class LecturerServiceTest {
     }
 
     @Test
-    void removeSubjectToLecturer_throwsServiceException_whenDaoExceptionOccurs() {
+    void removeSubjectFromLecturer_throwsServiceException_whenDaoExceptionOccurs() {
         long subjectId = 1L;
         long lecturerId = 2L;
 
         when(studySubjectRepository.findById(subjectId)).thenThrow(new ServiceException(""));
 
         assertThrows(ServiceException.class, () ->
-                lecturerService.removeSubjectToLecturer(subjectId, lecturerId)
+                lecturerService.removeSubjectFromLecturer(subjectId, lecturerId)
         );
     }
 

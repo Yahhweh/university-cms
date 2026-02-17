@@ -16,6 +16,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClassRoom {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;

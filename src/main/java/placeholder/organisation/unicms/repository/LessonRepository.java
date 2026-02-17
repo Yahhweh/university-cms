@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface LessonRepository extends JpaRepository<Lesson, Long> {
 
-    List<Lesson> findByLecturerId(Long lecturerId);
+    List<Lesson> findLessonsByLecturerId(Long lecturerId);
 
     @Query("SELECT l FROM Lesson l " +
             "JOIN Student s ON s.id = :personId " +
@@ -23,12 +23,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
             @Param("personId") Long personId
     );
 
-    @Query("SELECT l FROM Lesson l " +
-            "WHERE l.date = :date AND l.lecturer.id = :personId")
-    List<Lesson> findByDateForLecturer(
-            @Param("date") LocalDate date,
-            @Param("personId") Long personId
-    );
+    List<Lesson> findByDateAndLecturerId(LocalDate date, Long lecturerId);
 
     @Query("SELECT l FROM Lesson l " +
             "JOIN Student s ON s.id = :personId " +
@@ -57,7 +52,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
             "AND l.date = :date " +
             "AND d.end > :start " +
             "AND d.start < :end " +
-            "AND (:excludeId IS NULL OR l.id <> :excludeId)")
+            "AND (:excludeId = -1 OR l.id <> :excludeId)")
     boolean findConflictionLessonsForLecturer(
             @Param("lecturer_id") Long lecturerId,
             @Param("date") LocalDate date,
@@ -71,7 +66,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
                 "AND l.duration.start < :end " +
                 "AND l.duration.end > :start " +
                 "AND (:excludeId IS NULL OR l.id <> :excludeId)")
-        boolean findConflicts(
+        boolean findRoomConflictsInTime(
                 @Param("date") LocalDate date,
                 @Param("start") LocalTime start,
                 @Param("end") LocalTime end,
@@ -84,7 +79,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
             "AND l.duration.start < :end " +
             "AND l.duration.end > :start " +
             "AND (:excludeId IS NULL OR l.id <> :excludeId)")
-    boolean existsGroupConflict(
+    boolean findGroupConflictInTime(
             @Param("groupId") Long groupId,
             @Param("date") LocalDate date,
             @Param("start") LocalTime start,

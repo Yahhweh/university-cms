@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS class_room (
 CREATE TABLE IF NOT EXISTS student (
                                        id INTEGER PRIMARY KEY,
                                        group_id INTEGER,
-                                       degree_type_attr degree_type,
+                                       degree degree_type,
                                        CONSTRAINT fk_student_person FOREIGN KEY (id) REFERENCES person(id),
                                        CONSTRAINT fk_student_group FOREIGN KEY (group_id) REFERENCES "group"(id)
 );

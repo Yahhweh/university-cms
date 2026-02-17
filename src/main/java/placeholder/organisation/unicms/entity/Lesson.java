@@ -14,24 +14,31 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Lesson {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "duration_id")
     private Duration duration;
+
     @ManyToOne
     @JoinColumn(name = "study_subject_id")
     private StudySubject studySubject;
+
     @ManyToOne
     @JoinColumn(name = "group_id")
     private Group group;
+
     @ManyToOne
     @JoinColumn(name = "lecturer_id")
     private Lecturer lecturer;
+
     @ManyToOne
     @JoinColumn(name = "class_room_id")
     private ClassRoom classRoom;
+
     @Column
     private LocalDate date;
 

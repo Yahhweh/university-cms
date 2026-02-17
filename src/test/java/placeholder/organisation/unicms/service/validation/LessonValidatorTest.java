@@ -39,10 +39,10 @@ class LessonValidatorTest {
         Lesson lesson = createBaseLesson();
 
         when(lessonRepository.findConflictionLessonsForLecturer(any(), any(), any(), any(), anyLong())).thenReturn(false);
-        when(lessonRepository.findConflicts(any(), any(), any(), anyLong(), anyLong())).thenReturn(false);
-        when(lessonRepository.existsGroupConflict(any(), any(), any(), any(), anyLong())).thenReturn(true);
+        when(lessonRepository.findRoomConflictsInTime(any(), any(), any(), anyLong(), anyLong())).thenReturn(false);
+        when(lessonRepository.findGroupConflictInTime(any(), any(), any(), any(), anyLong())).thenReturn(true);
 
-        assertThatThrownBy(() -> lessonValidator.validateLesson(lesson))
+        assertThatThrownBy(() -> lessonValidator.validateLesson(lesson, -1L))
                 .isInstanceOf(EntityValidationException.class)
                 .hasMessageContaining("Group has another lesson at this time");
     }
@@ -54,7 +54,7 @@ class LessonValidatorTest {
 
         mockNoConflicts();
 
-        assertThatThrownBy(() -> lessonValidator.validateLesson(lesson))
+        assertThatThrownBy(() -> lessonValidator.validateLesson(lesson, -1L))
                 .isInstanceOf(EntityValidationException.class)
                 .hasMessageContaining("Lecturer is not authorized");
     }
@@ -72,7 +72,7 @@ class LessonValidatorTest {
         List<Student> overCapacityList = Arrays.asList(new Student[Math.toIntExact(roomCapacity + 1)]);
         when(studentRepository.findStudentsByGroup(any(Group.class))).thenReturn(overCapacityList);
 
-        assertThatThrownBy(() -> lessonValidator.validateLesson(lesson))
+        assertThatThrownBy(() -> lessonValidator.validateLesson(lesson, -1L))
                 .isInstanceOf(EntityValidationException.class)
                 .hasMessageContaining("Group size exceeds room capacity");
     }
@@ -88,13 +88,13 @@ class LessonValidatorTest {
         List<Student> normalList = Arrays.asList(new Student[50]);
         when(studentRepository.findStudentsByGroup(any(Group.class))).thenReturn(normalList);
 
-        assertDoesNotThrow(() -> lessonValidator.validateLesson(lesson));
+        assertDoesNotThrow(() -> lessonValidator.validateLesson(lesson, -1L));
     }
 
     private void mockNoConflicts() {
         when(lessonRepository.findConflictionLessonsForLecturer(any(), any(), any(), any(), anyLong())).thenReturn(false);
-        when(lessonRepository.findConflicts(any(), any(), any(), anyLong(), anyLong())).thenReturn(false);
-        when(lessonRepository.existsGroupConflict(any(), any(), any(), any(), anyLong())).thenReturn(false);
+        when(lessonRepository.findRoomConflictsInTime(any(), any(), any(), anyLong(), anyLong())).thenReturn(false);
+        when(lessonRepository.findGroupConflictInTime(any(), any(), any(), any(), anyLong())).thenReturn(false);
     }
 
     private Lesson createBaseLesson() {

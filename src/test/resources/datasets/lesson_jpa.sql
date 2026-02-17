@@ -17,9 +17,9 @@ INSERT INTO "group" (id, name) VALUES (1,'ITfu-25/1');
 
 INSERT INTO "group" (id, name) VALUES (2,'ITfu-25/2');
 
-INSERT INTO student (id, group_id, degree_type_attr) VALUES (1,1,  'Bachelor');
+INSERT INTO student (id, group_id, degree) VALUES (1,1,  'Bachelor');
 
-INSERT INTO student (id, group_id, degree_type_attr) VALUES (3,2,  'Bachelor');
+INSERT INTO student (id, group_id, degree) VALUES (3,2,  'Bachelor');
 
 INSERT INTO duration (id,start, "end") VALUES (1,'08:30:00', '10:05:00');
 INSERT INTO duration (id,start, "end") VALUES (2,'10:30:00', '12:05:00');

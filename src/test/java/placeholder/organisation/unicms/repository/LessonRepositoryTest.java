@@ -30,11 +30,11 @@ class LessonRepositoryTest {
     LessonRepository lessonRepository;
 
     @Test
-    void findByLecturerId_shouldReturnLecturer_WhenLecturerExists() {
+    void findLessonsByLecturerId_shouldReturnLecturer_WhenLecturerExists() {
         Long targetLecturerId = 2L;
         int expectedLessonsSize = 3;
 
-        List<Lesson> lessons = lessonRepository.findByLecturerId(targetLecturerId);
+        List<Lesson> lessons = lessonRepository.findLessonsByLecturerId(targetLecturerId);
 
         assertThat(lessons).isNotNull();
 
@@ -91,7 +91,7 @@ class LessonRepositoryTest {
         long lecturerId = 2L;
         int expectedLessonsSize = 2;
 
-        List<Lesson> lessons = lessonRepository.findByDateForLecturer(lessonDate, lecturerId);
+        List<Lesson> lessons = lessonRepository.findByDateAndLecturerId(lessonDate, lecturerId);
 
         assertThat(lessons.size()).isEqualTo(expectedLessonsSize);
         Lesson foundLesson = lessons.get(0);
@@ -106,7 +106,7 @@ class LessonRepositoryTest {
         LocalDate lessonDate = LocalDate.parse("2026-01-17");
         long lecturerId = 200L;
 
-        List<Lesson> lessons = lessonRepository.findByDateForLecturer(lessonDate, lecturerId);
+        List<Lesson> lessons = lessonRepository.findByDateAndLecturerId(lessonDate, lecturerId);
 
         assertThat(lessons.isEmpty()).isTrue();
     }
@@ -151,24 +151,24 @@ class LessonRepositoryTest {
     }
 
     @Test
-    void findConflicts_shouldReturnTrue_whenRoomIsOccupied() {
+    void findRoomConflictsInTime_shouldReturnTrue_whenRoomIsOccupied() {
         LocalTime startTime = LocalTime.of(9, 0);
         LocalTime endTime = LocalTime.of(10, 0);
         Long roomId = 1L;
 
-        boolean hasConflict = lessonRepository.findConflicts(TEST_DATE, startTime, endTime, roomId, null);
+        boolean hasConflict = lessonRepository.findRoomConflictsInTime(TEST_DATE, startTime, endTime, roomId, null);
 
         assertThat(hasConflict).isTrue();
     }
 
     @Test
-    void findConflicts_shouldReturnFalse_whenOverlappingIdMatchesExcludeId() {
+    void findRoomConflictsInTime_shouldReturnFalse_whenOverlappingIdMatchesExcludeId() {
         LocalTime startTime = LocalTime.of(13, 30);
         LocalTime endTime = LocalTime.of(15, 00);
         Long roomId = 1L;
         Long existingLessonId = 1L;
 
-        boolean hasConflict = lessonRepository.findConflicts(TEST_DATE, startTime, endTime, roomId, existingLessonId);
+        boolean hasConflict = lessonRepository.findRoomConflictsInTime(TEST_DATE, startTime, endTime, roomId, existingLessonId);
 
         assertThat(hasConflict).isFalse();
     }

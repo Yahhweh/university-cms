@@ -16,7 +16,6 @@ public class ClassRoomValidator {
     private static final List<String> typesForC = List.of("Library", "Study Area", "Working Room");
     private static final List<String> typesForD = List.of("Sport Room");
 
-
     public void validateClassRoom(ClassRoom classRoom) {
         if (!isClassRoomInCorrectCorpus(classRoom)) {
             throw new EntityValidationException(
