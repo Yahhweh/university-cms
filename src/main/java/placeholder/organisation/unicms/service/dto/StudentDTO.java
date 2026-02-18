@@ -15,7 +15,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class StudentDTO extends PersonDTO {
     @Valid
-    private GroupDTO group;
+    @NotNull
+    private Long groupId;
 
     @NotNull
     private Degree degree;

@@ -3,6 +3,7 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.repository.StudentRepository;
 import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.service.dto.StudentDTO;
@@ -18,10 +19,13 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
+    private final GroupRepository groupRepository;
 
-    public StudentService(StudentRepository studentRepository, StudentMapper studentMapper) {
+    public StudentService(StudentRepository studentRepository, StudentMapper studentMapper,
+                          GroupRepository groupRepository) {
         this.studentRepository = studentRepository;
         this.studentMapper = studentMapper;
+        this.groupRepository = groupRepository;
     }
 
     public List<Student> findAllStudents() {
@@ -54,8 +58,16 @@ public class StudentService {
                 .orElseThrow(() -> new EntityNotFoundException(Student.class, String.valueOf(studentId)));
 
         studentMapper.updateEntityFromDto(studentDTO, student);
+        resolveRelations(studentDTO, student);
         studentRepository.save(student);
 
         log.debug("Student updated successfully. ID: {}", studentId);
+    }
+
+
+    private void resolveRelations(StudentDTO dto, Student student){
+        if(dto.getGroupId() != null){
+            student.setGroup(groupRepository.getReferenceById(dto.getGroupId()));
+        }
     }
 }

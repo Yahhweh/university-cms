@@ -11,5 +11,6 @@ public interface StudentMapper {
     StudentDTO toDto(Student student);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "group", ignore = true)
     void updateEntityFromDto(StudentDTO dto, @MappingTarget Student entity);
 }

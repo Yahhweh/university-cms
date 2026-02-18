@@ -28,13 +28,13 @@ public class LessonValidator {
         if(!isLectureOnWorkingDays(lesson)){
             throw new EntityValidationException("Lecture on weekends.", Lesson.class, String.valueOf(lessonId));
         }
-        if (hasLecturerTimeConflict(lesson, lessonId)) {
+        if (hasLecturerTimeConflict(lesson)) {
             throw new EntityValidationException("Lecturer has another lesson at this time", Lesson.class, String.valueOf(lessonId));
         }
-        if (hasRoomTimeConflict(lesson, lessonId)) {
+        if (hasRoomTimeConflict(lesson)) {
             throw new EntityValidationException("Classroom is occupied", Lesson.class, String.valueOf(lessonId));
         }
-        if (hasGroupTimeConflict(lesson, lessonId)) {
+        if (hasGroupTimeConflict(lesson)) {
             throw new EntityValidationException("Group has another lesson at this time", Lesson.class, String.valueOf(lessonId));
         }
         if (!isLecturerAuthorized(lesson)) {
@@ -45,31 +45,31 @@ public class LessonValidator {
         }
     }
 
-    private boolean hasLecturerTimeConflict(Lesson lesson, Long excludeId) {
+    private boolean hasLecturerTimeConflict(Lesson lesson) {
         return lessonRepository.findConflictionLessonsForLecturer(
                 lesson.getLecturer().getId(),
                 lesson.getDate(),
                 lesson.getDuration().getStart(),
                 lesson.getDuration().getEnd(),
-                excludeId);
+                lesson.getId());
     }
 
-    private boolean hasRoomTimeConflict(Lesson lesson, Long excludeId) {
+    private boolean hasRoomTimeConflict(Lesson lesson) {
         return lessonRepository.findRoomConflictsInTime(
                 lesson.getDate(),
                 lesson.getDuration().getStart(),
                 lesson.getDuration().getEnd(),
                 lesson.getClassRoom().getId(),
-                excludeId);
+                lesson.getId());
     }
 
-    private boolean hasGroupTimeConflict(Lesson lesson, Long excludeId) {
+    private boolean hasGroupTimeConflict(Lesson lesson) {
         return lessonRepository.findGroupConflictInTime(
                 lesson.getGroup().getId(),
                 lesson.getDate(),
                 lesson.getDuration().getStart(),
                 lesson.getDuration().getEnd(),
-                excludeId);
+                lesson.getId());
     }
 
     private boolean isLecturerAuthorized(Lesson lesson) {
