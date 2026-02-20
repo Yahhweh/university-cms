@@ -7,9 +7,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import placeholder.organisation.unicms.repository.StudySubjectRepository;
-import placeholder.organisation.unicms.service.StudySubjectService;
-import placeholder.organisation.unicms.service.dto.StudySubjectDTO;
+import placeholder.organisation.unicms.repository.SubjectRepository;
+import placeholder.organisation.unicms.service.SubjectService;
+import placeholder.organisation.unicms.service.dto.SubjectDTO;
 import placeholder.organisation.unicms.service.mapper.StudySubjectMapper;
 
 import java.util.Optional;
@@ -19,42 +19,42 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class StudySubjectServiceTest {
+class SubjectServiceTest {
 
     @Mock
-    private StudySubjectRepository studySubjectRepository;
+    private SubjectRepository subjectRepository;
 
     @Spy
     private StudySubjectMapper studySubjectMapper = Mappers.getMapper(StudySubjectMapper.class);
 
     @InjectMocks
-    private StudySubjectService studySubjectService;
+    private SubjectService subjectService;
 
     @Test
     void updateStudySubject_whenValidStudySubjectDTO_thenStudySubjectIsUpdated() {
-        StudySubject initial = getStudySubject();
-        StudySubjectDTO changes = getStudySubjectDto();
+        Subject initial = getStudySubject();
+        SubjectDTO changes = getStudySubjectDto();
         long id = initial.getId();
 
-        when(studySubjectRepository.findById(id)).thenReturn(Optional.of(initial));
+        when(subjectRepository.findById(id)).thenReturn(Optional.of(initial));
 
-        studySubjectService.updateStudySubject(id, changes);
+        subjectService.updateStudySubject(id, changes);
 
         verify(studySubjectMapper).updateEntityFromDto(changes, initial);
-        verify(studySubjectRepository).save(initial);
+        verify(subjectRepository).save(initial);
 
         assertThat(initial.getName()).isEqualTo("Math");
     }
 
-    private StudySubject getStudySubject() {
-        StudySubject subject = new StudySubject();
+    private Subject getStudySubject() {
+        Subject subject = new Subject();
         subject.setId(1L);
         subject.setName("Physics");
         return subject;
     }
 
-    private StudySubjectDTO getStudySubjectDto() {
-        StudySubjectDTO dto = new StudySubjectDTO();
+    private SubjectDTO getStudySubjectDto() {
+        SubjectDTO dto = new SubjectDTO();
         dto.setName("Math");
         return dto;
     }

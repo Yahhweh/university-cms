@@ -10,7 +10,7 @@ import javax.validation.constraints.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClassRoomTypeDTO {
+public class RoomTypeDTO {
     @NotBlank
     @Size(min = 2, max = 35)
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name must contain only letters")
@@ -21,11 +21,11 @@ public class ClassRoomTypeDTO {
     @Max(value = 500)
     private Long capacity;
 
-    public ClassRoomTypeDTO(String name) {
+    public RoomTypeDTO(String name) {
         this.name = name;
     }
 
-    public ClassRoomTypeDTO(Long capacity) {
+    public RoomTypeDTO(Long capacity) {
         this.capacity = capacity;
     }
 

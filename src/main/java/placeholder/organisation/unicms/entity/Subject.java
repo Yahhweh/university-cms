@@ -12,7 +12,7 @@ import javax.validation.constraints.Pattern;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudySubject {
+public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -22,7 +22,11 @@ public class StudySubject {
     @Column(name = "name", nullable = false)
     String name;
 
-    public StudySubject(String name) {
+    public Subject(String name) {
         this.name = name;
+    }
+
+    public String toString(){
+        return this.getName();
     }
 }

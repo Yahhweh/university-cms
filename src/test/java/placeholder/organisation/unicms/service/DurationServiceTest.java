@@ -32,7 +32,7 @@ class DurationServiceTest {
     DurationService durationService;
 
     @Test
-    void givenValidDurationDto_whenUpdateDuration_thenDurationIsUpdated() {
+    void updateDuration_shouldSave_whenDurationIsCorrect() {
         Duration initial = getDuration();
         DurationDTO changes = getDurationDto();
         long id = initial.getId();

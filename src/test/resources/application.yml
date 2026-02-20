@@ -19,6 +19,9 @@ subject:
     min-per-lecturer: 1
     max-per-lecturer: 3
 
+app:
+  ui:
+    theme:cerulean
 
 
 

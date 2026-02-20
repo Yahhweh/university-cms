@@ -5,8 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -15,7 +13,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClassRoomType {
+public class RoomType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +28,12 @@ public class ClassRoomType {
     @Column(name = "capacity")
     Long capacity;
 
-    public ClassRoomType(String name, Long capacity) {
+    public RoomType(String name, Long capacity) {
         this.name = name;
         this.capacity = capacity;
+    }
+
+    public String toString(){
+        return this.getName();
     }
 }

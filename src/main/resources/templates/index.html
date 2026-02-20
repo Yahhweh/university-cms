@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Vilnius Tech</title>
+    <link rel="stylesheet"
+          th:href="@{/webjars/bootswatch-{name}/bootstrap.min.css(name=${theme})}">
+    <style>
+        .header-top {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 20px 0;
+            border-bottom: #7dd3fc;
+        }
+
+        .nav-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            display: none;
+            background: #fff;
+            padding: 10px;
+            min-width: 170px;
+            margin-bottom: 10px;
+            z-index: 2000;
+        }
+
+        #nav-other {
+            cursor: pointer;
+            color: white;
+            padding: 8px 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .university-section {
+            position: relative;
+            overflow: hidden;
+            height: 400px; }
+
+        .university-text {
+            position: absolute;
+            bottom: 20%;
+            right: 10%;
+            background: rgba(125, 211, 252, 0.9);
+            padding: 25px;
+            max-width: 400px;
+            border-radius: 4px;
+        }
+
+        .logo-text {
+            text-transform: uppercase;
+            text-align: center;
+            width: 100%;
+            letter-spacing: 2px;
+        }
+
+        .entity-nav {
+            background-color: #1e3a8a;
+            padding: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            border-top: #7dd3fc;
+        }
+
+        .entity-nav a {
+            color: white;
+            text-decoration: none;
+            border: #7dd3fc;
+            padding: 8px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: 0.3s;
+        }
+
+    </style>
+</head>
+<body>
+
+<header class="header-top">
+    <div class="container">
+        <div class="logo d-flex align-items-center">
+            <h2 class="logo-text m-0">University</h2>
+        </div>
+    </div>
+</header>
+
+<section class="university-section bg-light border-bottom">
+    <div class="container-fluid p-0 hero-section">
+        <img th:src="@{/images/university-section.jpeg}" class="w-100 h-100 object-fit-cover" alt="Hero">
+        <div class="university-text shadow">
+            <h3 class="text-dark">University cms</h3>
+            <p class="small text-dark">University Content Management System for Vilnius Tech</p>
+        </div>
+    </div>
+</section>
+
+<div >
+    <nav class="entity-nav">
+        <a th:href="@{/students}">Students</a>
+        <a th:href="@{/lecturers}">Lecturers</a>
+        <a th:href="@{/lessons}">Lessons</a>
+
+        <div class="nav-wrapper">
+            <div id="dropdown-other" class="dropdown-content">
+            </div>
+            <div id="nav-other">Other</div>
+        </div>
+    </nav>
+</div>
+<script th:src="@{/js/tooltip.js}"></script>
+</body>
+</html>

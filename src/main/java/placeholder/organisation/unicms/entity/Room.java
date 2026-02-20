@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -15,7 +14,7 @@ import javax.validation.constraints.Size;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClassRoom {
+public class Room {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,5 +27,9 @@ public class ClassRoom {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "class_room_type_id", referencedColumnName = "id")
     @NotNull(message = "{classroom.type.notnull}")
-    ClassRoomType classRoomType;
+    RoomType roomType;
+
+    public String toString(){
+        return this.getRoom();
+    }
 }

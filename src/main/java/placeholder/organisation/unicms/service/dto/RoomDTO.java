@@ -10,7 +10,7 @@ import javax.validation.constraints.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ClassRoomDTO {
+public class RoomDTO {
     @NotBlank()
     @Size(min = 3, max = 35)
     @Pattern(regexp = "^[a-zA-Z]-[0-9]+$", message = "Room must follow format: Letter-Number (e.g., A-101)")
@@ -20,11 +20,11 @@ public class ClassRoomDTO {
     @Valid
     private Long classRoomTypeId;
 
-    public ClassRoomDTO(String room) {
+    public RoomDTO(String room) {
         this.room = room;
     }
 
-    public ClassRoomDTO(long classRoomTypeId) {
+    public RoomDTO(long classRoomTypeId) {
         this.classRoomTypeId = classRoomTypeId;
     }
 

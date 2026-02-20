@@ -30,7 +30,7 @@ class GroupServiceTest {
     GroupService groupService;
 
     @Test
-    void updateGroup_whenValidGroupDto_thanGroupIsUpdated() {
+    void updateGroup_shouldSave_whenCorrectGroup() {
         Group initial = getGroup();
         GroupDTO changes = getGroupDTO();
         long id = initial.getId();

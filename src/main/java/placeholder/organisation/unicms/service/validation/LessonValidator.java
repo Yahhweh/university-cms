@@ -3,14 +3,12 @@ package placeholder.organisation.unicms.service.validation;
 import org.springframework.stereotype.Component;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.service.EntityValidationException;
-import placeholder.organisation.unicms.repository.ClassRoomRepository;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.repository.LessonRepository;
 import placeholder.organisation.unicms.repository.StudentRepository;
 
 import java.time.DayOfWeek;
-import java.time.LocalTime;
-import java.util.List;
+
 @Component
 public class LessonValidator {
     private final LessonRepository lessonRepository;
@@ -59,7 +57,7 @@ public class LessonValidator {
                 lesson.getDate(),
                 lesson.getDuration().getStart(),
                 lesson.getDuration().getEnd(),
-                lesson.getClassRoom().getId(),
+                lesson.getRoom().getId(),
                 lesson.getId());
     }
 
@@ -73,11 +71,11 @@ public class LessonValidator {
     }
 
     private boolean isLecturerAuthorized(Lesson lesson) {
-        return lesson.getLecturer().getStudySubjects().contains(lesson.getStudySubject());
+        return lesson.getLecturer().getSubjects().contains(lesson.getSubject());
     }
 
     private boolean isCapacitySufficient(Lesson lesson) {
-        long capacity = lesson.getClassRoom().getClassRoomType().getCapacity();
+        long capacity = lesson.getRoom().getRoomType().getCapacity();
         return studentRepository.findStudentsByGroup(groupRepository.findById(lesson.getGroup().getId()).get()).size() <= capacity;
     }
 

@@ -24,24 +24,24 @@ public class LessonService {
     private final StudentRepository studentRepository;
     private final LecturerRepository lecturerRepository;
     private final DurationRepository durationRepository;
-    private final StudySubjectRepository studySubjectRepository;
+    private final SubjectRepository subjectRepository;
     private final GroupRepository groupRepository;
-    private final ClassRoomRepository classRoomRepository;
+    private final RoomRepository roomRepository;
 
     public LessonService(LessonRepository lessonRepository, LessonMapper lessonMapper,
                          LessonValidator lessonValidator, StudentRepository studentRepository,
                          LecturerRepository lecturerRepository, DurationRepository durationRepository,
-                         StudySubjectRepository studySubjectRepository, GroupRepository groupRepository,
-                         ClassRoomRepository classRoomRepository) {
+                         SubjectRepository subjectRepository, GroupRepository groupRepository,
+                         RoomRepository roomRepository) {
         this.lessonRepository = lessonRepository;
         this.lessonMapper = lessonMapper;
         this.lessonValidator = lessonValidator;
         this.lecturerRepository = lecturerRepository;
         this.studentRepository = studentRepository;
         this.durationRepository = durationRepository;
-        this.studySubjectRepository = studySubjectRepository;
+        this.subjectRepository = subjectRepository;
         this.groupRepository = groupRepository;
-        this.classRoomRepository = classRoomRepository;
+        this.roomRepository = roomRepository;
     }
 
     public List<Lesson> findAllLessons() {
@@ -52,7 +52,7 @@ public class LessonService {
 
     public Optional<Lesson> findLesson(long id) {
         Optional<Lesson> lesson = lessonRepository.findById(id);
-        lesson.ifPresent(l -> log.debug("Found lesson: {} with id: {}", l.getStudySubject(), id));
+        lesson.ifPresent(l -> log.debug("Found lesson: {} with id: {}", l.getSubject(), id));
         return lesson;
     }
 
@@ -60,7 +60,7 @@ public class LessonService {
     public void createLesson(Lesson lesson) {
         lessonValidator.validateLesson(lesson, -1L);
         lessonRepository.save(lesson);
-        log.info("Lesson saved successfully: {}", lesson.getStudySubject());
+        log.info("Lesson saved successfully: {}", lesson.getSubject());
     }
 
     public List<Lesson> findLessonsInRange(LocalDate startDate, LocalDate endDate, long personId) {
@@ -111,7 +111,7 @@ public class LessonService {
                     .orElse(lesson.getDuration()));
         }
         if (dto.getStudySubjectId() != null) {
-            lesson.setStudySubject(studySubjectRepository.getReferenceById(dto.getStudySubjectId()));
+            lesson.setSubject(subjectRepository.getReferenceById(dto.getStudySubjectId()));
         }
         if (dto.getGroupId() != null) {
             lesson.setGroup(groupRepository.getReferenceById(dto.getGroupId()));
@@ -122,7 +122,7 @@ public class LessonService {
         }
 
         if (dto.getClassRoomId() != null) {
-            lesson.setClassRoom(classRoomRepository.getReferenceById(dto.getClassRoomId()));
+            lesson.setRoom(roomRepository.getReferenceById(dto.getClassRoomId()));
         }
     }
 }

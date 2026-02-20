@@ -20,7 +20,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import static org.assertj.core.api.AssertionsForClassTypes.in;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.*;
@@ -38,7 +37,7 @@ class LessonServiceTest {
     @Mock
     LecturerRepository lecturerRepository;
     @Mock
-    StudySubjectRepository studySubjectRepository;
+    SubjectRepository subjectRepository;
     @InjectMocks
     LessonService lessonService;
 
@@ -161,7 +160,7 @@ class LessonServiceTest {
         long studySubjectId = lessonDTO.getStudySubjectId();
 
         when(lessonRepositoryMock.findById(id)).thenReturn(Optional.of(initial));
-        when(studySubjectRepository.getReferenceById(studySubjectId)).thenReturn(new StudySubject("Physics"));
+        when(subjectRepository.getReferenceById(studySubjectId)).thenReturn(new Subject("Physics"));
 
         lessonService.updateLesson(id, lessonDTO);
 
@@ -169,13 +168,13 @@ class LessonServiceTest {
         verify(lessonRepositoryMock).save(initial);
         verify(lessonValidator).validateLesson(initial, id);
 
-        assertThat(initial.getStudySubject().getName()).isEqualTo("Physics");
+        assertThat(initial.getSubject().getName()).isEqualTo("Physics");
     }
 
     @Test
     void createLesson_shouldThrowEntityValidationException_whenWrongLessonGiven() {
         Lesson lesson = getLesson();
-        lesson.getClassRoom().getClassRoomType().setCapacity(0L);
+        lesson.getRoom().getRoomType().setCapacity(0L);
 
         doThrow(EntityValidationException.class).when(lessonValidator).validateLesson(lesson, -1L);
 
@@ -185,7 +184,7 @@ class LessonServiceTest {
     @Test
     void updateLesson_shouldThrowEntityValidationException_whenWrongLessonGiven() {
         Lesson lesson = getLesson();
-        lesson.getClassRoom().getClassRoomType().setCapacity(0L);
+        lesson.getRoom().getRoomType().setCapacity(0L);
         LessonDTO lessonDto = getLessonDto();
 
         when(lessonRepositoryMock.findById(lesson.getId())).thenReturn(Optional.of(lesson));
@@ -233,7 +232,7 @@ class LessonServiceTest {
     }
 
     Lesson getLesson() {
-        return new Lesson(1L, getDuration(), new StudySubject(1L, "Math"), getGroup(), getLecturer(), getClassRoom(), LocalDate.now());
+        return new Lesson(1L, getDuration(), new Subject(1L, "Math"), getGroup(), getLecturer(), getClassRoom(), LocalDate.now());
     }
 
     LessonDTO getLessonDto() {
@@ -259,7 +258,7 @@ class LessonServiceTest {
         return new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00));
     }
 
-    ClassRoom getClassRoom() {
-        return new ClassRoom(1L, "A-101", new ClassRoomType(1L, "Hall", 100L));
+    Room getClassRoom() {
+        return new Room(1L, "A-101", new RoomType(1L, "Hall", 100L));
     }
 }

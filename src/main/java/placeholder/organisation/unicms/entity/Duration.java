@@ -25,4 +25,8 @@ public class Duration {
 
     @Column(name = "\"end\"")
     LocalTime end;
+
+    public String toString(){
+        return this.getStart() + "-"  + this.getEnd();
+    }
 }

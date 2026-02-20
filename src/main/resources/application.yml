@@ -21,6 +21,14 @@ spring:
     hibernate:
       ddl-auto: none
 
+  thymeleaf:
+    cache: false
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .html
+server:
+  port: 8081
+
 logging:
   level:
     org.flywaydb: DEBUG
@@ -34,4 +42,3 @@ lesson:
   validation:
     min_duration_minutes: 45
     max_duration_minutes: 90
-

@@ -59,4 +59,8 @@ public class Address {
         this.postalCode = postalCode;
         this.phoneNumber = phoneNumber;
     }
+
+    public String toString(){
+        return this.getCountry();
+    }
 }

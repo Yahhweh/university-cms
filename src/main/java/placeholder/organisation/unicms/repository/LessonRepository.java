@@ -61,7 +61,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long> {
             @Param("excludeId") Long excludeId);
 
         @Query("SELECT COUNT(l) > 0 FROM Lesson l " +
-                "WHERE l.classRoom.id = :id " +
+                "WHERE l.room.id = :id " +
                 "AND l.date = :date " +
                 "AND l.duration.start < :end " +
                 "AND l.duration.end > :start " +
