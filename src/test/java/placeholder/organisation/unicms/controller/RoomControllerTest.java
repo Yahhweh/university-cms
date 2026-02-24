@@ -27,26 +27,18 @@ class RoomControllerTest {
     @MockitoBean
     private RoomService roomService;
 
-    @MockitoBean
-    private FieldExtractor fieldExtractor;
-
-
     @Test
     void getRooms_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
-        List<String> fields = List.of("id", "room", "roomType");
         List<Room> rooms = List.of(new Room(), new Room());
 
-        when(fieldExtractor.getFieldNames(Room.class)).thenReturn(fields);
         when(roomService.findAllRooms()).thenReturn(rooms);
 
         mockMvc.perform(get("/rooms"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("table"))
-                .andExpect(model().attribute("fields", fields))
-                .andExpect(model().attribute("objects", rooms))
-                .andExpect(model().attributeExists("fields", "objects"));
+                .andExpect(view().name("rooms"))
+                .andExpect(model().attribute("rooms", rooms))
+                .andExpect(model().attributeExists( "rooms"));
 
-        verify(fieldExtractor).getFieldNames(Room.class);
         verify(roomService).findAllRooms();
     }
 }

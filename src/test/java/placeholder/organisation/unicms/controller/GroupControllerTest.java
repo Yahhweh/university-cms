@@ -26,25 +26,19 @@ class GroupControllerTest {
     MockMvc mockMvc;
     @MockitoBean
     GroupService groupService;
-    @MockitoBean
-    FieldExtractor fieldExtractor;
 
     @Test
     void getGroups_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
-        List<String> fields = List.of("id", "name");
         List<Group> groups = List.of(new Group(), new Group());
 
-        when(fieldExtractor.getFieldNames(Group.class)).thenReturn(fields);
         when(groupService.findAllGroups()).thenReturn(groups);
 
         mockMvc.perform(get("/groups"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("table"))
-                .andExpect(model().attribute("fields", fields))
-                .andExpect(model().attribute("objects", groups))
-                .andExpect(model().attributeExists("fields", "objects"));
+                .andExpect(view().name("groups"))
+                .andExpect(model().attribute("groups", groups))
+                .andExpect(model().attributeExists( "groups"));
 
-        verify(fieldExtractor).getFieldNames(Group.class);
         verify(groupService).findAllGroups();
     }
 }

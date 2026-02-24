@@ -23,27 +23,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class DurationControllerTest {
     @MockitoBean
     DurationService durationService;
-    @MockitoBean
-    FieldExtractor fieldExtractor;
     @Autowired
     MockMvc mockMvc;
 
     @Test
     void getDurations_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
-        List<String> fields = List.of("id", "start", "end");
         List<Duration> durations = List.of(new Duration(), new Duration());
 
-        when(fieldExtractor.getFieldNames(Duration.class)).thenReturn(fields);
         when(durationService.findAllDurations()).thenReturn(durations);
 
         mockMvc.perform(get("/durations"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("table"))
-                .andExpect(model().attribute("fields", fields))
-                .andExpect(model().attribute("objects", durations))
-                .andExpect(model().attributeExists("fields", "objects"));
+                .andExpect(view().name("durations"))
+                .andExpect(model().attribute("durations", durations))
+                .andExpect(model().attributeExists("durations"));
 
-        verify(fieldExtractor).getFieldNames(Duration.class);
         verify(durationService).findAllDurations();
     }
 }

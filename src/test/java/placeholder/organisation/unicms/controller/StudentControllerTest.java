@@ -24,26 +24,19 @@ class StudentControllerTest {
     MockMvc mockMvc;
     @MockitoBean
     StudentService studentService;
-    @MockitoBean
-    FieldExtractor fieldExtractor;
 
     @Test
     void getLecturers_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
-        List<String> fields = new java.util.ArrayList<>(List.of("degree", "group"));
-        fields.addAll(getPersonFields());
         List<Student> students = List.of(new Student(), new Student());
 
-        when(fieldExtractor.getFieldNames(Student.class)).thenReturn(fields);
         when(studentService.findAllStudents()).thenReturn(students);
 
         mockMvc.perform(get("/students"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("table"))
-                .andExpect(model().attribute("fields", fields))
-                .andExpect(model().attribute("objects", students))
-                .andExpect(model().attributeExists("fields", "objects"));
+                .andExpect(view().name("students"))
+                .andExpect(model().attribute("students", students))
+                .andExpect(model().attributeExists( "students"));
 
-        verify(fieldExtractor).getFieldNames(Student.class);
         verify(studentService).findAllStudents();
     }
 

@@ -24,25 +24,18 @@ class RoomTypeControllerTest {
     @MockitoBean
     private RoomTypeService roomTypeService;
 
-    @MockitoBean
-    private FieldExtractor fieldExtractor;
-
     @Test
     void getRoomTypes_ShouldReturnTableViewWithAttributes() throws Exception {
-        List<String> fields = List.of("id", "name");
         List<RoomType> roomTypes = List.of(new RoomType(), new RoomType());
 
-        when(fieldExtractor.getFieldNames(RoomType.class)).thenReturn(fields);
         when(roomTypeService.findAllRoomTypes()).thenReturn(roomTypes);
 
         mockMvc.perform(get("/room-types"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("table"))
-                .andExpect(model().attribute("fields", fields))
-                .andExpect(model().attribute("objects", roomTypes))
-                .andExpect(model().attributeExists("fields", "objects"));
+                .andExpect(view().name("roomTypes"))
+                .andExpect(model().attribute("roomTypes", roomTypes))
+                .andExpect(model().attributeExists( "roomTypes"));
 
-        verify(fieldExtractor).getFieldNames(RoomType.class);
         verify(roomTypeService).findAllRoomTypes();
     }
 }

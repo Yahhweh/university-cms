@@ -1,6 +1,8 @@
 package placeholder.organisation.unicms.service;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.repository.GroupRepository;
@@ -20,12 +22,14 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
     private final GroupRepository groupRepository;
+    private final FilterAndSorterOfEntities filterAndSorterOfEntities;
 
     public StudentService(StudentRepository studentRepository, StudentMapper studentMapper,
-                          GroupRepository groupRepository) {
+                          GroupRepository groupRepository, FilterAndSorterOfEntities filterAndSorterOfEntities) {
         this.studentRepository = studentRepository;
         this.studentMapper = studentMapper;
         this.groupRepository = groupRepository;
+        this.filterAndSorterOfEntities =filterAndSorterOfEntities;
     }
 
     public List<Student> findAllStudents() {
@@ -64,6 +68,9 @@ public class StudentService {
         log.debug("Student updated successfully. ID: {}", studentId);
     }
 
+    public Page<Student> getFilteredAndSortedStudents(String sortField, String sortDir) {
+        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, studentRepository, Specification.where(null));
+    }
 
     private void resolveRelations(StudentDTO dto, Student student){
         if(dto.getGroupId() != null){

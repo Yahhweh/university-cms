@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:insert="~{styles/css.html :: my-css}">
+    <meta charset="UTF-8">
+    <title>Student List</title>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th><a th:href="@{/students(
+                sortField='name',
+                sortDirection=${currentSortField == 'name' ? nextDir : 'asc'}
+            )}">
+            First Name
+        </a></th>
+
+        <th><a th:href="@{/students(
+                sortField='sureName',
+                sortDirection=${currentSortField == 'sureName' ? nextDir : 'asc'}
+            )}">
+            Sure Name
+        </a></th>
+
+        <th>
+            <a th:href="@{/students(
+                sortField='gender',
+                sortDirection=${currentSortField == 'gender' ? nextDir : 'asc'}
+            )}">
+                Gender
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/students(
+                sortField='email',
+                sortDirection=${currentSortField == 'email' ? nextDir : 'asc'}
+            )}">
+                Email
+            </a>
+        </th>
+
+        <th><a th:href="@{/students(
+                sortField='dateOfBirth',
+                sortDirection=${currentSortField == 'dateOfBirth' ? nextDir : 'asc'}
+            )}">
+            Date of Birth
+        </a>
+        </th>
+
+        <th><a th:href="@{/students(
+                sortField='group',
+                sortDirection=${currentSortField == 'group' ? nextDir : 'asc'}
+            )}">
+            Group
+        </a>
+        </th>
+
+        <th><a th:href="@{/students(
+                sortField='degree',
+                sortDirection=${currentSortField == 'degree' ? nextDir : 'asc'}
+            )}">
+            Degree
+        </a>
+        </th>
+        <th><a th:href="@{/students(
+                sortField='address.country',
+                sortDirection=${currentSortField == 'address.country' ? nextDir : 'asc'}
+            )}">
+            Country
+        </a></th>
+        <th><a th:href="@{/students(
+                sortField='address.city',
+                sortDirection=${currentSortField == 'address.city' ? nextDir : 'asc'}
+            )}">
+            City
+        </a></th>
+        <th><a th:href="@{/students(
+                sortField='address.street',
+                sortDirection=${currentSortField == 'address.street' ? nextDir : 'asc'}
+            )}">
+            Street
+        </a></th>
+        <th><a th:href="@{/students(
+                sortField='address.houseNumber',
+                sortDirection=${currentSortField == 'address.houseNumber' ? nextDir : 'asc'}
+            )}">
+            House Number
+        </a></th>
+        <th><a th:href="@{/students(
+                sortField='address.postalCode',
+                sortDirection=${currentSortField == 'address.postalCode' ? nextDir : 'asc'}
+            )}">
+            Postal Code
+        </a></th>
+    <th><a th:href="@{/students(
+                sortField='address.phoneNumber',
+                sortDirection=${currentSortField == 'address.phoneNumber' ? nextDir : 'asc'}
+            )}">
+        Phone Number
+    </a></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="student : ${students}">
+        <td th:text="${student.id}">ID</td>
+        <td th:text="${student.name}">Name</td>
+        <td th:text="${student.sureName}">Surname</td>
+        <td th:text="${student.gender}">GENDER</td>
+        <td th:text="${student.email}">Email</td>
+        <td th:text="${student.dateOfBirth}">1990-01-01</td>
+
+        <td th:text="${student.group?.toString() ?: '-'}">
+            Group
+        </td>
+        <td th:text="${student.degree}">BACHELOR</td>
+
+        <td th:text="${student.address?.country ?: '-'}">
+            Country
+        </td>
+        <td th:text="${student.address?.city ?: '-'}">City
+        </td>
+        <td th:text="${student.address?.street ?: '-'}">
+            Street
+        </td>
+        <td th:text="${student.address?.houseNumber ?: '-'}">
+            House
+        </td>
+        <td th:text="${student.address?.postalCode ?: '-'}">
+            Postal Code
+        </td>
+        <td th:text="${student.address?.phoneNumber ?: '-'}">
+            Phone
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

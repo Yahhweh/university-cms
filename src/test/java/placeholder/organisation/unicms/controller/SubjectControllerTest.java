@@ -24,25 +24,18 @@ class SubjectControllerTest {
     @MockitoBean
     private SubjectService subjectService;
 
-    @MockitoBean
-    private FieldExtractor fieldExtractor;
-
     @Test
     void getRoomTypes_ShouldReturnTableViewWithAttributes() throws Exception {
-        List<String> fields = List.of("id", "name");
         List<Subject> subjects = List.of(new Subject(), new Subject());
 
-        when(fieldExtractor.getFieldNames(Subject.class)).thenReturn(fields);
         when(subjectService.findAllSubjects()).thenReturn(subjects);
 
         mockMvc.perform(get("/subjects"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("table"))
-                .andExpect(model().attribute("fields", fields))
-                .andExpect(model().attribute("objects", subjects))
-                .andExpect(model().attributeExists("fields", "objects"));
+                .andExpect(view().name("subjects"))
+                .andExpect(model().attribute("subjects", subjects))
+                .andExpect(model().attributeExists( "subjects"));
 
-        verify(fieldExtractor).getFieldNames(Subject.class);
         verify(subjectService).findAllSubjects();
     }
 }

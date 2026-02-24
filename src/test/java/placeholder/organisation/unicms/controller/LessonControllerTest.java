@@ -24,25 +24,18 @@ class LessonControllerTest {
     @MockitoBean
     private LessonService lessonService;
 
-    @MockitoBean
-    private FieldExtractor fieldExtractor;
-
     @Test
     void getLessons_ShouldReturnTableViewWithAttributes() throws Exception {
-        List<String> fields = List.of("id", "duration", "subject", "group", "lecturer", "room", "date");
         List<Lesson> lessons = List.of(new Lesson(), new Lesson());
 
-        when(fieldExtractor.getFieldNames(Lesson.class)).thenReturn(fields);
         when(lessonService.findAllLessons()).thenReturn(lessons);
 
         mockMvc.perform(get("/lessons"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("table"))
-                .andExpect(model().attribute("fields", fields))
-                .andExpect(model().attribute("objects", lessons))
-                .andExpect(model().attributeExists("fields", "objects"));
+                .andExpect(view().name("lessons"))
+                .andExpect(model().attribute("lessons", lessons))
+                .andExpect(model().attributeExists( "lessons"));
 
-        verify(fieldExtractor).getFieldNames(Lesson.class);
         verify(lessonService).findAllLessons();
     }
 }

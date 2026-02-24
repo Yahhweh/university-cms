@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{styles/css.html :: my-css}">
+    <meta charset="UTF-8">
+    <title>Subjects List</title>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th>
+            <a th:href="@{/subjects(sortField='id', sortDirection=${sortDirection == 'id' ? nextDir : 'asc'})}">
+                ID
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/subjects(sortField='name', sortDirection=${sortDirection == 'name' ? nextDir : 'asc'})}">
+                Subject Name
+            </a>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="subject : ${subjects}">
+        <td th:text="${subject.id}">ID</td>
+        <td th:text="${subject.name}">Math</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

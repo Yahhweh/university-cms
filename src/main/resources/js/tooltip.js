@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let timer;
 
     const entities = [
-        { name: 'Address',   url: '/addresses' },
         { name: 'Duration', url: '/durations' },
         { name: 'Group',    url: '/groups' },
         { name: 'Room',     url: '/rooms' },

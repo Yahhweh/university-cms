@@ -1,6 +1,8 @@
 package placeholder.organisation.unicms.service;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.repository.DurationRepository;
@@ -19,11 +21,15 @@ public class DurationService {
     private final DurationRepository durationRepository;
     private final DurationValidator durationValidator;
     private final DurationMapper durationMapper;
+    private final FilterAndSorterOfEntities filterAndSorterOfEntities;
 
-    public DurationService(DurationRepository durationRepository, DurationValidator durationValidator, DurationMapper durationMapper) {
+    public DurationService(DurationRepository durationRepository, DurationValidator
+            durationValidator, DurationMapper durationMapper,
+                           FilterAndSorterOfEntities filterAndSorterOfEntities) {
         this.durationRepository = durationRepository;
         this.durationValidator = durationValidator;
         this.durationMapper = durationMapper;
+        this.filterAndSorterOfEntities = filterAndSorterOfEntities;
     }
 
     public List<Duration> findAllDurations() {
@@ -58,5 +64,9 @@ public class DurationService {
         durationRepository.save(duration);
 
         log.debug("Duration updated successfully. ID: {}", durationId);
+    }
+
+    public Page<Duration> getFilteredAndSortedDuration(String sortingField, String sortingDirection){
+        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortingField, sortingDirection, durationRepository, Specification.where(null));
     }
 }

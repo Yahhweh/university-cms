@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{styles/css.html :: my-css}">
+    <meta charset="UTF-8">
+    <title>Students List</title>
+</head>
+
+<body>
+<table>
+    <thead>
+    <tr>
+        <th>
+            <a th:href="@{/lessons(sortField='id', sortDirection=${sortField == 'id' ? nextDir : 'asc'})}">
+                ID
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/lessons(sortField='date', sortDirection=${sortField == 'date' ? nextDir : 'asc'})}">
+                Date
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/lessons(sortField='duration', sortDirection=${sortField == 'duration' ? nextDir : 'asc'})}">
+                Duration
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/lessons(sortField='subject', sortDirection=${sortField == 'subject' ? nextDir : 'asc'})}">
+                Subject
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/lessons(sortField='group', sortDirection=${sortField == 'group' ? nextDir : 'asc'})}">
+                Group
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/lessons(sortField='lecturer', sortDirection=${sortField == 'lecturer' ? nextDir : 'asc'})}">
+                Lecturer
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/lessons(sortField='room', sortDirection=${sortField == 'room' ? nextDir : 'asc'})}">
+                Room
+            </a>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="lesson : ${lessons}">
+        <td th:text="${lesson.id}">ID</td>
+        <td th:text="${#temporals.format(lesson.date, 'dd.MM.yyyy')}">01.01.2024</td>
+        <td th:text="${lesson.duration}">Duration</td>
+        <td th:text="${lesson.subject}">Subject</td>
+        <td th:text="${lesson.group}">Group</td>
+        <td th:text="${lesson.lecturer}">Lecturer Name</td>
+        <td th:text="${lesson.room}">Room</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

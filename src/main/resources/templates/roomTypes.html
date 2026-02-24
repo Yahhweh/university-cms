@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{styles/css.html :: my-css}">
+    <meta charset="UTF-8">
+    <title>Room Types List</title>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th>
+            <a th:href="@{/room-types(sortField='id', sortDirection=${sortDirection == 'id' ? nextDir : 'asc'})}">
+                ID
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/room-types(sortField='name', sortDirection=${sortDirection == 'name' ? nextDir : 'asc'})}">
+                Type Name
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/room-types(sortField='capacity', sortDirection=${sortDirection == 'capacity' ? nextDir : 'asc'})}">
+                Capacity
+            </a>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="type : ${roomTypes}">
+        <td th:text="${type.id}">ID</td>
+        <td th:text="${type.name}">Lecture Hall</td>
+        <td th:text="${type.capacity}">0</td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

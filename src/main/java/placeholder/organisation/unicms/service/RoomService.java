@@ -1,6 +1,8 @@
 package placeholder.organisation.unicms.service;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.repository.RoomRepository;
@@ -21,13 +23,16 @@ public class RoomService {
     private final ClassRoomValidator classRoomValidator;
     private final ClassRoomMapper classRoomMapper;
     private final RoomTypeRepository roomTypeRepository;
+    private final FilterAndSorterOfEntities filterAndSorterOfEntities;
 
     public RoomService(RoomRepository roomRepository, ClassRoomValidator classRoomValidator,
-                       ClassRoomMapper classRoomMapper, RoomTypeRepository roomTypeRepository) {
+                       ClassRoomMapper classRoomMapper, RoomTypeRepository roomTypeRepository,
+                       FilterAndSorterOfEntities filterAndSorterOfEntities) {
         this.roomRepository = roomRepository;
         this.classRoomValidator = classRoomValidator;
         this.classRoomMapper = classRoomMapper;
         this.roomTypeRepository = roomTypeRepository;
+        this.filterAndSorterOfEntities = filterAndSorterOfEntities;
     }
 
     public List<Room> findAllRooms() {
@@ -71,6 +76,10 @@ public class RoomService {
         classRoomValidator.validateClassRoom(room);
         roomRepository.save(room);
         log.debug("Classroom updated successfully. ID: {}", classRoomId);
+    }
+
+    public Page<Room> getFilteredAndSortedRoom(String sortField, String sortDir){
+        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, roomRepository, Specification.where(null));
     }
 
     void resolveRelations(RoomDTO dto, Room entity){

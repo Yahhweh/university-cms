@@ -1,9 +1,11 @@
 package placeholder.organisation.unicms.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import placeholder.organisation.unicms.entity.Duration;
 import placeholder.organisation.unicms.entity.Lesson;
 
 import java.time.LocalDate;
@@ -11,7 +13,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Repository
-public interface LessonRepository extends JpaRepository<Lesson, Long> {
+public interface LessonRepository extends JpaRepository<Lesson, Long>, JpaSpecificationExecutor<Lesson> {
 
     List<Lesson> findLessonsByLecturerId(Long lecturerId);
 

@@ -1,9 +1,11 @@
 package placeholder.organisation.unicms.controller;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.service.SubjectService;
 
@@ -13,22 +15,30 @@ import java.util.List;
 public class SubjectController {
 
     SubjectService subjectService;
-    FieldExtractor fieldExtractor;
 
-    public SubjectController(SubjectService subjectService, FieldExtractor fieldExtractor) {
+    public SubjectController(SubjectService subjectService) {
         this.subjectService = subjectService;
-        this.fieldExtractor = fieldExtractor;
     }
 
     @RequestMapping(path = "/subjects", method = RequestMethod.GET)
-    public String getRoomTypes(Model model) {
-        List<String> fields = fieldExtractor.getFieldNames(Subject.class);
-        List<Subject> subjects = subjectService.findAllSubjects();
+    public String getRoomTypes(Model model,
+                               @RequestParam(defaultValue = "id") String sortField,
+                               @RequestParam(defaultValue = "asc") String sortDirection){
 
-        model.addAttribute("fields", fields);
-        model.addAttribute("objects", subjects);
+        Page<Subject> page = subjectService.getFilteredAndSortedSubject(sortField, sortDirection);
 
-        return "table";
+        List<Subject> subjects = page.getContent();
+
+        String nextDir = sortDirection.equals("asc") ? "desc" : (sortDirection.equals("desc") ? "none" : "asc");
+
+        model.addAttribute("subjects", subjects);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("nextDir", nextDir);
+
+        return "subjects";
     }
+
+
 
 }

@@ -1,9 +1,12 @@
 package placeholder.organisation.unicms.controller;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import placeholder.organisation.unicms.entity.Duration;
 import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.service.GroupService;
 
@@ -13,21 +16,27 @@ import java.util.List;
 public class GroupController {
 
     GroupService groupService;
-    FieldExtractor fieldExtractor;
 
-    public GroupController(GroupService groupService, FieldExtractor fieldExtractor) {
+    public GroupController(GroupService groupService) {
         this.groupService = groupService;
-        this.fieldExtractor = fieldExtractor;
     }
 
     @RequestMapping(path = "/groups", method = RequestMethod.GET)
-    public String getGroups(Model model){
-        List<String> fields = fieldExtractor.getFieldNames(Group.class);
-        List<Group> groups = groupService.findAllGroups();
+    public String getGroups(Model model,
+                              @RequestParam(defaultValue = "id") String sortField,
+                            @RequestParam(defaultValue = "asc") String sortDirection){
 
-        model.addAttribute("fields", fields);
-        model.addAttribute("objects", groups);
+        Page<Group> page = groupService.getFilteredAndSortedGroup(sortField, sortDirection);
 
-        return "table";
+        List<Group> groups = page.getContent();
+
+        String nextDir = sortDirection.equals("asc") ? "desc" : (sortDirection.equals("desc") ? "none" : "asc");
+
+        model.addAttribute("groups", groups);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDirection", sortDirection);
+        model.addAttribute("nextDir", nextDir);
+
+        return "groups";
     }
 }
