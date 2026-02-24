@@ -74,7 +74,7 @@ public class RoomTypeService {
         log.debug("Classroom type updated successfully. ID: {}", classRoomTypeId);
     }
 
-    public Page<RoomType> getFilteredAndSortedRoomType(String sortField, String sortDir){
-        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, roomTypeRepository, Specification.where(null));
+    public Page<RoomType> getFilteredAndSortedRoomType(String sortField, String sortDir, int pageNo){
+        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, roomTypeRepository, Specification.where(null), pageNo);
     }
 }

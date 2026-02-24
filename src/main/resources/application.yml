@@ -42,3 +42,6 @@ lesson:
   validation:
     min_duration_minutes: 45
     max_duration_minutes: 90
+
+table:
+  page_size: 10

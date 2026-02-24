@@ -109,8 +109,8 @@ public class LessonService {
         log.debug("Lesson updated successfully. ID: {}", lessonId);
     }
 
-    public Page<Lesson> getFilteredAndSortedLesson(String sortField, String sortDir){
-        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, lessonRepository, Specification.where(null));
+    public Page<Lesson> getFilteredAndSortedLesson(String sortField, String sortDir, int pageNo){
+        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, lessonRepository, Specification.where(null), pageNo);
     }
 
     private void resolveRelations(LessonDTO dto, Lesson lesson) {

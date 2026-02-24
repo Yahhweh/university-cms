@@ -101,8 +101,8 @@ public class LecturerService {
         log.debug("Lecturer updated successfully. ID: {}", lecturerId);
     }
 
-    public Page<Lecturer> getFilteredAndSortedLecturers(String sortField, String sortDir){
-        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, lecturerRepository, Specification.where(null));
+    public Page<Lecturer> getFilteredAndSortedLecturers(String sortField, String sortDir, int pageNo){
+        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, lecturerRepository, Specification.where(null), pageNo);
     }
 
     private void resolveRelations(LecturerDTO dto, Lecturer lecturer) {

@@ -69,7 +69,7 @@ public class SubjectService {
         log.debug("Study subject updated successfully. ID: {}", studySubjectId);
     }
 
-    public Page<Subject> getFilteredAndSortedSubject(String sortField, String sortDir){
-        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, subjectRepository, Specification.where(null));
+    public Page<Subject> getFilteredAndSortedSubject(String sortField, String sortDir, int pageNo){
+        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, subjectRepository, Specification.where(null),pageNo );
     }
 }

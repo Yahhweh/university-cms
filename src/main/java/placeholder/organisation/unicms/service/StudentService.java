@@ -1,6 +1,7 @@
 package placeholder.organisation.unicms.service;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -68,8 +69,8 @@ public class StudentService {
         log.debug("Student updated successfully. ID: {}", studentId);
     }
 
-    public Page<Student> getFilteredAndSortedStudents(String sortField, String sortDir) {
-        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, studentRepository, Specification.where(null));
+    public Page<Student> getFilteredAndSortedStudents(String sortField, String sortDir, int pageNo) {
+        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, studentRepository, Specification.where(null), pageNo);
     }
 
     private void resolveRelations(StudentDTO dto, Student student){

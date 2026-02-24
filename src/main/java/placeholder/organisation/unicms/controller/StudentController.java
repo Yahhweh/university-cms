@@ -25,18 +25,19 @@ public class StudentController {
     @GetMapping("/students")
     public String getStudents(Model model,
                               @RequestParam(defaultValue = "id") String sortField,
-                              @RequestParam(defaultValue = "asc") String sortDirection) {
+                              @RequestParam(defaultValue = "asc") String sortDirection,
+                              @RequestParam(value = "pageNo", defaultValue = "1") int pageNo) {
 
+        Page<Student> page = service.getFilteredAndSortedStudents(sortField, sortDirection, pageNo);
 
-        Page<Student> page = service.getFilteredAndSortedStudents(sortField, sortDirection);
+        String nextDir = sortDirection.equals("asc") ? "desc" : "asc";
 
-        List<Student> students = page.getContent();
-
-        String nextDir = sortDirection.equals("asc") ? "desc" : (sortDirection.equals("desc") ? "none" : "asc");
-
-        model.addAttribute("students", students);
-        model.addAttribute("currentSortField", sortField);
-        model.addAttribute("currentSortDir", sortDirection);
+        model.addAttribute("students", page.getContent());
+        model.addAttribute("totalPages", page.getTotalPages());
+        model.addAttribute("totalItems", page.getTotalElements());
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDirection);
         model.addAttribute("nextDir", nextDir);
 
         return "students";

@@ -25,8 +25,9 @@ public class DurationController {
     @RequestMapping(path = "/durations", method = RequestMethod.GET)
     public String getDuration(Model model,
                               @RequestParam(defaultValue = "id") String sortField,
-                              @RequestParam(defaultValue = "asc") String sortDirection){
-        Page<Duration> page = service.getFilteredAndSortedDuration(sortField, sortDirection);
+                              @RequestParam(defaultValue = "asc") String sortDirection,
+                              @RequestParam(value = "pageNo", defaultValue = "1") int pageNo){
+        Page<Duration> page = service.getFilteredAndSortedDuration(sortField, sortDirection, pageNo);
 
         List<Duration> durations = page.getContent();
 

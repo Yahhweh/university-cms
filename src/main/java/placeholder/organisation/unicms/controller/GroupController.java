@@ -24,9 +24,10 @@ public class GroupController {
     @RequestMapping(path = "/groups", method = RequestMethod.GET)
     public String getGroups(Model model,
                               @RequestParam(defaultValue = "id") String sortField,
-                            @RequestParam(defaultValue = "asc") String sortDirection){
+                            @RequestParam(defaultValue = "asc") String sortDirection,
+                            @RequestParam(value = "pageNo", defaultValue = "1") int pageNo){
 
-        Page<Group> page = groupService.getFilteredAndSortedGroup(sortField, sortDirection);
+        Page<Group> page = groupService.getFilteredAndSortedGroup(sortField, sortDirection, pageNo);
 
         List<Group> groups = page.getContent();
 

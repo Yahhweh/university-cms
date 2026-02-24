@@ -24,9 +24,10 @@ public class LessonController {
     @RequestMapping(value = "/lessons", method = RequestMethod.GET)
     public String getLessons(Model model,
                              @RequestParam(defaultValue = "id") String sortField,
-                             @RequestParam(defaultValue = "asc") String sortDirection){
+                             @RequestParam(defaultValue = "asc") String sortDirection,
+                             @RequestParam(value = "pageNo", defaultValue = "1") int pageNo){
 
-        Page<Lesson> page = lessonService.getFilteredAndSortedLesson(sortField, sortDirection);
+        Page<Lesson> page = lessonService.getFilteredAndSortedLesson(sortField, sortDirection, pageNo);
 
         List<Lesson> lessons = page.getContent();
 

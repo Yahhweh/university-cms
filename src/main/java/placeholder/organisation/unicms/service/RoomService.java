@@ -78,8 +78,8 @@ public class RoomService {
         log.debug("Classroom updated successfully. ID: {}", classRoomId);
     }
 
-    public Page<Room> getFilteredAndSortedRoom(String sortField, String sortDir){
-        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, roomRepository, Specification.where(null));
+    public Page<Room> getFilteredAndSortedRoom(String sortField, String sortDir, int pageNo) {
+        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, roomRepository, Specification.where(null), pageNo);
     }
 
     void resolveRelations(RoomDTO dto, Room entity){

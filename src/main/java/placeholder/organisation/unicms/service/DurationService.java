@@ -66,7 +66,7 @@ public class DurationService {
         log.debug("Duration updated successfully. ID: {}", durationId);
     }
 
-    public Page<Duration> getFilteredAndSortedDuration(String sortingField, String sortingDirection){
-        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortingField, sortingDirection, durationRepository, Specification.where(null));
+    public Page<Duration> getFilteredAndSortedDuration(String sortingField, String sortingDirection, int pageNo){
+        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortingField, sortingDirection, durationRepository, Specification.where(null), pageNo);
     }
 }

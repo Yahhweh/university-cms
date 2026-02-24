@@ -28,5 +28,19 @@
     </tr>
     </tbody>
 </table>
+
+<div th:if="${totalPages > 1}">
+    <a th:if="${currentPage > 1}"
+       th:href="@{/groups(pageNo=${currentPage - 1}, sortField=${sortField}, sortDirection=${sortDir})}">
+        Back
+    </a>
+
+    <span>[[${currentPage}]] / [[${totalPages}]]</span>
+
+    <a th:if="${currentPage < totalPages}"
+       th:href="@{/groups(pageNo=${currentPage + 1}, sortField=${sortField}, sortDirection=${sortDir})}">
+        Next
+    </a>
+</div>
 </body>
 </html>

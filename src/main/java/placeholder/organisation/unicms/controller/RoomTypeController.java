@@ -23,18 +23,21 @@ public class RoomTypeController {
     @RequestMapping(path = "/room-types", method = RequestMethod.GET)
     public String getRoomTypes(Model model,
                                @RequestParam(defaultValue = "id") String sortField,
-                               @RequestParam(defaultValue = "asc") String sortDirection){
+                               @RequestParam(defaultValue = "asc") String sortDirection,
+                               @RequestParam(value = "pageNo", defaultValue = "1") int pageNo)
+    {
 
-        Page<RoomType> page = roomTypeService.getFilteredAndSortedRoomType(sortField, sortDirection);
+        Page<RoomType> page = roomTypeService.getFilteredAndSortedRoomType(sortField, sortDirection, pageNo);
 
         List<RoomType> roomTypes = page.getContent();
 
         String nextDir = sortDirection.equals("asc") ? "desc" : (sortDirection.equals("desc") ? "none" : "asc");
 
-        model.addAttribute("RoomType", roomTypes);
+        model.addAttribute("roomTypes", roomTypes);
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("nextDir", nextDir);
+        model.addAttribute("pageNo", pageNo);
 
         return "roomTypes";
     }

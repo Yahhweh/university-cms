@@ -24,8 +24,9 @@ public class LecturerController {
     @RequestMapping(value = "/lecturers", method = RequestMethod.GET)
     public String getLecturers(Model model,
                                @RequestParam(defaultValue = "id") String sortField,
-                               @RequestParam(defaultValue = "asc") String sortDirection){
-        Page<Lecturer> page = service.getFilteredAndSortedLecturers(sortField, sortDirection);
+                               @RequestParam(defaultValue = "asc") String sortDirection,
+                               @RequestParam(value = "pageNo", defaultValue = "1") int pageNo){
+        Page<Lecturer> page = service.getFilteredAndSortedLecturers(sortField, sortDirection, pageNo);
 
         List<Lecturer> lecturers = page.getContent();
 

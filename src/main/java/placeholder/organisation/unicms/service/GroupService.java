@@ -64,7 +64,7 @@ public class GroupService {
         log.debug("Group updated successfully. ID: {}", groupId);
     }
 
-    public Page<Group> getFilteredAndSortedGroup(String sortingField, String sortingDirection){
-        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortingField, sortingDirection, groupRepository, Specification.where(null));
+    public Page<Group> getFilteredAndSortedGroup(String sortingField, String sortingDirection, int pageNo){
+        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortingField, sortingDirection, groupRepository, Specification.where(null), pageNo);
     }
 }

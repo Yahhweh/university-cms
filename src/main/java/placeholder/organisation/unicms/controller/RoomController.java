@@ -23,9 +23,10 @@ public class RoomController {
     @RequestMapping(path = "/rooms", method = RequestMethod.GET)
     public String getRooms(Model model,
                            @RequestParam(defaultValue = "id") String sortField,
-                           @RequestParam(defaultValue = "asc") String sortDirection){
+                           @RequestParam(defaultValue = "asc") String sortDirection,
+                           @RequestParam(value = "pageNo", defaultValue = "1") int pageNo){
 
-        Page<Room> page = roomService.getFilteredAndSortedRoom(sortField, sortDirection);
+        Page<Room> page = roomService.getFilteredAndSortedRoom(sortField, sortDirection, pageNo);
 
         List<Room> rooms = page.getContent();
 
@@ -35,6 +36,7 @@ public class RoomController {
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("nextDir", nextDir);
+        model.addAttribute("pageNo", pageNo);
 
         return "rooms";
     }
