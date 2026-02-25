@@ -11,14 +11,14 @@
         <th>ID</th>
         <th><a th:href="@{/students(
                 sortField='name',
-                sortDirection=${currentSortField == 'name' ? nextDir : 'asc'}
+                sortDirection=${sortField == 'name' ? nextDir : 'asc'}
             )}">
             First Name
         </a></th>
 
         <th><a th:href="@{/students(
                 sortField='sureName',
-                sortDirection=${currentSortField == 'sureName' ? nextDir : 'asc'}
+                sortDirection=${sortField == 'sureName' ? nextDir : 'asc'}
             )}">
             Sure Name
         </a></th>
@@ -26,7 +26,7 @@
         <th>
             <a th:href="@{/students(
                 sortField='gender',
-                sortDirection=${currentSortField == 'gender' ? nextDir : 'asc'}
+                sortDirection=${sortField == 'gender' ? nextDir : 'asc'}
             )}">
                 Gender
             </a>
@@ -35,7 +35,7 @@
         <th>
             <a th:href="@{/students(
                 sortField='email',
-                sortDirection=${currentSortField == 'email' ? nextDir : 'asc'}
+                sortDirection=${sortField == 'email' ? nextDir : 'asc'}
             )}">
                 Email
             </a>
@@ -43,7 +43,7 @@
 
         <th><a th:href="@{/students(
                 sortField='dateOfBirth',
-                sortDirection=${currentSortField == 'dateOfBirth' ? nextDir : 'asc'}
+                sortDirection=${sortField == 'dateOfBirth' ? nextDir : 'asc'}
             )}">
             Date of Birth
         </a>
@@ -51,7 +51,7 @@
 
         <th><a th:href="@{/students(
                 sortField='group',
-                sortDirection=${currentSortField == 'group' ? nextDir : 'asc'}
+                sortDirection=${sortField == 'group' ? nextDir : 'asc'}
             )}">
             Group
         </a>
@@ -59,44 +59,44 @@
 
         <th><a th:href="@{/students(
                 sortField='degree',
-                sortDirection=${currentSortField == 'degree' ? nextDir : 'asc'}
+                sortDirection=${sortField == 'degree' ? nextDir : 'asc'}
             )}">
             Degree
         </a>
         </th>
         <th><a th:href="@{/students(
                 sortField='address.country',
-                sortDirection=${currentSortField == 'address.country' ? nextDir : 'asc'}
+                sortDirection=${sortField == 'address.country' ? nextDir : 'asc'}
             )}">
             Country
         </a></th>
         <th><a th:href="@{/students(
                 sortField='address.city',
-                sortDirection=${currentSortField == 'address.city' ? nextDir : 'asc'}
+                sortDirection=${sortField == 'address.city' ? nextDir : 'asc'}
             )}">
             City
         </a></th>
         <th><a th:href="@{/students(
                 sortField='address.street',
-                sortDirection=${currentSortField == 'address.street' ? nextDir : 'asc'}
+                sortDirection=${sortField == 'address.street' ? nextDir : 'asc'}
             )}">
             Street
         </a></th>
         <th><a th:href="@{/students(
                 sortField='address.houseNumber',
-                sortDirection=${currentSortField == 'address.houseNumber' ? nextDir : 'asc'}
+                sortDirection=${sortField == 'address.houseNumber' ? nextDir : 'asc'}
             )}">
             House Number
         </a></th>
         <th><a th:href="@{/students(
                 sortField='address.postalCode',
-                sortDirection=${currentSortField == 'address.postalCode' ? nextDir : 'asc'}
+                sortDirection=${sortField == 'address.postalCode' ? nextDir : 'asc'}
             )}">
             Postal Code
         </a></th>
     <th><a th:href="@{/students(
                 sortField='address.phoneNumber',
-                sortDirection=${currentSortField == 'address.phoneNumber' ? nextDir : 'asc'}
+                sortDirection=${sortField == 'address.phoneNumber' ? nextDir : 'asc'}
             )}">
         Phone Number
     </a></th>

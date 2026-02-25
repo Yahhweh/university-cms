@@ -42,12 +42,4 @@ public class StudentController {
 
         return "students";
     }
-
-    private final List<String> getAddressFields() {
-        List<Field> fields = Arrays.stream(Address.class.getDeclaredFields()).toList();
-        return fields.stream()
-                .map(Field::getName)
-                .toList();
-
-    }
 }
