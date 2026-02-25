@@ -24,8 +24,7 @@ public class RoomTypeController {
     public String getRoomTypes(Model model,
                                @RequestParam(defaultValue = "id") String sortField,
                                @RequestParam(defaultValue = "asc") String sortDirection,
-                               @RequestParam(value = "pageNo", defaultValue = "1") int pageNo)
-    {
+                               @RequestParam(value = "pageNo", defaultValue = "1") int pageNo) {
 
         Page<RoomType> page = roomTypeService.getFilteredAndSortedRoomType(sortField, sortDirection, pageNo);
 

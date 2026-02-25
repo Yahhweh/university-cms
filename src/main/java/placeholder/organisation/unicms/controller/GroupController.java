@@ -6,7 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import placeholder.organisation.unicms.entity.Duration;
 import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.service.GroupService;
 
@@ -23,9 +22,9 @@ public class GroupController {
 
     @RequestMapping(path = "/groups", method = RequestMethod.GET)
     public String getGroups(Model model,
-                              @RequestParam(defaultValue = "id") String sortField,
+                            @RequestParam(defaultValue = "id") String sortField,
                             @RequestParam(defaultValue = "asc") String sortDirection,
-                            @RequestParam(value = "pageNo", defaultValue = "1") int pageNo){
+                            @RequestParam(value = "pageNo", defaultValue = "1") int pageNo) {
 
         Page<Group> page = groupService.getFilteredAndSortedGroup(sortField, sortDirection, pageNo);
 

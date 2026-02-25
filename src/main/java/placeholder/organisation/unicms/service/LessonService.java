@@ -5,7 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.*;
+import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.repository.*;
 import placeholder.organisation.unicms.service.dto.LessonDTO;
 import placeholder.organisation.unicms.service.mapper.LessonMapper;
@@ -29,7 +29,7 @@ public class LessonService {
     private final SubjectRepository subjectRepository;
     private final GroupRepository groupRepository;
     private final RoomRepository roomRepository;
-    private final  FilterAndSorterOfEntities filterAndSorterOfEntities;
+    private final FilterAndSorterOfEntities filterAndSorterOfEntities;
 
     public LessonService(LessonRepository lessonRepository, LessonMapper lessonMapper,
                          LessonValidator lessonValidator, StudentRepository studentRepository,
@@ -109,7 +109,7 @@ public class LessonService {
         log.debug("Lesson updated successfully. ID: {}", lessonId);
     }
 
-    public Page<Lesson> getFilteredAndSortedLesson(String sortField, String sortDir, int pageNo){
+    public Page<Lesson> getFilteredAndSortedLesson(String sortField, String sortDir, int pageNo) {
         return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, lessonRepository, Specification.where(null), pageNo);
     }
 

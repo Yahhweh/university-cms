@@ -1,15 +1,14 @@
 package placeholder.organisation.unicms.service;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.transaction.annotation.Transactional;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-import placeholder.organisation.unicms.entity.Group;
-import placeholder.organisation.unicms.repository.LecturerRepository;
-import placeholder.organisation.unicms.repository.SubjectRepository;
+import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.Subject;
+import placeholder.organisation.unicms.repository.LecturerRepository;
+import placeholder.organisation.unicms.repository.SubjectRepository;
 import placeholder.organisation.unicms.service.dto.LecturerDTO;
 import placeholder.organisation.unicms.service.mapper.LecturerMapper;
 
@@ -101,7 +100,7 @@ public class LecturerService {
         log.debug("Lecturer updated successfully. ID: {}", lecturerId);
     }
 
-    public Page<Lecturer> getFilteredAndSortedLecturers(String sortField, String sortDir, int pageNo){
+    public Page<Lecturer> getFilteredAndSortedLecturers(String sortField, String sortDir, int pageNo) {
         return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, lecturerRepository, Specification.where(null), pageNo);
     }
 

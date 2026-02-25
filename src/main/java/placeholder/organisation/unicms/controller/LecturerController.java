@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import placeholder.organisation.unicms.entity.Lecturer;
-import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.service.LecturerService;
 
 import java.util.List;
@@ -25,7 +24,7 @@ public class LecturerController {
     public String getLecturers(Model model,
                                @RequestParam(defaultValue = "id") String sortField,
                                @RequestParam(defaultValue = "asc") String sortDirection,
-                               @RequestParam(value = "pageNo", defaultValue = "1") int pageNo){
+                               @RequestParam(value = "pageNo", defaultValue = "1") int pageNo) {
         Page<Lecturer> page = service.getFilteredAndSortedLecturers(sortField, sortDirection, pageNo);
 
         List<Lecturer> lecturers = page.getContent();
@@ -33,8 +32,8 @@ public class LecturerController {
         String nextDir = sortDirection.equals("asc") ? "desc" : (sortDirection.equals("desc") ? "none" : "asc");
 
         model.addAttribute("lecturers", lecturers);
-        model.addAttribute("currentSortField", sortField);
-        model.addAttribute("currentSortDir", sortDirection);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("nextDir", nextDir);
 
         return "lecturers";

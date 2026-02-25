@@ -5,8 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.repository.RoomRepository;
 import placeholder.organisation.unicms.entity.Room;
+import placeholder.organisation.unicms.repository.RoomRepository;
 import placeholder.organisation.unicms.repository.RoomTypeRepository;
 import placeholder.organisation.unicms.service.dto.RoomDTO;
 import placeholder.organisation.unicms.service.mapper.ClassRoomMapper;
@@ -14,6 +14,7 @@ import placeholder.organisation.unicms.service.validation.ClassRoomValidator;
 
 import java.util.List;
 import java.util.Optional;
+
 @Service
 @Log4j2
 @Transactional(readOnly = true)
@@ -82,8 +83,8 @@ public class RoomService {
         return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, roomRepository, Specification.where(null), pageNo);
     }
 
-    void resolveRelations(RoomDTO dto, Room entity){
-        if(dto.getClassRoomTypeId() != null){
+    void resolveRelations(RoomDTO dto, Room entity) {
+        if (dto.getClassRoomTypeId() != null) {
             entity.setRoomType(roomTypeRepository.getReferenceById(dto.getClassRoomTypeId()));
         }
     }

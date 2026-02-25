@@ -5,8 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.repository.DurationRepository;
 import placeholder.organisation.unicms.entity.Duration;
+import placeholder.organisation.unicms.repository.DurationRepository;
 import placeholder.organisation.unicms.service.dto.DurationDTO;
 import placeholder.organisation.unicms.service.mapper.DurationMapper;
 import placeholder.organisation.unicms.service.validation.DurationValidator;
@@ -24,7 +24,7 @@ public class DurationService {
     private final FilterAndSorterOfEntities filterAndSorterOfEntities;
 
     public DurationService(DurationRepository durationRepository, DurationValidator
-            durationValidator, DurationMapper durationMapper,
+                                   durationValidator, DurationMapper durationMapper,
                            FilterAndSorterOfEntities filterAndSorterOfEntities) {
         this.durationRepository = durationRepository;
         this.durationValidator = durationValidator;
@@ -66,7 +66,7 @@ public class DurationService {
         log.debug("Duration updated successfully. ID: {}", durationId);
     }
 
-    public Page<Duration> getFilteredAndSortedDuration(String sortingField, String sortingDirection, int pageNo){
+    public Page<Duration> getFilteredAndSortedDuration(String sortingField, String sortingDirection, int pageNo) {
         return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortingField, sortingDirection, durationRepository, Specification.where(null), pageNo);
     }
 }

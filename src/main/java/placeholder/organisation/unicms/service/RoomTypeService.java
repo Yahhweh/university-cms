@@ -5,9 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.Room;
-import placeholder.organisation.unicms.repository.RoomTypeRepository;
 import placeholder.organisation.unicms.entity.RoomType;
+import placeholder.organisation.unicms.repository.RoomTypeRepository;
 import placeholder.organisation.unicms.service.dto.RoomTypeDTO;
 import placeholder.organisation.unicms.service.mapper.ClassRoomTypeMapper;
 
@@ -22,7 +21,7 @@ public class RoomTypeService {
 
     private final RoomTypeRepository roomTypeRepository;
     private final ClassRoomTypeMapper classRoomTypeMapper;
-    private final  FilterAndSorterOfEntities filterAndSorterOfEntities;
+    private final FilterAndSorterOfEntities filterAndSorterOfEntities;
 
     public RoomTypeService(RoomTypeRepository roomTypeRepository, ClassRoomTypeMapper classRoomTypeMapper,
                            FilterAndSorterOfEntities filterAndSorterOfEntities) {
@@ -74,7 +73,7 @@ public class RoomTypeService {
         log.debug("Classroom type updated successfully. ID: {}", classRoomTypeId);
     }
 
-    public Page<RoomType> getFilteredAndSortedRoomType(String sortField, String sortDir, int pageNo){
+    public Page<RoomType> getFilteredAndSortedRoomType(String sortField, String sortDir, int pageNo) {
         return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, roomTypeRepository, Specification.where(null), pageNo);
     }
 }

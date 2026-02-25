@@ -5,9 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.Duration;
-import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.entity.Group;
+import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.service.dto.GroupDTO;
 import placeholder.organisation.unicms.service.mapper.GroupMapper;
 
@@ -64,7 +63,7 @@ public class GroupService {
         log.debug("Group updated successfully. ID: {}", groupId);
     }
 
-    public Page<Group> getFilteredAndSortedGroup(String sortingField, String sortingDirection, int pageNo){
+    public Page<Group> getFilteredAndSortedGroup(String sortingField, String sortingDirection, int pageNo) {
         return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortingField, sortingDirection, groupRepository, Specification.where(null), pageNo);
     }
 }

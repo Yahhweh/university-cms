@@ -24,7 +24,7 @@ public class SubjectController {
     public String getRoomTypes(Model model,
                                @RequestParam(defaultValue = "id") String sortField,
                                @RequestParam(defaultValue = "asc") String sortDirection,
-                               @RequestParam(value = "pageNo", defaultValue = "1") int pageNo){
+                               @RequestParam(value = "pageNo", defaultValue = "1") int pageNo) {
 
         Page<Subject> page = subjectService.getFilteredAndSortedSubject(sortField, sortDirection, pageNo);
 
@@ -39,7 +39,6 @@ public class SubjectController {
 
         return "subjects";
     }
-
 
 
 }
