@@ -9,12 +9,6 @@
     <thead>
     <tr>
         <th>
-            <a th:href="@{/rooms(sortField='id', sortDirection=${sortDirection == 'id' ? nextDir : 'asc'})}">
-                ID
-            </a>
-        </th>
-
-        <th>
             <a th:href="@{/rooms(sortField='room', sortDirection=${sortDirection == 'room' ? nextDir : 'asc'})}">
                 Room Number
             </a>
@@ -29,24 +23,11 @@
     </thead>
     <tbody>
     <tr th:each="room : ${rooms}">
-        <td th:text="${room.id}">ID</td>
         <td th:text="${room.room}">B-102</td>
-        <td th:text="${room.roomType?.name ?: 'Undefined'}">LECTURE_HALL</td>
+        <td th:text="${room.roomType?.name ?: '-'}">LECTURE_HALL</td>
     </tr>
     </tbody>
 </table>
-<div th:if="${totalPages > 1}">
-    <a th:if="${currentPage > 1}"
-       th:href="@{/rooms(pageNo=${currentPage - 1}, sortField=${sortField}, sortDirection=${sortDir})}">
-        Back
-    </a>
-
-    <span>[[${currentPage}]] / [[${totalPages}]]</span>
-
-    <a th:if="${currentPage < totalPages}"
-       th:href="@{/rooms(pageNo=${currentPage + 1}, sortField=${sortField}, sortDirection=${sortDir})}">
-        Next
-    </a>
-</div>
+<div th:insert="page :: page"></div>
 </body>
 </html>

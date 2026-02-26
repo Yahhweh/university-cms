@@ -14,7 +14,7 @@ import java.util.List;
 @Controller
 public class LecturerController {
 
-    LecturerService service;
+    private final LecturerService service;
 
     public LecturerController(LecturerService lecturerService) {
         this.service = lecturerService;
@@ -28,6 +28,7 @@ public class LecturerController {
         Page<Lecturer> page = service.getFilteredAndSortedLecturers(sortField, sortDirection, pageNo);
 
         List<Lecturer> lecturers = page.getContent();
+        String url = "lecturers";
 
         String nextDir = sortDirection.equals("asc") ? "desc" : (sortDirection.equals("desc") ? "none" : "asc");
 
@@ -35,6 +36,7 @@ public class LecturerController {
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("nextDir", nextDir);
+        model.addAttribute("url", url);
 
         return "lecturers";
     }

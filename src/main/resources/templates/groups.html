@@ -9,12 +9,6 @@
     <thead>
     <tr>
         <th>
-            <a th:href="@{/groups(sortField='id', sortDirection=${sortField == 'id' ? nextDir : 'asc'})}">
-                ID
-            </a>
-        </th>
-
-        <th>
             <a th:href="@{/groups(sortField='name', sortDirection=${sortField == 'name' ? nextDir : 'asc'})}">
                 Group Name
             </a>
@@ -23,24 +17,10 @@
     </thead>
     <tbody>
     <tr th:each="group : ${groups}">
-        <td th:text="${group.id}">ID</td>
         <td th:text="${group.name}">A-123</td>
     </tr>
     </tbody>
 </table>
-
-<div th:if="${totalPages > 1}">
-    <a th:if="${currentPage > 1}"
-       th:href="@{/groups(pageNo=${currentPage - 1}, sortField=${sortField}, sortDirection=${sortDir})}">
-        Back
-    </a>
-
-    <span>[[${currentPage}]] / [[${totalPages}]]</span>
-
-    <a th:if="${currentPage < totalPages}"
-       th:href="@{/groups(pageNo=${currentPage + 1}, sortField=${sortField}, sortDirection=${sortDir})}">
-        Next
-    </a>
-</div>
+<div th:insert="page :: page"></div>
 </body>
 </html>

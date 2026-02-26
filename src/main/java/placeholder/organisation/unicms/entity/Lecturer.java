@@ -29,15 +29,6 @@ public class Lecturer extends Person {
             inverseJoinColumns = @JoinColumn(name = "study_subject_id"))
     private Set<Subject> subjects = new HashSet<>();
 
-    public String setToString() {
-        StringBuilder result = new StringBuilder();
-        for (Subject subject : subjects) {
-            result.append(subject.toString());
-            result.append(", ");
-        }
-        return result.toString();
-    }
-
     public String toString(){
         return this.getName() + " " + this.getSureName();
     }

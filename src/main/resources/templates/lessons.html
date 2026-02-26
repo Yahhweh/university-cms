@@ -10,12 +10,6 @@
     <thead>
     <tr>
         <th>
-            <a th:href="@{/lessons(sortField='id', sortDirection=${sortField == 'id' ? nextDir : 'asc'})}">
-                ID
-            </a>
-        </th>
-
-        <th>
             <a th:href="@{/lessons(sortField='date', sortDirection=${sortField == 'date' ? nextDir : 'asc'})}">
                 Date
             </a>
@@ -54,7 +48,6 @@
     </thead>
     <tbody>
     <tr th:each="lesson : ${lessons}">
-        <td th:text="${lesson.id}">ID</td>
         <td th:text="${#temporals.format(lesson.date, 'dd.MM.yyyy')}">01.01.2024</td>
         <td th:text="${lesson.duration}">Duration</td>
         <td th:text="${lesson.subject}">Subject</td>
@@ -64,19 +57,7 @@
     </tr>
     </tbody>
 </table>
+<div th:insert="page :: page"></div>
 
-<div th:if="${totalPages > 1}">
-    <a th:if="${currentPage > 1}"
-       th:href="@{/lessons(pageNo=${currentPage - 1}, sortField=${sortField}, sortDirection=${sortDir})}">
-        Back
-    </a>
-
-    <span>[[${currentPage}]] / [[${totalPages}]]</span>
-
-    <a th:if="${currentPage < totalPages}"
-       th:href="@{/lessons(pageNo=${currentPage + 1}, sortField=${sortField}, sortDirection=${sortDir})}">
-        Next
-    </a>
-</div>
 </body>
 </html>

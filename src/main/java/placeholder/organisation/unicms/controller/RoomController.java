@@ -14,7 +14,7 @@ import java.util.List;
 @Controller
 public class RoomController {
 
-    RoomService roomService;
+    private final RoomService roomService;
 
     public RoomController(RoomService roomService) {
         this.roomService = roomService;
@@ -30,6 +30,8 @@ public class RoomController {
 
         List<Room> rooms = page.getContent();
 
+        String url = "rooms";
+
         String nextDir = sortDirection.equals("asc") ? "desc" : (sortDirection.equals("desc") ? "none" : "asc");
 
         model.addAttribute("rooms", rooms);
@@ -37,6 +39,7 @@ public class RoomController {
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("nextDir", nextDir);
         model.addAttribute("pageNo", pageNo);
+        model.addAttribute("url", url);
 
         return "rooms";
     }

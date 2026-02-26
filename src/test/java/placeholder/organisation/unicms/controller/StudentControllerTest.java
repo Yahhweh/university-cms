@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.service.StudentService;
 
@@ -30,12 +32,18 @@ class StudentControllerTest {
 
     @Test
     void getLecturers_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
-        List<Student> students = List.of(new Student(), new Student());
-        Page<Student> studentPage = new PageImpl<>(students);
+        List<Student> students = List.of(new Student(), new Student(), new Student(), new Student(), new Student(),
+                new Student(), new Student(), new Student(), new Student(), new Student(), new Student(),new Student(), new Student(),
+                new Student(), new Student(),new Student());
+
 
         String sortField = "salary";
         String sortDir = "asc";
         int pageNo = 1;
+        int pageSize = 10;
+
+        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
+        Page<Student> studentPage = new PageImpl<>(students, pageRequest, students.size());
 
         when(studentService.getFilteredAndSortedStudents(anyString(), anyString(), anyInt()))
                 .thenReturn(studentPage);

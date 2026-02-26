@@ -14,7 +14,7 @@ import java.util.List;
 @Controller
 public class RoomTypeController {
 
-    RoomTypeService roomTypeService;
+    private final RoomTypeService roomTypeService;
 
     public RoomTypeController(RoomTypeService roomTypeService) {
         this.roomTypeService = roomTypeService;
@@ -29,6 +29,7 @@ public class RoomTypeController {
         Page<RoomType> page = roomTypeService.getFilteredAndSortedRoomType(sortField, sortDirection, pageNo);
 
         List<RoomType> roomTypes = page.getContent();
+        String url = "room-types";
 
         String nextDir = sortDirection.equals("asc") ? "desc" : (sortDirection.equals("desc") ? "none" : "asc");
 
@@ -37,6 +38,7 @@ public class RoomTypeController {
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("nextDir", nextDir);
         model.addAttribute("pageNo", pageNo);
+        model.addAttribute("url", url);
 
         return "roomTypes";
     }

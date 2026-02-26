@@ -14,7 +14,7 @@ import java.util.List;
 @Controller
 public class LessonController {
 
-    LessonService lessonService;
+    private final LessonService lessonService;
 
     public LessonController(LessonService lessonService) {
         this.lessonService = lessonService;
@@ -30,13 +30,17 @@ public class LessonController {
 
         List<Lesson> lessons = page.getContent();
 
+        String url = "lessons";
+
         String nextDir = sortDirection.equals("asc") ? "desc" : (sortDirection.equals("desc") ? "none" : "asc");
 
         model.addAttribute("lessons", lessons);
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("nextDir", nextDir);
-
+        model.addAttribute("url", url);
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("totalPages", page.getTotalPages());
         return "lessons";
     }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 @Controller
 public class DurationController {
 
-    DurationService service;
+    private final DurationService service;
 
     public DurationController(DurationService service) {
         this.service = service;
@@ -28,6 +28,7 @@ public class DurationController {
                               @RequestParam(defaultValue = "asc") String sortDirection,
                               @RequestParam(value = "pageNo", defaultValue = "1") int pageNo){
         Page<Duration> page = service.getFilteredAndSortedDuration(sortField, sortDirection, pageNo);
+        String path = "durations";
 
         List<Duration> durations = page.getContent();
 
@@ -37,6 +38,7 @@ public class DurationController {
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("nextDir", nextDir);
+        model.addAttribute("url",path);
 
         return "durations";
     }

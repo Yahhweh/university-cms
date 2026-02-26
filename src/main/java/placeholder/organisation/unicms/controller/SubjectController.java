@@ -14,7 +14,7 @@ import java.util.List;
 @Controller
 public class SubjectController {
 
-    SubjectService subjectService;
+    private final  SubjectService subjectService;
 
     public SubjectController(SubjectService subjectService) {
         this.subjectService = subjectService;
@@ -29,6 +29,7 @@ public class SubjectController {
         Page<Subject> page = subjectService.getFilteredAndSortedSubject(sortField, sortDirection, pageNo);
 
         List<Subject> subjects = page.getContent();
+        String url = "subjects";
 
         String nextDir = sortDirection.equals("asc") ? "desc" : (sortDirection.equals("desc") ? "none" : "asc");
 
@@ -36,6 +37,7 @@ public class SubjectController {
         model.addAttribute("sortField", sortField);
         model.addAttribute("sortDirection", sortDirection);
         model.addAttribute("nextDir", nextDir);
+        model.addAttribute("url", url);
 
         return "subjects";
     }

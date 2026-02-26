@@ -8,8 +8,6 @@
 <table>
     <thead>
     <tr>
-        <th>ID</th>
-
         <th><a th:href="@{/lecturers(sortField='name', sortDirection=${sortField == 'name' ? nextDir : 'asc'})}">
             First Name
             <th:block th:if="${currentSortField == 'name'}">
@@ -22,10 +20,6 @@
             <th:block th:if="${currentSortField == 'sureName'}">
                 <span th:text="${currentSortDir == 'asc' ? '↑' : '↓'}"></span>
             </th:block>
-        </a></th>
-
-        <th><a th:href="@{/lecturers(sortField='gender', sortDirection=${sortField == 'gender' ? nextDir : 'asc'})}">
-            Gender
         </a></th>
 
         <th><a th:href="@{/lecturers(sortField='email', sortDirection=${sortField == 'email' ? nextDir : 'asc'})}">
@@ -47,22 +41,6 @@
         Country
     </a></th>
 
-        <th><a th:href="@{/lecturers(sortField='address.city', sortDirection=${sortField == 'address.city' ? nextDir : 'asc'})}">
-            City
-        </a></th>
-
-        <th><a th:href="@{/lecturers(sortField='address.street', sortDirection=${sortField == 'address.street' ? nextDir : 'asc'})}">
-            Street
-        </a></th>
-
-        <th><a th:href="@{/lecturers(sortField='address.houseNumber', sortDirection=${sortField == 'address.houseNumber' ? nextDir : 'asc'})}">
-            House
-        </a></th>
-
-        <th><a th:href="@{/lecturers(sortField='address.postalCode', sortDirection=${sortField == 'address.postalCode' ? nextDir : 'asc'})}">
-            Postal Code
-        </a></th>
-
         <th><a th:href="@{/lecturers(sortField='address.phoneNumber', sortDirection=${sortField == 'address.phoneNumber' ? nextDir : 'asc'})}">
             Phone
         </a></th>
@@ -70,36 +48,18 @@
     </thead>
     <tbody>
     <tr th:each="lecturer : ${lecturers}">
-        <td th:text="${lecturer.id}">ID</td>
         <td th:text="${lecturer.name}">Name</td>
         <td th:text="${lecturer.sureName}">Surname</td>
-        <td th:text="${lecturer.gender}">GENDER</td>
         <td th:text="${lecturer.email}">Email</td>
         <td th:text="${lecturer.dateOfBirth}">9999-99-99</td>
         <td th:text="${lecturer.salary}">0.00</td>
-        <td th:text="${lecturer.setToString()}">Subjects List</td>
+        <td th:text="${#strings.setJoin(lecturer.getSubjects(), ', ')?: '-'}">Subjects List</td>
         <td th:text="${lecturer.address?.country ?: '-'}">Country</td>
-        <td th:text="${lecturer.address?.city ?: '-'}">City</td>
-        <td th:text="${lecturer.address?.street ?: '-'}">Street</td>
-        <td th:text="${lecturer.address?.houseNumber ?: '-'}">House</td>
-        <td th:text="${lecturer.address?.postalCode ?: '-'}">Postal Code</td>
         <td th:text="${lecturer.address?.phoneNumber ?: '-'}">Phone</td>
     </tr>
     </tbody>
 </table>
 
-<div th:if="${totalPages > 1}">
-    <a th:if="${currentPage > 1}"
-       th:href="@{/lecturers(pageNo=${currentPage - 1}, sortField=${sortField}, sortDirection=${sortDir})}">
-        Back
-    </a>
-
-    <span>[[${currentPage}]] / [[${totalPages}]]</span>
-
-    <a th:if="${currentPage < totalPages}"
-       th:href="@{/lecturers(pageNo=${currentPage + 1}, sortField=${sortField}, sortDirection=${sortDir})}">
-        Next
-    </a>
-</div>
+<div th:insert="page :: page"></div>
 </body>
 </html>
