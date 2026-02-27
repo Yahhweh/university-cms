@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -14,8 +15,7 @@ import placeholder.organisation.unicms.service.StudentService;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -36,35 +36,22 @@ class StudentControllerTest {
                 new Student(), new Student(), new Student(), new Student(), new Student(), new Student(),new Student(), new Student(),
                 new Student(), new Student(),new Student());
 
+        Page<Student> studentPage = new PageImpl<>(students, PageRequest.of(0, 10), students.size());
 
-        String sortField = "salary";
-        String sortDir = "asc";
-        int pageNo = 1;
-        int pageSize = 10;
-
-        PageRequest pageRequest = PageRequest.of(pageNo, pageSize);
-        Page<Student> studentPage = new PageImpl<>(students, pageRequest, students.size());
-
-        when(studentService.getFilteredAndSortedStudents(anyString(), anyString(), anyInt()))
+        when(studentService.findAll(any(Pageable.class)))
                 .thenReturn(studentPage);
 
         mockMvc.perform(get("/students")
-                        .param("sortField", sortField)
-                        .param("sortDirection", sortDir)
-                        .param("pageNo", String.valueOf(pageNo)))
+                        .param("sort", "asc")
+                        .param("page", "0")
+                        .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("students"))
                 .andExpect(model().attribute("students", students))
-                .andExpect(model().attribute("sortField", sortField))
-                .andExpect(model().attribute("sortDir", sortDir))
-                .andExpect(model().attribute("nextDir", "desc"))
-                .andExpect(model().attributeExists("students", "sortField", "sortDir", "nextDir"));
+                .andExpect(model().attribute("page", studentPage))
+                .andExpect(model().attribute("url", "students"))
+                .andExpect(model().attributeExists("students", "url", "page"));
 
-        verify(studentService).getFilteredAndSortedStudents(sortField, sortDir, pageNo);
-    }
-
-
-    List<String> getPersonFields(){
-        return List.of("id", "password", "name", "sureName", "gender", "email", "address", "dateOfBirth");
+        verify(studentService).findAll(any(Pageable.class));
     }
 }

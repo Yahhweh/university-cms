@@ -3,8 +3,7 @@ package placeholder.organisation.unicms.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.*;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.Duration;
@@ -15,8 +14,7 @@ import placeholder.organisation.unicms.service.GroupService;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,27 +32,22 @@ class GroupControllerTest {
     @Test
     void getGroups_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
         List<Group> groupList = List.of(new Group(), new Group());
-        Page<Group> groupPage = new PageImpl<>(groupList);
+        Page<Group> groupPage = new PageImpl<>(groupList, PageRequest.of(0,10), groupList.size());
 
-        String sortField = "id";
-        String sortDir = "asc";
-        int pageNo = 1;
-
-        when(groupService.getFilteredAndSortedGroup(anyString(), anyString(), anyInt()))
+        when(groupService.findAll(any(Pageable.class)))
                 .thenReturn(groupPage);
 
         mockMvc.perform(get("/groups")
-                        .param("sortField", sortField)
-                        .param("sortDirection", sortDir)
-                        .param("pageNo", String.valueOf(pageNo)))
+                        .param("page", "0")
+                        .param("size", "10")
+                        .param("sort", "id, asc"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("groups"))
                 .andExpect(model().attribute("groups", groupList))
-                .andExpect(model().attribute("sortField", sortField))
-                .andExpect(model().attribute("sortDirection", sortDir))
-                .andExpect(model().attribute("nextDir", "desc"))
-                .andExpect(model().attributeExists("groups", "sortField", "sortDirection", "nextDir"));
+                .andExpect(model().attribute("page", groupPage))
+                .andExpect(model().attribute("url", "groups"))
+                .andExpect(model().attributeExists("groups", "page", "url"));
 
-        verify(groupService).getFilteredAndSortedGroup(sortField, sortDir, pageNo);
+        verify(groupService).findAll(any(Pageable.class));
     }
 }

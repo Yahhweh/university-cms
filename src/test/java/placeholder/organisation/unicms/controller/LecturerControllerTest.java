@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.Group;
@@ -15,8 +17,7 @@ import placeholder.organisation.unicms.service.LecturerService;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -34,28 +35,23 @@ class LecturerControllerTest {
     @Test
     void getLecturers_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
         List<Lecturer> lecturerList = List.of(new Lecturer(), new Lecturer());
-        Page<Lecturer> lecturerPage = new PageImpl<>(lecturerList);
+        Page<Lecturer> lecturerPage = new PageImpl<>(lecturerList, PageRequest.of(0, 10), lecturerList.size());
 
-        String sortField = "salary";
-        String sortDir = "asc";
-        int pageNo = 1;
-
-        when(lecturerService.getFilteredAndSortedLecturers(anyString(), anyString(), anyInt()))
+        when(lecturerService.findAll(any(Pageable.class)))
                 .thenReturn(lecturerPage);
 
         mockMvc.perform(get("/lecturers")
-                        .param("sortField", sortField)
-                        .param("sortDirection", sortDir)
-                        .param("pageNo", String.valueOf(pageNo)))
+                        .param("size", "10")
+                        .param("sort", "asc")
+                        .param("page", "0"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("lecturers"))
                 .andExpect(model().attribute("lecturers", lecturerList))
-                .andExpect(model().attribute("sortField", sortField))
-                .andExpect(model().attribute("sortDirection", sortDir))
-                .andExpect(model().attribute("nextDir", "desc"))
-                .andExpect(model().attributeExists("lecturers", "sortField", "sortDirection", "nextDir"));
+                .andExpect(model().attribute("page", lecturerPage))
+                .andExpect(model().attribute("url", "lecturers"))
+                .andExpect(model().attributeExists("lecturers", "page", "url"));
 
-        verify(lecturerService).getFilteredAndSortedLecturers(sortField, sortDir, pageNo);
+        verify(lecturerService).findAll(any(Pageable.class));
     }
 
 }
