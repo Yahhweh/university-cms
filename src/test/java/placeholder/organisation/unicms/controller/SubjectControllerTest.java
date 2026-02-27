@@ -30,7 +30,7 @@ class SubjectControllerTest {
     private SubjectService subjectService;
 
     @Test
-    void getRoomTypes_ShouldReturnTableViewWithAttributes() throws Exception {
+    void getRoomTypes_ShouldReturnTableViewWithAttributes_WhenAllDataIsGiven() throws Exception {
         List<Subject> subjects = List.of(new Subject(), new Subject());
         Page<Subject> subjectPage = new PageImpl<>(subjects, PageRequest.of(0, 10), subjects.size());
 
@@ -50,4 +50,5 @@ class SubjectControllerTest {
 
         verify(subjectService).findAll(any(Pageable.class));
     }
+
 }

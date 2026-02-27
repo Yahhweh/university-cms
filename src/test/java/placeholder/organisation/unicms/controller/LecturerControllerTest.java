@@ -53,5 +53,4 @@ class LecturerControllerTest {
 
         verify(lecturerService).findAll(any(Pageable.class));
     }
-
 }

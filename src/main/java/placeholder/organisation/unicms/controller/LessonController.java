@@ -33,7 +33,6 @@ public class LessonController {
         model.addAttribute("lessons", page.getContent());
         model.addAttribute("page", page);
         model.addAttribute("url", "lessons");
-
         return "lessons";
     }
 }

@@ -1,17 +1,15 @@
-<body>
 <div th:fragment="page">
-    <div th:if="${totalPages > 1}">
-        <a th:if="${currentPage > 1}"
-           th:href="@{'/' + ${url}(pageNo=${currentPage - 1}, sortField=${sortField}, sortDirection=${sortDir})}">
+    <div th:if="${page.totalPages > 1}">
+        <a th:if="${!page.first}"
+           th:href="@{'/'+${url}(page=${page.number - 1}, size=${page.size}, sort=${#strings.replace(page.sort.toString(), ': ', ',')})}">
             Back
         </a>
 
-        <span>[[${currentPage}]] / [[${totalPages}]]</span>
+        <span>[[${page.number + 1}]] / [[${page.totalPages}]]</span>
 
-        <a th:if="${currentPage < totalPages}"
-           th:href="@{'/' + ${url}(pageNo=${currentPage + 1}, sortField=${sortField}, sortDirection=${sortDir})}">
+        <a th:if="${!page.last}"
+           th:href="@{'/'+${url}(page=${page.number + 1}, size=${page.size}, sort=${#strings.replace(page.sort.toString(), ': ', ',')})}">
             Next
         </a>
     </div>
 </div>
-</body>

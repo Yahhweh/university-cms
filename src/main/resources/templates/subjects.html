@@ -9,7 +9,7 @@
     <thead>
     <tr>
         <th>
-            <a th:href="@{/subjects(page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
                 Subject Name
             </a>
         </th>

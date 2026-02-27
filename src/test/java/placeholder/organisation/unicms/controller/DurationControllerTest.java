@@ -50,4 +50,9 @@ class DurationControllerTest {
 
         verify(durationService).findAll(any(Pageable.class));
     }
+
+    @Test
+    void getDurations_ShouldThrowException(){
+
+    }
 }

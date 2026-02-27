@@ -9,13 +9,13 @@
     <thead>
     <tr>
         <th>
-            <a th:href="@{/room-types(page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
                 Type Name
             </a>
         </th>
 
         <th>
-            <a th:href="@{/room-types(page=${page.number}, size=${page.size}, sort='capacity,' + (${page.sort.getOrderFor('capacity')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='capacity,' + (${page.sort.getOrderFor('capacity')?.ascending} ? 'desc' : 'asc'))}">
                 Capacity
             </a>
         </th>

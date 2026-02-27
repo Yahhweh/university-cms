@@ -1,4 +1,4 @@
-package placeholder.organisation.unicms.entity;
+package placeholder.organisation.unicms.service;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -7,8 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.repository.SubjectRepository;
-import placeholder.organisation.unicms.service.SubjectService;
 import placeholder.organisation.unicms.service.dto.SubjectDTO;
 import placeholder.organisation.unicms.service.mapper.StudySubjectMapper;
 

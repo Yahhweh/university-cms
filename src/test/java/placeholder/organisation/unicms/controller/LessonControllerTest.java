@@ -31,7 +31,7 @@ class LessonControllerTest {
     private LessonService lessonService;
 
     @Test
-    void getLessons_ShouldReturnTableViewWithAttributes() throws Exception {
+    void getLessons_ShouldReturnTableViewWithAttributes_WhenEverythingIsCorrect() throws Exception {
         List<Lesson> lessonList = List.of(new Lesson(), new Lesson());
         Page<Lesson> lessonPage = new PageImpl<>(lessonList, PageRequest.of(0, 10), lessonList.size());
 

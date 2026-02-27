@@ -9,31 +9,31 @@
     <thead>
     <tr>
         <th>
-            <a th:href="@{/lecturers(page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
                 First Name
             </a>
         </th>
 
         <th>
-            <a th:href="@{/lecturers(page=${page.number}, size=${page.size}, sort='sureName,' + (${page.sort.getOrderFor('sureName')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='sureName,' + (${page.sort.getOrderFor('sureName')?.ascending} ? 'desc' : 'asc'))}">
                 Last Name
             </a>
         </th>
 
         <th>
-            <a th:href="@{/lecturers(page=${page.number}, size=${page.size}, sort='email,' + (${page.sort.getOrderFor('email')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='email,' + (${page.sort.getOrderFor('email')?.ascending} ? 'desc' : 'asc'))}">
                 Email
             </a>
         </th>
 
         <th>
-            <a th:href="@{/lecturers(page=${page.number}, size=${page.size}, sort='dateOfBirth,' + (${page.sort.getOrderFor('dateOfBirth')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='dateOfBirth,' + (${page.sort.getOrderFor('dateOfBirth')?.ascending} ? 'desc' : 'asc'))}">
                 Date of Birth
             </a>
         </th>
 
         <th>
-            <a th:href="@{/lecturers(page=${page.number}, size=${page.size}, sort='salary,' + (${page.sort.getOrderFor('salary')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='salary,' + (${page.sort.getOrderFor('salary')?.ascending} ? 'desc' : 'asc'))}">
                 Salary
             </a>
         </th>
@@ -41,13 +41,13 @@
         <th>Subjects</th>
 
         <th>
-            <a th:href="@{/lecturers(page=${page.number}, size=${page.size}, sort='address.country,' + (${page.sort.getOrderFor('address.country')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='address.country,' + (${page.sort.getOrderFor('address.country')?.ascending} ? 'desc' : 'asc'))}">
                 Country
             </a>
         </th>
 
         <th>
-            <a th:href="@{/lecturers(page=${page.number}, size=${page.size}, sort='address.phoneNumber,' + (${page.sort.getOrderFor('address.phoneNumber')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='address.phoneNumber,' + (${page.sort.getOrderFor('address.phoneNumber')?.ascending} ? 'desc' : 'asc'))}">
                 Phone
             </a>
         </th>
