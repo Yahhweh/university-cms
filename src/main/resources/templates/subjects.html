@@ -9,7 +9,7 @@
     <thead>
     <tr>
         <th>
-            <a th:href="@{/subjects(sortField='name', sortDirection=${sortDirection == 'name' ? nextDir : 'asc'})}">
+            <a th:href="@{/subjects(page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
                 Subject Name
             </a>
         </th>
@@ -22,6 +22,6 @@
     </tbody>
 </table>
 
-<div th:insert="page :: page"></div>
+<div th:insert="~{page :: page}"></div>
 </body>
 </html>

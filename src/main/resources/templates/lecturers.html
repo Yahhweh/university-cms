@@ -8,42 +8,49 @@
 <table>
     <thead>
     <tr>
-        <th><a th:href="@{/lecturers(sortField='name', sortDirection=${sortField == 'name' ? nextDir : 'asc'})}">
-            First Name
-            <th:block th:if="${currentSortField == 'name'}">
-                <span th:text="${currentSortDir == 'asc' ? '↑' : '↓'}"></span>
-            </th:block>
-        </a></th>
+        <th>
+            <a th:href="@{/lecturers(page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
+                First Name
+            </a>
+        </th>
 
-        <th><a th:href="@{/lecturers(sortField='sureName', sortDirection=${sortField == 'sureName' ? nextDir : 'asc'})}">
-            Last Name
-            <th:block th:if="${currentSortField == 'sureName'}">
-                <span th:text="${currentSortDir == 'asc' ? '↑' : '↓'}"></span>
-            </th:block>
-        </a></th>
+        <th>
+            <a th:href="@{/lecturers(page=${page.number}, size=${page.size}, sort='sureName,' + (${page.sort.getOrderFor('sureName')?.ascending} ? 'desc' : 'asc'))}">
+                Last Name
+            </a>
+        </th>
 
-        <th><a th:href="@{/lecturers(sortField='email', sortDirection=${sortField == 'email' ? nextDir : 'asc'})}">
-            Email
-            <th:block th:if="${currentSortField == 'email'}">
-                <span th:text="${currentSortDir == 'asc' ? '↑' : '↓'}"></span>
-            </th:block>
-        </a></th>
+        <th>
+            <a th:href="@{/lecturers(page=${page.number}, size=${page.size}, sort='email,' + (${page.sort.getOrderFor('email')?.ascending} ? 'desc' : 'asc'))}">
+                Email
+            </a>
+        </th>
 
-        <th><a th:href="@{/lecturers(sortField='dateOfBirth', sortDirection=${sortField == 'dateOfBirth' ? nextDir : 'asc'})}">
-            Date of Birth
-        </a></th>
+        <th>
+            <a th:href="@{/lecturers(page=${page.number}, size=${page.size}, sort='dateOfBirth,' + (${page.sort.getOrderFor('dateOfBirth')?.ascending} ? 'desc' : 'asc'))}">
+                Date of Birth
+            </a>
+        </th>
 
-        <th><a th:href="@{/lecturers(sortField='salary', sortDirection=${sortField == 'salary' ? nextDir : 'asc'})}">
-            Salary
-        </a></th>
+        <th>
+            <a th:href="@{/lecturers(page=${page.number}, size=${page.size}, sort='salary,' + (${page.sort.getOrderFor('salary')?.ascending} ? 'desc' : 'asc'))}">
+                Salary
+            </a>
+        </th>
 
-        <th>Subjects</th> <th><a th:href="@{/lecturers(sortField='address.country', sortDirection=${sortField == 'address.country' ? nextDir : 'asc'})}">
-        Country
-    </a></th>
+        <th>Subjects</th>
 
-        <th><a th:href="@{/lecturers(sortField='address.phoneNumber', sortDirection=${sortField == 'address.phoneNumber' ? nextDir : 'asc'})}">
-            Phone
-        </a></th>
+        <th>
+            <a th:href="@{/lecturers(page=${page.number}, size=${page.size}, sort='address.country,' + (${page.sort.getOrderFor('address.country')?.ascending} ? 'desc' : 'asc'))}">
+                Country
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/lecturers(page=${page.number}, size=${page.size}, sort='address.phoneNumber,' + (${page.sort.getOrderFor('address.phoneNumber')?.ascending} ? 'desc' : 'asc'))}">
+                Phone
+            </a>
+        </th>
     </tr>
     </thead>
     <tbody>
@@ -51,15 +58,15 @@
         <td th:text="${lecturer.name}">Name</td>
         <td th:text="${lecturer.sureName}">Surname</td>
         <td th:text="${lecturer.email}">Email</td>
-        <td th:text="${lecturer.dateOfBirth}">9999-99-99</td>
+        <td th:text="${lecturer.dateOfBirth}">1990-01-01</td>
         <td th:text="${lecturer.salary}">0.00</td>
-        <td th:text="${#strings.setJoin(lecturer.getSubjects(), ', ')?: '-'}">Subjects List</td>
+        <td th:text="${#strings.setJoin(lecturer.getSubjects(), ', ')?: '-'}">Subjects</td>
         <td th:text="${lecturer.address?.country ?: '-'}">Country</td>
         <td th:text="${lecturer.address?.phoneNumber ?: '-'}">Phone</td>
     </tr>
     </tbody>
 </table>
 
-<div th:insert="page :: page"></div>
+<div th:insert="~{page :: page}"></div>
 </body>
 </html>

@@ -9,7 +9,7 @@
     <thead>
     <tr>
         <th>
-            <a th:href="@{/groups(sortField='name', sortDirection=${sortField == 'name' ? nextDir : 'asc'})}">
+            <a th:href="@{/groups(page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
                 Group Name
             </a>
         </th>
@@ -21,6 +21,7 @@
     </tr>
     </tbody>
 </table>
-<div th:insert="page :: page"></div>
+
+<div th:insert="~{page :: page}"></div>
 </body>
 </html>

@@ -1,11 +1,15 @@
 package placeholder.organisation.unicms.controller;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.entity.Room;
 import placeholder.organisation.unicms.service.RoomService;
 
@@ -22,24 +26,13 @@ public class RoomController {
 
     @RequestMapping(path = "/rooms", method = RequestMethod.GET)
     public String getRooms(Model model,
-                           @RequestParam(defaultValue = "id") String sortField,
-                           @RequestParam(defaultValue = "asc") String sortDirection,
-                           @RequestParam(value = "pageNo", defaultValue = "1") int pageNo){
+                           @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
-        Page<Room> page = roomService.getFilteredAndSortedRoom(sortField, sortDirection, pageNo);
+        Page<Room> page = roomService.findAll(pageable);
 
-        List<Room> rooms = page.getContent();
-
-        String url = "rooms";
-
-        String nextDir = sortDirection.equals("asc") ? "desc" : (sortDirection.equals("desc") ? "none" : "asc");
-
-        model.addAttribute("rooms", rooms);
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDirection", sortDirection);
-        model.addAttribute("nextDir", nextDir);
-        model.addAttribute("pageNo", pageNo);
-        model.addAttribute("url", url);
+        model.addAttribute("rooms", page.getContent());
+        model.addAttribute("page", page);
+        model.addAttribute("url", "rooms");
 
         return "rooms";
     }

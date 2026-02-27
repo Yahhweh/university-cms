@@ -1,11 +1,15 @@
 package placeholder.organisation.unicms.controller;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.service.SubjectService;
 
@@ -22,22 +26,14 @@ public class SubjectController {
 
     @RequestMapping(path = "/subjects", method = RequestMethod.GET)
     public String getRoomTypes(Model model,
-                               @RequestParam(defaultValue = "id") String sortField,
-                               @RequestParam(defaultValue = "asc") String sortDirection,
-                               @RequestParam(value = "pageNo", defaultValue = "1") int pageNo) {
+                               @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
-        Page<Subject> page = subjectService.getFilteredAndSortedSubject(sortField, sortDirection, pageNo);
+        Page<Subject> page = subjectService.findAll(pageable);
 
-        List<Subject> subjects = page.getContent();
-        String url = "subjects";
+        model.addAttribute("subjects", page.getContent());
+        model.addAttribute("page", page);
+        model.addAttribute("url", "subjects");
 
-        String nextDir = sortDirection.equals("asc") ? "desc" : (sortDirection.equals("desc") ? "none" : "asc");
-
-        model.addAttribute("subjects", subjects);
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDirection", sortDirection);
-        model.addAttribute("nextDir", nextDir);
-        model.addAttribute("url", url);
 
         return "subjects";
     }

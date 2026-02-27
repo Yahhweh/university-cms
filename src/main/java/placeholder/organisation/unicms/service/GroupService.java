@@ -2,9 +2,11 @@ package placeholder.organisation.unicms.service;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import placeholder.organisation.unicms.entity.Duration;
 import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.service.dto.GroupDTO;
@@ -20,12 +22,10 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final GroupMapper groupMapper;
-    private final FilterAndSorterOfEntities filterAndSorterOfEntities;
 
-    public GroupService(GroupRepository groupRepository, GroupMapper groupMapper, FilterAndSorterOfEntities filterAndSorterOfEntities) {
+    public GroupService(GroupRepository groupRepository, GroupMapper groupMapper){
         this.groupRepository = groupRepository;
         this.groupMapper = groupMapper;
-        this.filterAndSorterOfEntities = filterAndSorterOfEntities;
     }
 
     public List<Group> findAllGroups() {
@@ -63,7 +63,8 @@ public class GroupService {
         log.debug("Group updated successfully. ID: {}", groupId);
     }
 
-    public Page<Group> getFilteredAndSortedGroup(String sortingField, String sortingDirection, int pageNo) {
-        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortingField, sortingDirection, groupRepository, Specification.where(null), pageNo);
+    public Page<Group> findAll(Pageable pageable) {
+        log.debug("Trying to get paginated Groups: {}", pageable);
+        return groupRepository.findAll(pageable);
     }
 }

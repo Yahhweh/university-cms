@@ -2,9 +2,11 @@ package placeholder.organisation.unicms.service;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.entity.Room;
 import placeholder.organisation.unicms.repository.RoomRepository;
 import placeholder.organisation.unicms.repository.RoomTypeRepository;
@@ -24,16 +26,13 @@ public class RoomService {
     private final ClassRoomValidator classRoomValidator;
     private final ClassRoomMapper classRoomMapper;
     private final RoomTypeRepository roomTypeRepository;
-    private final FilterAndSorterOfEntities filterAndSorterOfEntities;
 
     public RoomService(RoomRepository roomRepository, ClassRoomValidator classRoomValidator,
-                       ClassRoomMapper classRoomMapper, RoomTypeRepository roomTypeRepository,
-                       FilterAndSorterOfEntities filterAndSorterOfEntities) {
+                       ClassRoomMapper classRoomMapper, RoomTypeRepository roomTypeRepository) {
         this.roomRepository = roomRepository;
         this.classRoomValidator = classRoomValidator;
         this.classRoomMapper = classRoomMapper;
         this.roomTypeRepository = roomTypeRepository;
-        this.filterAndSorterOfEntities = filterAndSorterOfEntities;
     }
 
     public List<Room> findAllRooms() {
@@ -79,8 +78,9 @@ public class RoomService {
         log.debug("Classroom updated successfully. ID: {}", classRoomId);
     }
 
-    public Page<Room> getFilteredAndSortedRoom(String sortField, String sortDir, int pageNo) {
-        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, roomRepository, Specification.where(null), pageNo);
+    public Page<Room> findAll(Pageable pageable) {
+        log.debug("Trying to get paginated Rooms: {}", pageable);
+        return roomRepository.findAll(pageable);
     }
 
     void resolveRelations(RoomDTO dto, Room entity) {

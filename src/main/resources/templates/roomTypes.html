@@ -9,13 +9,13 @@
     <thead>
     <tr>
         <th>
-            <a th:href="@{/room-types(sortField='name', sortDirection=${sortDirection == 'name' ? nextDir : 'asc'})}">
+            <a th:href="@{/room-types(page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
                 Type Name
             </a>
         </th>
 
         <th>
-            <a th:href="@{/room-types(sortField='capacity', sortDirection=${sortDirection == 'capacity' ? nextDir : 'asc'})}">
+            <a th:href="@{/room-types(page=${page.number}, size=${page.size}, sort='capacity,' + (${page.sort.getOrderFor('capacity')?.ascending} ? 'desc' : 'asc'))}">
                 Capacity
             </a>
         </th>
@@ -29,6 +29,6 @@
     </tbody>
 </table>
 
-<div th:insert="page :: page"></div>
+<div th:insert="~{page :: page}"></div>
 </body>
 </html>

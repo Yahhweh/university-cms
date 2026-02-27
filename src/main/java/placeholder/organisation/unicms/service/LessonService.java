@@ -2,9 +2,11 @@ package placeholder.organisation.unicms.service;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.repository.*;
 import placeholder.organisation.unicms.service.dto.LessonDTO;
@@ -29,13 +31,12 @@ public class LessonService {
     private final SubjectRepository subjectRepository;
     private final GroupRepository groupRepository;
     private final RoomRepository roomRepository;
-    private final FilterAndSorterOfEntities filterAndSorterOfEntities;
 
     public LessonService(LessonRepository lessonRepository, LessonMapper lessonMapper,
                          LessonValidator lessonValidator, StudentRepository studentRepository,
                          LecturerRepository lecturerRepository, DurationRepository durationRepository,
                          SubjectRepository subjectRepository, GroupRepository groupRepository,
-                         RoomRepository roomRepository, FilterAndSorterOfEntities filterAndSorterOfEntities) {
+                         RoomRepository roomRepository) {
         this.lessonRepository = lessonRepository;
         this.lessonMapper = lessonMapper;
         this.lessonValidator = lessonValidator;
@@ -45,7 +46,6 @@ public class LessonService {
         this.subjectRepository = subjectRepository;
         this.groupRepository = groupRepository;
         this.roomRepository = roomRepository;
-        this.filterAndSorterOfEntities = filterAndSorterOfEntities;
     }
 
     public List<Lesson> findAllLessons() {
@@ -109,8 +109,9 @@ public class LessonService {
         log.debug("Lesson updated successfully. ID: {}", lessonId);
     }
 
-    public Page<Lesson> getFilteredAndSortedLesson(String sortField, String sortDir, int pageNo) {
-        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, lessonRepository, Specification.where(null), pageNo);
+    public Page<Lesson> findAll(Pageable pageable) {
+        log.debug("Trying to get paginated Lessons: {}", pageable);
+        return lessonRepository.findAll(pageable);
     }
 
     private void resolveRelations(LessonDTO dto, Lesson lesson) {

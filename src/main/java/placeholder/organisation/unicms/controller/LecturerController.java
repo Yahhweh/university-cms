@@ -1,11 +1,15 @@
 package placeholder.organisation.unicms.controller;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.service.LecturerService;
 
@@ -22,21 +26,13 @@ public class LecturerController {
 
     @RequestMapping(value = "/lecturers", method = RequestMethod.GET)
     public String getLecturers(Model model,
-                               @RequestParam(defaultValue = "id") String sortField,
-                               @RequestParam(defaultValue = "asc") String sortDirection,
-                               @RequestParam(value = "pageNo", defaultValue = "1") int pageNo) {
-        Page<Lecturer> page = service.getFilteredAndSortedLecturers(sortField, sortDirection, pageNo);
+                               @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
-        List<Lecturer> lecturers = page.getContent();
-        String url = "lecturers";
+        Page<Lecturer> page = service.findAll(pageable);
 
-        String nextDir = sortDirection.equals("asc") ? "desc" : (sortDirection.equals("desc") ? "none" : "asc");
-
-        model.addAttribute("lecturers", lecturers);
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDirection", sortDirection);
-        model.addAttribute("nextDir", nextDir);
-        model.addAttribute("url", url);
+        model.addAttribute("lecturers", page.getContent());
+        model.addAttribute("page", page);
+        model.addAttribute("url", "lecturers");
 
         return "lecturers";
     }

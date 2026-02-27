@@ -9,13 +9,12 @@
     <thead>
     <tr>
         <th>
-            <a th:href="@{/durations(sortField='start', sortDirection=${currentSortField == 'start' ? nextDir : 'asc'})}">
+            <a th:href="@{/durations(page=${page.number}, size=${page.size}, sort='start,' + (${page.sort.getOrderFor('start')?.ascending} ? 'desc' : 'asc'))}">
                 Start Time
             </a>
         </th>
-
         <th>
-            <a th:href="@{/durations(sortField='end', sortDirection=${currentSortField == 'end' ? nextDir : 'asc'})}">
+            <a th:href="@{/durations(page=${page.number}, size=${page.size}, sort='end,' + (${page.sort.getOrderFor('end')?.ascending} ? 'desc' : 'asc'))}">
                 End Time
             </a>
         </th>
@@ -28,6 +27,7 @@
     </tr>
     </tbody>
 </table>
-<div th:insert="page :: page"></div>
+
+<div th:insert="~{page :: page}"></div>
 </body>
 </html>

@@ -2,9 +2,11 @@ package placeholder.organisation.unicms.service;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.repository.LecturerRepository;
@@ -23,14 +25,12 @@ public class LecturerService {
     private final LecturerRepository lecturerRepository;
     private final SubjectRepository subjectRepository;
     private final LecturerMapper lecturerMapper;
-    private final FilterAndSorterOfEntities filterAndSorterOfEntities;
 
     public LecturerService(LecturerRepository lecturerRepository, SubjectRepository subjectRepository,
-                           LecturerMapper lecturerMapper, FilterAndSorterOfEntities filterAndSorterOfEntities) {
+                           LecturerMapper lecturerMapper) {
         this.lecturerRepository = lecturerRepository;
         this.subjectRepository = subjectRepository;
         this.lecturerMapper = lecturerMapper;
-        this.filterAndSorterOfEntities = filterAndSorterOfEntities;
     }
 
     public List<Lecturer> findAllLecturers() {
@@ -100,8 +100,9 @@ public class LecturerService {
         log.debug("Lecturer updated successfully. ID: {}", lecturerId);
     }
 
-    public Page<Lecturer> getFilteredAndSortedLecturers(String sortField, String sortDir, int pageNo) {
-        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, lecturerRepository, Specification.where(null), pageNo);
+    public Page<Lecturer> findAll(Pageable pageable) {
+        log.debug("Trying to get paginated Lecturers: {}", pageable);
+        return lecturerRepository.findAll(pageable);
     }
 
     private void resolveRelations(LecturerDTO dto, Lecturer lecturer) {

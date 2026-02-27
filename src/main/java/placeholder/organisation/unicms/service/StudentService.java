@@ -2,9 +2,11 @@ package placeholder.organisation.unicms.service;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import placeholder.organisation.unicms.entity.RoomType;
 import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.repository.StudentRepository;
@@ -22,14 +24,12 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
     private final GroupRepository groupRepository;
-    private final FilterAndSorterOfEntities filterAndSorterOfEntities;
 
     public StudentService(StudentRepository studentRepository, StudentMapper studentMapper,
-                          GroupRepository groupRepository, FilterAndSorterOfEntities filterAndSorterOfEntities) {
+                          GroupRepository groupRepository) {
         this.studentRepository = studentRepository;
         this.studentMapper = studentMapper;
         this.groupRepository = groupRepository;
-        this.filterAndSorterOfEntities = filterAndSorterOfEntities;
     }
 
     public List<Student> findAllStudents() {
@@ -68,8 +68,9 @@ public class StudentService {
         log.debug("Student updated successfully. ID: {}", studentId);
     }
 
-    public Page<Student> getFilteredAndSortedStudents(String sortField, String sortDir, int pageNo) {
-        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, studentRepository, Specification.where(null), pageNo);
+    public Page<Student> findAll(Pageable pageable) {
+        log.debug("Trying to get paginated Students: {}", pageable);
+        return studentRepository.findAll(pageable);
     }
 
     private void resolveRelations(StudentDTO dto, Student student) {

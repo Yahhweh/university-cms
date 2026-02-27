@@ -2,9 +2,11 @@ package placeholder.organisation.unicms.service;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.repository.SubjectRepository;
 import placeholder.organisation.unicms.service.dto.SubjectDTO;
@@ -20,13 +22,10 @@ public class SubjectService {
 
     private final SubjectRepository subjectRepository;
     private final StudySubjectMapper studySubjectMapper;
-    private final FilterAndSorterOfEntities filterAndSorterOfEntities;
 
-    public SubjectService(SubjectRepository subjectRepository, StudySubjectMapper studySubjectMapper,
-                          FilterAndSorterOfEntities filterAndSorterOfEntities) {
+    public SubjectService(SubjectRepository subjectRepository, StudySubjectMapper studySubjectMapper) {
         this.subjectRepository = subjectRepository;
         this.studySubjectMapper = studySubjectMapper;
-        this.filterAndSorterOfEntities = filterAndSorterOfEntities;
     }
 
     public List<Subject> findAllSubjects() {
@@ -68,7 +67,8 @@ public class SubjectService {
         log.debug("Study subject updated successfully. ID: {}", studySubjectId);
     }
 
-    public Page<Subject> getFilteredAndSortedSubject(String sortField, String sortDir, int pageNo) {
-        return filterAndSorterOfEntities.getFilteredAndSortedEntities(sortField, sortDir, subjectRepository, Specification.where(null), pageNo);
+    public Page<Subject> findAll(Pageable pageable) {
+        log.debug("Trying to get paginated Subjects: {}", pageable);
+        return subjectRepository.findAll(pageable);
     }
 }

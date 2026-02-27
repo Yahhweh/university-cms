@@ -1,15 +1,15 @@
 package placeholder.organisation.unicms.controller;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.GetMapping;
 import placeholder.organisation.unicms.entity.Duration;
-import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.service.DurationService;
-import placeholder.organisation.unicms.service.FilterAndSorterOfEntities;
 
 import java.util.List;
 
@@ -22,23 +22,15 @@ public class DurationController {
         this.service = service;
     }
 
-    @RequestMapping(path = "/durations", method = RequestMethod.GET)
+    @GetMapping("/durations")
     public String getDuration(Model model,
-                              @RequestParam(defaultValue = "id") String sortField,
-                              @RequestParam(defaultValue = "asc") String sortDirection,
-                              @RequestParam(value = "pageNo", defaultValue = "1") int pageNo){
-        Page<Duration> page = service.getFilteredAndSortedDuration(sortField, sortDirection, pageNo);
-        String path = "durations";
+                              @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
-        List<Duration> durations = page.getContent();
+        Page<Duration> page = service.findAll(pageable);
 
-        String nextDir = sortDirection.equals("asc") ? "desc" : (sortDirection.equals("desc") ? "none" : "asc");
-
-        model.addAttribute("durations", durations);
-        model.addAttribute("sortField", sortField);
-        model.addAttribute("sortDirection", sortDirection);
-        model.addAttribute("nextDir", nextDir);
-        model.addAttribute("url",path);
+        model.addAttribute("durations", page.getContent());
+        model.addAttribute("page", page);
+        model.addAttribute("url", "durations");
 
         return "durations";
     }
