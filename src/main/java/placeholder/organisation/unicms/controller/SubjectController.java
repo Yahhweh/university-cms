@@ -6,6 +6,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,9 +25,9 @@ public class SubjectController {
         this.subjectService = subjectService;
     }
 
-    @RequestMapping(path = "/subjects", method = RequestMethod.GET)
+    @GetMapping(value = "/subjects")
     public String getRoomTypes(Model model,
-                               @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+                               @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
         Page<Subject> page = subjectService.findAll(pageable);
 
@@ -34,9 +35,6 @@ public class SubjectController {
         model.addAttribute("page", page);
         model.addAttribute("url", "subjects");
 
-
         return "subjects";
     }
-
-
 }

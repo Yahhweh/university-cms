@@ -1,5 +1,6 @@
 package placeholder.organisation.unicms.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,16 +20,15 @@ import java.util.List;
 
 @Controller
 public class StudentController {
-
-    private final  StudentService service;
+    private final StudentService service;
 
     public StudentController(StudentService service) {
         this.service = service;
     }
 
-    @GetMapping("/students")
+    @GetMapping(value = "/students")
     public String getStudents(Model model,
-                              @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+                              @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
         Page<Student> page = service.findAll(pageable);
 

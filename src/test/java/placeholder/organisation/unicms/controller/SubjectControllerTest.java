@@ -3,10 +3,7 @@ package placeholder.organisation.unicms.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.Subject;
@@ -32,23 +29,22 @@ class SubjectControllerTest {
     @Test
     void getRoomTypes_ShouldReturnTableViewWithAttributes_WhenAllDataIsGiven() throws Exception {
         List<Subject> subjects = List.of(new Subject(), new Subject());
-        Page<Subject> subjectPage = new PageImpl<>(subjects, PageRequest.of(0, 10), subjects.size());
+        Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
+        Page<Subject> subjectPage = new PageImpl<>(subjects, pageable, subjects.size());
 
-        when(subjectService.findAll(any(Pageable.class)))
+        when(subjectService.findAll(pageable))
                 .thenReturn(subjectPage);
 
         mockMvc.perform(get("/subjects")
-                        .param("sort", "asc")
+                        .param("sort", "id,asc")
                         .param("page", "0")
-                        .param("size", "10"))
+                        .param("size", "9"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("subjects"))
-                .andExpect(model().attribute("subjects", subjects))
+                .andExpect(model().attribute("subjects", subjectPage.getContent()))
                 .andExpect(model().attribute("url", "subjects"))
                 .andExpect(model().attribute("page", subjectPage))
                 .andExpect(model().attributeExists("subjects", "url", "page"));
-
-        verify(subjectService).findAll(any(Pageable.class));
     }
 
 }

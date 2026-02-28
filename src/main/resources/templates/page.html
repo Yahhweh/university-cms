@@ -1,4 +1,4 @@
-<div th:fragment="page">
+<div th:fragment="pageNavigation">
     <div th:if="${page.totalPages > 1}">
         <a th:if="${!page.first}"
            th:href="@{'/'+${url}(page=${page.number - 1}, size=${page.size}, sort=${#strings.replace(page.sort.toString(), ': ', ',')})}">

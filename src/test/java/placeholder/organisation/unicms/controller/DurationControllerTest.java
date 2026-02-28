@@ -32,27 +32,21 @@ class DurationControllerTest {
 
     @Test
     void getDurations_ShouldReturnViewAndModelAttributes_WhenPageableParametersProvided() throws Exception {
-        List<Duration> durationList = List.of(new Duration(), new Duration());
-        Page<Duration> durationPage = new PageImpl<>(durationList, PageRequest.of(0, 10), durationList.size());
+        List<Duration> durations = List.of(new Duration(), new Duration());
+        Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
+        Page<Duration> durationPage = new PageImpl<>(durations, pageable, durations.size());
 
-        when(durationService.findAll(any(Pageable.class))).thenReturn(durationPage);
+        when(durationService.findAll(pageable)).thenReturn(durationPage);
 
         mockMvc.perform(get("/durations")
                         .param("page", "0")
-                        .param("size", "10")
+                        .param("size", "9")
                         .param("sort", "id,asc"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("durations"))
-                .andExpect(model().attribute("durations", durationList))
+                .andExpect(model().attribute("durations", durationPage.getContent()))
                 .andExpect(model().attribute("page", durationPage))
                 .andExpect(model().attribute("url", "durations"))
                 .andExpect(model().attributeExists("durations", "page", "url"));
-
-        verify(durationService).findAll(any(Pageable.class));
-    }
-
-    @Test
-    void getDurations_ShouldThrowException(){
-
     }
 }

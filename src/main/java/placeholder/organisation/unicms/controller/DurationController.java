@@ -22,9 +22,9 @@ public class DurationController {
         this.service = service;
     }
 
-    @GetMapping("/durations")
+    @GetMapping(value = "/durations")
     public String getDuration(Model model,
-                              @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+                              @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
         Page<Duration> page = service.findAll(pageable);
 

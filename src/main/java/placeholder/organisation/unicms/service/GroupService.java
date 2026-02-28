@@ -64,7 +64,7 @@ public class GroupService {
     }
 
     public Page<Group> findAll(Pageable pageable) {
-        log.debug("Trying to get paginated Groups: {}", pageable);
+        log.debug("Fetching paginated Groups: {}", pageable);
         return groupRepository.findAll(pageable);
     }
 }

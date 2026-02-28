@@ -9,12 +9,12 @@
     <thead>
     <tr>
         <th>
-            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='start,' + (${page.sort.getOrderFor('start')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='start,' + (${page.sort.getOrderFor('start')?.ascending} ? 'desc' : 'asc'))}">
                 Start Time
             </a>
         </th>
         <th>
-            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='end,' + (${page.sort.getOrderFor('end')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='end,' + (${page.sort.getOrderFor('end')?.ascending} ? 'desc' : 'asc'))}">
                 End Time
             </a>
         </th>
@@ -28,6 +28,6 @@
     </tbody>
 </table>
 
-<div th:insert="~{page :: page}"></div>
+<div th:insert="~{page :: pageNavigation}"></div>
 </body>
 </html>

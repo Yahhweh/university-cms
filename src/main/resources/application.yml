@@ -1,6 +1,11 @@
 spring:
+  data:
+    web:
+      pageable:
+        max-page-size: 9
+
   application:
-         name: uni-cms
+    name: uni-cms
   messages:
     basename: lang/messages
     encoding: UTF-8
@@ -42,6 +47,3 @@ lesson:
   validation:
     min_duration_minutes: 45
     max_duration_minutes: 90
-
-table:
-  page_size: 10

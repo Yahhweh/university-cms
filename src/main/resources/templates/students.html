@@ -9,49 +9,49 @@
     <thead>
     <tr>
         <th>
-            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
                 First Name
             </a>
         </th>
 
         <th>
-            <a th:href="@{/students(page=${page.number}, size=${page.size}, sort='sureName,' + (${page.sort.getOrderFor('sureName')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='sureName,' + (${page.sort.getOrderFor('sureName')?.ascending} ? 'desc' : 'asc'))}">
                 Sure Name
             </a>
         </th>
 
         <th>
-            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='email,' + (${page.sort.getOrderFor('email')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='email,' + (${page.sort.getOrderFor('email')?.ascending} ? 'desc' : 'asc'))}">
                 Email
             </a>
         </th>
 
         <th>
-            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='dateOfBirth,' + (${page.sort.getOrderFor('dateOfBirth')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='dateOfBirth,' + (${page.sort.getOrderFor('dateOfBirth')?.ascending} ? 'desc' : 'asc'))}">
                 Date of Birth
             </a>
         </th>
 
         <th>
-            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='group,' + (${page.sort.getOrderFor('group')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='group,' + (${page.sort.getOrderFor('group')?.ascending} ? 'desc' : 'asc'))}">
                 Group
             </a>
         </th>
 
         <th>
-            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='degree,' + (${page.sort.getOrderFor('degree')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='degree,' + (${page.sort.getOrderFor('degree')?.ascending} ? 'desc' : 'asc'))}">
                 Degree
             </a>
         </th>
 
         <th>
-            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='address.country,' + (${page.sort.getOrderFor('address.country')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='address.country,' + (${page.sort.getOrderFor('address.country')?.ascending} ? 'desc' : 'asc'))}">
                 Country
             </a>
         </th>
 
         <th>
-            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='address.phoneNumber,' + (${page.sort.getOrderFor('address.phoneNumber')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='address.phoneNumber,' + (${page.sort.getOrderFor('address.phoneNumber')?.ascending} ? 'desc' : 'asc'))}">
                 Phone Number
             </a>
         </th>
@@ -77,6 +77,6 @@
     </tr>
     </tbody>
 </table>
-<div th:insert="page :: page"></div>
+<div th:insert="~{page :: pageNavigation}"></div>
 </body>
 </html>

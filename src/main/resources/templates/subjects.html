@@ -9,7 +9,7 @@
     <thead>
     <tr>
         <th>
-            <a th:href="@{/${url}(page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
                 Subject Name
             </a>
         </th>
@@ -22,6 +22,6 @@
     </tbody>
 </table>
 
-<div th:insert="~{page :: page}"></div>
+<div th:insert="~{page :: pageNavigation}"></div>
 </body>
 </html>

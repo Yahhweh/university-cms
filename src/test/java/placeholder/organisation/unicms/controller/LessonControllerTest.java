@@ -3,13 +3,9 @@ package placeholder.organisation.unicms.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.service.LessonService;
 
@@ -32,23 +28,22 @@ class LessonControllerTest {
 
     @Test
     void getLessons_ShouldReturnTableViewWithAttributes_WhenEverythingIsCorrect() throws Exception {
-        List<Lesson> lessonList = List.of(new Lesson(), new Lesson());
-        Page<Lesson> lessonPage = new PageImpl<>(lessonList, PageRequest.of(0, 10), lessonList.size());
+        List<Lesson> lessons = List.of(new Lesson(), new Lesson());
+        Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
+        Page<Lesson> lessonPage = new PageImpl<>(lessons,pageable, lessons.size());
 
-        when(lessonService.findAll(any(Pageable.class)))
+        when(lessonService.findAll(pageable))
                 .thenReturn(lessonPage);
 
         mockMvc.perform(get("/lessons")
-                        .param("sort", "asc")
-                        .param("size", "10")
+                        .param("sort", "id,asc")
+                        .param("size", "9")
                         .param("page", "0"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("lessons"))
-                .andExpect(model().attribute("lessons", lessonList))
+                .andExpect(model().attribute("lessons", lessons))
                 .andExpect(model().attribute("page", lessonPage))
                 .andExpect(model().attribute("url", "lessons"))
                 .andExpect(model().attributeExists("lessons", "page", "url"));
-
-        verify(lessonService).findAll(any(Pageable.class));
     }
 }

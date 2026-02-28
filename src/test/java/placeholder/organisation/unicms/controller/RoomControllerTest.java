@@ -3,10 +3,7 @@ package placeholder.organisation.unicms.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.Room;
@@ -34,13 +31,14 @@ class RoomControllerTest {
     @Test
     void getRooms_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
         List<Room> rooms = List.of(new Room(), new Room());
-        Page<Room> roomPage = new PageImpl<>(rooms, PageRequest.of(0, 10), rooms.size());
+        Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
+        Page<Room> roomPage = new PageImpl<>(rooms, pageable, rooms.size());
 
         when(roomService.findAll(any(Pageable.class)))
                 .thenReturn(roomPage);
 
         mockMvc.perform(get("/rooms")
-                        .param("sort", "asc")
+                        .param("sort", "id,asc")
                         .param("size", "10")
                         .param("page", "0"))
                 .andExpect(status().isOk())
@@ -49,7 +47,5 @@ class RoomControllerTest {
                 .andExpect(model().attribute("page", roomPage))
                 .andExpect(model().attribute("url", "rooms"))
                 .andExpect(model().attributeExists("rooms", "url", "page"));
-
-        verify(roomService).findAll(any(Pageable.class));
     }
 }

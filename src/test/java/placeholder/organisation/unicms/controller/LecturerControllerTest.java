@@ -3,20 +3,14 @@ package placeholder.organisation.unicms.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.entity.Lecturer;
-import placeholder.organisation.unicms.service.GroupService;
 import placeholder.organisation.unicms.service.LecturerService;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -34,19 +28,20 @@ class LecturerControllerTest {
 
     @Test
     void getLecturers_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
-        List<Lecturer> lecturerList = List.of(new Lecturer(), new Lecturer());
-        Page<Lecturer> lecturerPage = new PageImpl<>(lecturerList, PageRequest.of(0, 10), lecturerList.size());
+        List<Lecturer> lecturers = List.of(new Lecturer(), new Lecturer());
+        Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
+        Page<Lecturer> lecturerPage = new PageImpl<>(lecturers, pageable, lecturers.size());
 
-        when(lecturerService.findAll(any(Pageable.class)))
+        when(lecturerService.findAll(pageable))
                 .thenReturn(lecturerPage);
 
         mockMvc.perform(get("/lecturers")
-                        .param("size", "10")
-                        .param("sort", "asc")
+                        .param("size", "9")
+                        .param("sort", "id,asc")
                         .param("page", "0"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("lecturers"))
-                .andExpect(model().attribute("lecturers", lecturerList))
+                .andExpect(model().attribute("lecturers", lecturerPage.getContent()))
                 .andExpect(model().attribute("page", lecturerPage))
                 .andExpect(model().attribute("url", "lecturers"))
                 .andExpect(model().attributeExists("lecturers", "page", "url"));
