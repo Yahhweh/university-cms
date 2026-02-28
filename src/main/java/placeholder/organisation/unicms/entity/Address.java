@@ -60,7 +60,4 @@ public class Address {
         this.phoneNumber = phoneNumber;
     }
 
-    public String toString(){
-        return this.getCountry();
-    }
 }
