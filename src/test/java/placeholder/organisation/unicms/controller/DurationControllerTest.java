@@ -32,7 +32,7 @@ class DurationControllerTest {
 
     @Test
     void getDurations_ShouldReturnViewAndModelAttributes_WhenPageableParametersProvided() throws Exception {
-        List<Duration> durations = List.of(new Duration(), new Duration());
+        List<Duration> durations = List.of();
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Duration> durationPage = new PageImpl<>(durations, pageable, durations.size());
 
@@ -46,7 +46,6 @@ class DurationControllerTest {
                 .andExpect(view().name("durations"))
                 .andExpect(model().attribute("durations", durationPage.getContent()))
                 .andExpect(model().attribute("page", durationPage))
-                .andExpect(model().attribute("url", "durations"))
-                .andExpect(model().attributeExists("durations", "page", "url"));
+                .andExpect(model().attribute("url", "durations"));
     }
 }

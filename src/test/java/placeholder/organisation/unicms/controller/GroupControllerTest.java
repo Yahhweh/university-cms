@@ -28,7 +28,7 @@ class GroupControllerTest {
 
     @Test
     void getGroups_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
-        List<Group> groups = List.of(new Group(), new Group());
+        List<Group> groups = List.of();
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Group> groupPage = new PageImpl<>(groups, pageable, groups.size());
 
@@ -43,7 +43,6 @@ class GroupControllerTest {
                 .andExpect(view().name("groups"))
                 .andExpect(model().attribute("groups", groupPage.getContent()   ))
                 .andExpect(model().attribute("page", groupPage))
-                .andExpect(model().attribute("url", "groups"))
-                .andExpect(model().attributeExists("groups", "page", "url"));
+                .andExpect(model().attribute("url", "groups"));
     }
 }

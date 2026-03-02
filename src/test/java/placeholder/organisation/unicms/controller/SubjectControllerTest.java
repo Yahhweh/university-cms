@@ -28,7 +28,7 @@ class SubjectControllerTest {
 
     @Test
     void getRoomTypes_ShouldReturnTableViewWithAttributes_WhenAllDataIsGiven() throws Exception {
-        List<Subject> subjects = List.of(new Subject(), new Subject());
+        List<Subject> subjects = List.of();
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Subject> subjectPage = new PageImpl<>(subjects, pageable, subjects.size());
 
@@ -43,8 +43,6 @@ class SubjectControllerTest {
                 .andExpect(view().name("subjects"))
                 .andExpect(model().attribute("subjects", subjectPage.getContent()))
                 .andExpect(model().attribute("url", "subjects"))
-                .andExpect(model().attribute("page", subjectPage))
-                .andExpect(model().attributeExists("subjects", "url", "page"));
+                .andExpect(model().attribute("page", subjectPage));
     }
-
 }

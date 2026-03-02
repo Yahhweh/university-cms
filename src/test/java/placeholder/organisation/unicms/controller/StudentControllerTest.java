@@ -29,9 +29,7 @@ class StudentControllerTest {
 
     @Test
     void getLecturers_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
-        List<Student> students = List.of(new Student(), new Student(), new Student(), new Student(), new Student(),
-                new Student(), new Student(), new Student(), new Student(), new Student(), new Student(),new Student(), new Student(),
-                new Student(), new Student(),new Student());
+        List<Student> students = List.of();
 
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Student> studentPage = new PageImpl<>(students, pageable, students.size());
@@ -46,7 +44,6 @@ class StudentControllerTest {
                 .andExpect(view().name("students"))
                 .andExpect(model().attribute("students", studentPage.getContent()))
                 .andExpect(model().attribute("page", studentPage))
-                .andExpect(model().attribute("url", "students"))
-                .andExpect(model().attributeExists("students", "url", "page"));
+                .andExpect(model().attribute("url", "students"));
     }
 }

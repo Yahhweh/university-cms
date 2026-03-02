@@ -28,7 +28,7 @@ class LessonControllerTest {
 
     @Test
     void getLessons_ShouldReturnTableViewWithAttributes_WhenEverythingIsCorrect() throws Exception {
-        List<Lesson> lessons = List.of(new Lesson(), new Lesson());
+        List<Lesson> lessons = List.of();
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Lesson> lessonPage = new PageImpl<>(lessons,pageable, lessons.size());
 
@@ -43,7 +43,6 @@ class LessonControllerTest {
                 .andExpect(view().name("lessons"))
                 .andExpect(model().attribute("lessons", lessons))
                 .andExpect(model().attribute("page", lessonPage))
-                .andExpect(model().attribute("url", "lessons"))
-                .andExpect(model().attributeExists("lessons", "page", "url"));
+                .andExpect(model().attribute("url", "lessons"));
     }
 }

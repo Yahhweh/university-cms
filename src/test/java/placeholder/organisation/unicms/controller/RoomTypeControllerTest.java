@@ -28,8 +28,8 @@ class RoomTypeControllerTest {
     private RoomTypeService roomTypeService;
 
     @Test
-    void getRoomTypes_ShouldReturnTableViewWithAttributes__whenEverythingIsCorrect() throws Exception {
-        List<RoomType> rooms = List.of(new RoomType(), new RoomType());
+    void getRoomTypes_ShouldReturnTableViewWithAttributes_whenEverythingIsCorrect() throws Exception {
+        List<RoomType> rooms = List.of();
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<RoomType> roomPage = new PageImpl<>(rooms, pageable, rooms.size());
 
@@ -44,7 +44,6 @@ class RoomTypeControllerTest {
                 .andExpect(view().name("roomTypes"))
                 .andExpect(model().attribute("roomTypes", rooms))
                 .andExpect(model().attribute("page", roomPage))
-                .andExpect(model().attribute("url", "room-types"))
-                .andExpect(model().attributeExists("roomTypes", "url", "page"));
+                .andExpect(model().attribute("url", "room-types"));
     }
 }

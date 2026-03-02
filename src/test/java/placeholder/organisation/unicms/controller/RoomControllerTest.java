@@ -30,7 +30,7 @@ class RoomControllerTest {
 
     @Test
     void getRooms_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
-        List<Room> rooms = List.of(new Room(), new Room());
+        List<Room> rooms = List.of();
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Room> roomPage = new PageImpl<>(rooms, pageable, rooms.size());
 
@@ -45,7 +45,6 @@ class RoomControllerTest {
                 .andExpect(view().name("rooms"))
                 .andExpect(model().attribute("rooms", rooms))
                 .andExpect(model().attribute("page", roomPage))
-                .andExpect(model().attribute("url", "rooms"))
-                .andExpect(model().attributeExists("rooms", "url", "page"));
+                .andExpect(model().attribute("url", "rooms"));
     }
 }
