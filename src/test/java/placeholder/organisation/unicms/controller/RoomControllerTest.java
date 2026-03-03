@@ -7,6 +7,7 @@ import org.springframework.data.domain.*;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.Room;
+import placeholder.organisation.unicms.entity.RoomType;
 import placeholder.organisation.unicms.service.RoomService;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -30,7 +31,7 @@ class RoomControllerTest {
 
     @Test
     void getRooms_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
-        List<Room> rooms = List.of();
+        List<Room> rooms = List.of(getClassRoom());
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Room> roomPage = new PageImpl<>(rooms, pageable, rooms.size());
 
@@ -46,5 +47,9 @@ class RoomControllerTest {
                 .andExpect(model().attribute("rooms", rooms))
                 .andExpect(model().attribute("page", roomPage))
                 .andExpect(model().attribute("url", "rooms"));
+    }
+
+    private Room getClassRoom() {
+        return new Room(1L, "A-101", new RoomType(1L, "Hall", 100L));
     }
 }

@@ -22,7 +22,6 @@ spring:
     url: jdbc:postgresql://localhost:5436/uni-cms?stringtype=unspecified
     username: postgres
     password: 22305
-
     hibernate:
       ddl-auto: none
 

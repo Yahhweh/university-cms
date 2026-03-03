@@ -6,9 +6,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.*;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import placeholder.organisation.unicms.entity.Lesson;
+import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.service.LessonService;
+import placeholder.organisation.unicms.service.dto.LessonDTO;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -28,7 +31,7 @@ class LessonControllerTest {
 
     @Test
     void getLessons_ShouldReturnTableViewWithAttributes_WhenEverythingIsCorrect() throws Exception {
-        List<Lesson> lessons = List.of();
+        List<Lesson> lessons = List.of(getLesson());
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Lesson> lessonPage = new PageImpl<>(lessons,pageable, lessons.size());
 
@@ -44,5 +47,31 @@ class LessonControllerTest {
                 .andExpect(model().attribute("lessons", lessons))
                 .andExpect(model().attribute("page", lessonPage))
                 .andExpect(model().attribute("url", "lessons"));
+    }
+
+    private Lesson getLesson() {
+        return new Lesson(1L, getDuration(), new Subject(1L, "Math"), getGroup(), getLecturer(), getClassRoom(), LocalDate.now());
+    }
+
+
+    private Lecturer getLecturer() {
+        Lecturer lecturer = new Lecturer();
+        lecturer.setId(1L);
+        lecturer.setName("John");
+        lecturer.setSureName("Pork");
+        lecturer.setSalary(40000);
+        return lecturer;
+    }
+
+    private Group getGroup() {
+        return new Group(1L, "A-122");
+    }
+
+    private Duration getDuration() {
+        return new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00));
+    }
+
+    private Room getClassRoom() {
+        return new Room(1L, "A-101", new RoomType(1L, "Hall", 100L));
     }
 }

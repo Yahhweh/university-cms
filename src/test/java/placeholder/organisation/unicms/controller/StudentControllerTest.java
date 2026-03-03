@@ -7,6 +7,8 @@ import org.springframework.data.domain.*;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+import placeholder.organisation.unicms.entity.Degree;
 import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.service.StudentService;
 
@@ -29,7 +31,7 @@ class StudentControllerTest {
 
     @Test
     void getLecturers_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
-        List<Student> students = List.of();
+        List<Student> students = List.of(getStudent());
 
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Student> studentPage = new PageImpl<>(students, pageable, students.size());
@@ -45,5 +47,14 @@ class StudentControllerTest {
                 .andExpect(model().attribute("students", studentPage.getContent()))
                 .andExpect(model().attribute("page", studentPage))
                 .andExpect(model().attribute("url", "students"));
+    }
+
+    private Student getStudent() {
+        Student student = new Student();
+        student.setId(1L);
+        student.setName("Bob");
+        student.setSureName("SureName");
+        student.setDegree(Degree.Bachelor);
+        return student;
     }
 }

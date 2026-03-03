@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.Duration;
 import placeholder.organisation.unicms.service.DurationService;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -32,7 +33,7 @@ class DurationControllerTest {
 
     @Test
     void getDurations_ShouldReturnViewAndModelAttributes_WhenPageableParametersProvided() throws Exception {
-        List<Duration> durations = List.of();
+        List<Duration> durations = List.of(getDuration());
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Duration> durationPage = new PageImpl<>(durations, pageable, durations.size());
 
@@ -47,5 +48,9 @@ class DurationControllerTest {
                 .andExpect(model().attribute("durations", durationPage.getContent()))
                 .andExpect(model().attribute("page", durationPage))
                 .andExpect(model().attribute("url", "durations"));
+    }
+
+    private Duration getDuration(){
+        return new Duration(1L, LocalTime.of(10, 00), LocalTime.of(12, 00));
     }
 }

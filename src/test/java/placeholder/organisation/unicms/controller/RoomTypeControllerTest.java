@@ -29,7 +29,7 @@ class RoomTypeControllerTest {
 
     @Test
     void getRoomTypes_ShouldReturnTableViewWithAttributes_whenEverythingIsCorrect() throws Exception {
-        List<RoomType> rooms = List.of();
+        List<RoomType> rooms = List.of(getClassRoomType());
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<RoomType> roomPage = new PageImpl<>(rooms, pageable, rooms.size());
 
@@ -46,4 +46,9 @@ class RoomTypeControllerTest {
                 .andExpect(model().attribute("page", roomPage))
                 .andExpect(model().attribute("url", "room-types"));
     }
+
+    private RoomType getClassRoomType() {
+        return new RoomType(1L, "Hall", 200L);
+    }
+
 }

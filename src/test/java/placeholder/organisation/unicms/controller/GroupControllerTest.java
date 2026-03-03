@@ -28,21 +28,31 @@ class GroupControllerTest {
 
     @Test
     void getGroups_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
-        List<Group> groups = List.of();
+        List<Group> groups = List.of(getGroup());
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Group> groupPage = new PageImpl<>(groups, pageable, groups.size());
 
         when(groupService.findAll(pageable))
-                .thenReturn(groupPage);
+            .thenReturn(groupPage);
 
         mockMvc.perform(get("/groups")
-                        .param("page", "0")
-                        .param("size", "9")
-                        .param("sort", "id,asc"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("groups"))
-                .andExpect(model().attribute("groups", groupPage.getContent()   ))
-                .andExpect(model().attribute("page", groupPage))
-                .andExpect(model().attribute("url", "groups"));
+                .param("page", "0")
+                .param("size", "9")
+                .param("sort", "id,asc"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("groups"))
+            .andExpect(model().attributeExists("groups"))
+            .andExpect(model().attribute("groups", groups))
+            .andExpect(model().attribute("page", groupPage))
+            .andExpect(model().attribute("url", "groups"));
+
+        verify(groupService).findAll(pageable);
+    }
+
+    private Group getGroup(){
+        Group testGroup = new Group();
+        testGroup.setId(1L);
+        testGroup.setName("Alpha Group");
+        return testGroup;
     }
 }

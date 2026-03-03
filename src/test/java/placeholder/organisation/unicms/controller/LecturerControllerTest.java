@@ -28,7 +28,7 @@ class LecturerControllerTest {
 
     @Test
     void getLecturers_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
-        List<Lecturer> lecturers = List.of();
+        List<Lecturer> lecturers = List.of(getLecturer());
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Lecturer> lecturerPage = new PageImpl<>(lecturers, pageable, lecturers.size());
 
@@ -44,5 +44,14 @@ class LecturerControllerTest {
                 .andExpect(model().attribute("lecturers", lecturerPage.getContent()))
                 .andExpect(model().attribute("page", lecturerPage))
                 .andExpect(model().attribute("url", "lecturers"));
+    }
+
+    private Lecturer getLecturer() {
+        Lecturer lecturer = new Lecturer();
+        lecturer.setId(1L);
+        lecturer.setName("John");
+        lecturer.setSureName("Doe");
+        lecturer.setSalary(40000);
+        return lecturer;
     }
 }
