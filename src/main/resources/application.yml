@@ -36,6 +36,9 @@ server:
 logging:
   level:
     org.flywaydb: DEBUG
+    org:
+      springframework:
+          security: trace
 
 subject:
   generator:
@@ -46,3 +49,5 @@ lesson:
   validation:
     min_duration_minutes: 45
     max_duration_minutes: 90
+
+

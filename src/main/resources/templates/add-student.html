@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="styles/css.html :: my-css">
+    <meta charset="UTF-8">
+    <title>Add Student</title>
+</head>
+<body>
+<div class="container" style="padding: 40px;">
+    <h1>Add Student</h1>
+    <form th:action="@{/admin/add-student}" method="post">
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" name="name" placeholder="John" required>
+        </div>
+        <div class="form-group">
+            <label>Sure Name</label>
+            <input type="text" name="sureName" placeholder="Smith" required>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <label>Gender</label>
+            <select name="gender" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Date of Birth</label>
+            <input type="date" name="dateOfBirth" required>
+        </div>
+        <div class="form-group">
+            <label>City</label>
+            <input type="text" name="city" required>
+        </div>
+        <div class="form-group">
+            <label>Street</label>
+            <input type="text" name="street" required>
+        </div>
+        <div class="form-group">
+            <label>Phone number</label>
+            <input type="text" name="phoneNumber" required>
+        </div>
+        <div class="form-group">
+            <label>Country</label>
+            <input type="text" name="country" required>
+        </div>
+        <div class="form-group">
+            <label>House Number</label>
+            <input type="text" name="houseNumber" required>
+        </div>
+        <div class="form-group">
+            <label>Postal Code</label>
+            <input type="text" name="postalCode" required>
+        </div>
+        <div class="form-group">
+            <label>Degree</label>
+            <select name="degree" required>
+                <option value="Bachelor">Bachelor</option>
+                <option value="Master">Master</option>
+                <option value="Doctoral">Doctoral</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Group (optional)</label>
+            <select name="groupId">
+                <option value="">-- No Group --</option>
+                <option th:each="group : ${groups}" th:value="${group.id}"
+                        th:text="${group.name}"></option>
+            </select>
+        </div>
+        <button type="submit" class="btn">Add Student</button>
+    </form>
+    <a th:href="@{/admin}" class="back-button"
+       style="margin-top: 20px; display: inline-block;">Back to Admin Panel</a>
+</div>
+</body>
+</html>

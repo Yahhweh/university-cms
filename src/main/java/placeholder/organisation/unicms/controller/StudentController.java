@@ -1,24 +1,19 @@
 package placeholder.organisation.unicms.controller;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import placeholder.organisation.unicms.entity.Address;
-import placeholder.organisation.unicms.entity.RoomType;
+import org.springframework.web.bind.annotation.RequestMapping;
 import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.service.StudentService;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
-
 @Controller
+@RequestMapping("/students")
 public class StudentController {
     private final StudentService service;
 
@@ -26,7 +21,7 @@ public class StudentController {
         this.service = service;
     }
 
-    @GetMapping(value = "/students")
+    @GetMapping()
     public String getStudents(Model model,
                               @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
@@ -37,5 +32,16 @@ public class StudentController {
         model.addAttribute("url", "students");
 
         return "students";
+    }
+
+    @GetMapping(value = "/profile")
+    public String getProfile(
+        Model model,
+        Authentication authentication
+    ){
+        Student student = service.findByEmail(authentication.getName());
+
+        model.addAttribute("student", student);
+        return "student-profile";
     }
 }

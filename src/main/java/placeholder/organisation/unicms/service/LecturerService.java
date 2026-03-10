@@ -105,6 +105,13 @@ public class LecturerService {
         return lecturerRepository.findAll(pageable);
     }
 
+    @Transactional(readOnly = true)
+    public Lecturer findByEmail(String email){
+        Lecturer lecturer = lecturerRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException(Lecturer.class, email));
+        log.debug("Found lecturer with email {}", email);
+        return lecturer;
+    }
+
     private void resolveRelations(LecturerDTO dto, Lecturer lecturer) {
         if (dto.getStudySubjectIds() != null && !dto.getStudySubjectIds().isEmpty()) {
             List<Subject> subjects = subjectRepository.findAllById(dto.getStudySubjectIds());

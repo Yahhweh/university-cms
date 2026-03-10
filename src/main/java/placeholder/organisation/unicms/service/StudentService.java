@@ -32,6 +32,7 @@ public class StudentService {
         this.groupRepository = groupRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<Student> findAllStudents() {
         List<Student> students = studentRepository.findAll();
         log.debug("Found {} students", students.size());
@@ -66,6 +67,12 @@ public class StudentService {
         studentRepository.save(student);
 
         log.debug("Student updated successfully. ID: {}", studentId);
+    }
+
+    public Student findByEmail(String email){
+       Student student = studentRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException(Student.class, email));
+       log.debug("Found Student with email {}", email);
+       return student;
     }
 
     public Page<Student> findAll(Pageable pageable) {

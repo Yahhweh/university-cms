@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="styles/css.html :: my-css">
+    <meta charset="UTF-8">
+    <title>Change User Role</title>
+</head>
+<body>
+<h1>Change User Role</h1>
+
+<h2>Students</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Email</th>
+            <th>Current Role</th>
+            <th>Change Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="student : ${students}">
+            <td th:text="${student.id}"></td>
+            <td th:text="${student.name}"></td>
+            <td th:text="${student.sureName}"></td>
+            <td th:text="${student.email}"></td>
+            <td th:text="${student.role}"></td>
+            <td>
+                <form th:action="@{/admin/change-role}" method="post">
+                    <input type="hidden" name="id" th:value="${student.id}">
+                    <select name="role">
+                        <option value="ADMIN">ADMIN</option>
+                        <option value="STUDENT">STUDENT</option>
+                        <option value="LECTURER">LECTURER</option>
+                    </select>
+                    <button type="submit">Change</button>
+                </form>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>Lecturers</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Email</th>
+            <th>Current Role</th>
+            <th>New Role</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="lecturer : ${lecturers}">
+            <td th:text="${lecturer.id}"></td>
+            <td th:text="${lecturer.name}"></td>
+            <td th:text="${lecturer.sureName}"></td>
+            <td th:text="${lecturer.email}"></td>
+            <td th:text="${lecturer.role}"></td>
+            <td>
+                <form th:action="@{/admin/change-role}" method="post">
+                    <input type="hidden" name="id" th:value="${lecturer.id}">
+                    <select name="role">
+                        <option value="ADMIN">ADMIN</option>
+                        <option value="STUDENT">STUDENT</option>
+                        <option value="LECTURER">LECTURER</option>
+                    </select>
+                    <button type="submit">Change</button>
+                </form>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</body>
+</html>

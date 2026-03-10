@@ -286,7 +286,7 @@ INSERT INTO public."group" (id, name) VALUES (20, 'SD-95');
 -- Data for Name: person; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public.person (id, password, name, sure_name, gender, address_id, date_of_birth, email) VALUES (1, 'password_0', 'Lucas', 'Rodriguez', 'Female', 10, '1966-01-20', 'lucas.rodriguez17@lecturer.university.com');
+INSERT INTO public.person (id, password, name, sure_name, gender, address_id, date_of_birth, email) VALUES (1, '$2a$10$dOredeUrMYtkTf6wbMiwTeSsUfAdeXwirgEaaF36Ohnd4oYRiTt3e', 'Lucas', 'Rodriguez', 'Female', 10, '1966-01-20', 'lucas.rodriguez17@lecturer.university.com');
 INSERT INTO public.person (id, password, name, sure_name, gender, address_id, date_of_birth, email) VALUES (2, 'password_1', 'Oliver', 'Smith', 'Male', 11, '1966-01-20', 'oliver.smith8@lecturer.university.com');
 INSERT INTO public.person (id, password, name, sure_name, gender, address_id, date_of_birth, email) VALUES (3, 'password_2', 'William', 'Johnson', 'Female', 87, '1967-01-20', 'william.johnson7@lecturer.university.com');
 INSERT INTO public.person (id, password, name, sure_name, gender, address_id, date_of_birth, email) VALUES (4, 'password_3', 'Liam', 'Martinez', 'Male', 92, '1983-01-20', 'liam.martinez6@lecturer.university.com');

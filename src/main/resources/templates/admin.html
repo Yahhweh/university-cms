@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="styles/css.html :: my-css">
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+</head>
+<body>
+<div class="container" style="padding: 40px; text-align: center;">
+    <h1>Welcome to Admin Panel</h1>
+    <div style="margin-top: 40px; display: flex; gap: 20px; justify-content: center;">
+        <a th:href="@{/admin/change-role}" class="btn">Change Person Role</a>
+        <a th:href="@{/admin/add-student}" class="btn">Add Student</a>
+        <a th:href="@{admin/add-lecturer}" class="btn">Add Lecturer</a>
+    </div>
+</div>
+</body>
+</html>

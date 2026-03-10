@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{styles/css.html :: my-css}">
+    <title>Profile</title>
+</head>
+<body>
+<style>
+    .schedule-container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+    }
+
+    .schedule-header {
+        background-color: #2089f1;
+        color: white;
+        padding: 30px;
+        text-align: center;
+    }
+
+    .schedule-content {
+        padding: 30px;
+    }
+
+    .section {
+        margin-bottom: 25px;
+    }
+
+    .section-title {
+        background-color: #1e3a8a;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px 5px 0 0;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+</style>
+
+<div class="schedule-container">
+    <div class="schedule-header">
+        <h1 th:text="${student.name + ' ' + student.sureName}">John Doe</h1>
+        <p class="role">Lecturer Profile</p>
+    </div>
+
+    <div class="schedule-content">
+
+        <div class="section">
+            <div class="section-title">Personal Information</div>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <td th:text="${student.name}">John</td>
+                </tr>
+                <tr>
+                    <th>Surname</th>
+                    <td th:text="${student.sureName}">Doe</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td th:text="${student.email}">john.doe@university.com</td>
+                </tr>
+                <tr>
+                    <th>Gender</th>
+                    <td th:text="${student.gender}">MALE</td>
+                </tr>
+                <tr>
+                    <th>Date of Birth</th>
+                    <td th:text="${#temporals.format(student.dateOfBirth, 'yyyy-MM-dd')}">2007-01-01</td>
+                </tr>
+                <tr>
+                    <th>Role</th>
+                    <td th:text="${student.role}">Student</td>
+                </tr>
+                <tr>
+                    <th>Salary</th>
+                    <td th:text="${student.degree != null ? student.group: 'N/A'}">AB-12</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Address</div>
+            <table th:if="${student.address != null}">
+                <tr>
+                    <th>Street</th>
+                    <td th:text="${student.address.street}">Main Street</td>
+                </tr>
+                <tr>
+                    <th>House Number</th>
+                    <td th:text="${student.address.houseNumber}">123</td>
+                </tr>
+                <tr>
+                    <th>City</th>
+                    <td th:text="${student.address.city}">Vilnius</td>
+                </tr>
+                <tr>
+                    <th>Country</th>
+                    <td th:text="${student.address.country}">Lithuania</td>
+                </tr>
+            </table>
+            <p th:if="${student.address == null}" class="empty-state" style="padding: 10px 15px; background: #f9f9f9;">No address information available</p>
+        </div>
+
+        <a th:href="@{/}" class="back-button">Back to Main page</a>
+    </div>
+</div>
+
+</body>
+</html>

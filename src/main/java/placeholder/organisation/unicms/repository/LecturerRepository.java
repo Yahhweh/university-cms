@@ -12,4 +12,5 @@ import java.util.function.Consumer;
 public interface LecturerRepository extends JpaRepository<Lecturer, Long>, JpaSpecificationExecutor<Lecturer> {
     Optional<Lecturer> findByNameAndSureName(String name, String sureName);
 
+    Optional<Lecturer> findByEmail(String email);
 }
