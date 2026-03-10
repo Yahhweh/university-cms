@@ -2,7 +2,6 @@ package placeholder.organisation.unicms.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -25,7 +24,7 @@ public class Lesson {
 
     @ManyToOne
     @JoinColumn(name = "study_subject_id")
-    private StudySubject studySubject;
+    private Subject subject;
 
     @ManyToOne
     @JoinColumn(name = "group_id")
@@ -37,17 +36,17 @@ public class Lesson {
 
     @ManyToOne
     @JoinColumn(name = "class_room_id")
-    private ClassRoom classRoom;
+    private Room room;
 
     @Column
     private LocalDate date;
 
-    public Lesson(Duration duration, StudySubject studySubject, Group group, Lecturer lecturer, ClassRoom classRoom, LocalDate date) {
+    public Lesson(Duration duration, Subject subject, Group group, Lecturer lecturer, Room room, LocalDate date) {
         this.duration = duration;
-        this.studySubject = studySubject;
+        this.subject = subject;
         this.group = group;
         this.lecturer = lecturer;
-        this.classRoom = classRoom;
+        this.room = room;
         this.date = date;
     }
 }

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{styles/css.html :: my-css}">
+    <meta charset="UTF-8">
+    <title>Duration List</title>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th>
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='start,' + (${page.sort.getOrderFor('start')?.ascending} ? 'desc' : 'asc'))}">
+                Start Time
+            </a>
+        </th>
+        <th>
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='end,' + (${page.sort.getOrderFor('end')?.ascending} ? 'desc' : 'asc'))}">
+                End Time
+            </a>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="duration : ${durations}">
+        <td th:text="${duration.start}">09:00</td>
+        <td th:text="${duration.end}">10:30</td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:insert="~{page :: pageNavigation}"></div>
+</body>
+</html>

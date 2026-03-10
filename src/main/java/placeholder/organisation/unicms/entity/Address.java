@@ -59,4 +59,5 @@ public class Address {
         this.postalCode = postalCode;
         this.phoneNumber = phoneNumber;
     }
+
 }

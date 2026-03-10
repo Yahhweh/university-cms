@@ -10,6 +10,6 @@ public interface LecturerMapper {
 
     Lecturer toEntity(LecturerDTO dto);
 
-    @Mapping(target = "studySubjects", ignore = true)
+    @Mapping(target = "subjects", ignore = true)
     void updateEntityFromDto(LecturerDTO dto, @MappingTarget Lecturer entity);
 }

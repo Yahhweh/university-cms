@@ -1,11 +1,15 @@
 package placeholder.organisation.unicms.service;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import placeholder.organisation.unicms.entity.RoomType;
+import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.repository.StudentRepository;
-import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.service.dto.StudentDTO;
 import placeholder.organisation.unicms.service.mapper.StudentMapper;
 
@@ -64,9 +68,13 @@ public class StudentService {
         log.debug("Student updated successfully. ID: {}", studentId);
     }
 
+    public Page<Student> findAll(Pageable pageable) {
+        log.debug("Trying to get paginated Students: {}", pageable);
+        return studentRepository.findAll(pageable);
+    }
 
-    private void resolveRelations(StudentDTO dto, Student student){
-        if(dto.getGroupId() != null){
+    private void resolveRelations(StudentDTO dto, Student student) {
+        if (dto.getGroupId() != null) {
             student.setGroup(groupRepository.getReferenceById(dto.getGroupId()));
         }
     }

@@ -1,15 +1,17 @@
 package placeholder.organisation.unicms.service;
 
-import org.springframework.transaction.annotation.Transactional;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import placeholder.organisation.unicms.entity.Lesson;
-import placeholder.organisation.unicms.repository.LecturerRepository;
-import placeholder.organisation.unicms.repository.StudySubjectRepository;
+import org.springframework.transaction.annotation.Transactional;
+import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.entity.Lecturer;
-import placeholder.organisation.unicms.entity.StudySubject;
+import placeholder.organisation.unicms.entity.Subject;
+import placeholder.organisation.unicms.repository.LecturerRepository;
+import placeholder.organisation.unicms.repository.SubjectRepository;
 import placeholder.organisation.unicms.service.dto.LecturerDTO;
-import placeholder.organisation.unicms.service.dto.LessonDTO;
 import placeholder.organisation.unicms.service.mapper.LecturerMapper;
 
 import java.util.HashSet;
@@ -21,12 +23,13 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class LecturerService {
     private final LecturerRepository lecturerRepository;
-    private final StudySubjectRepository studySubjectRepository;
+    private final SubjectRepository subjectRepository;
     private final LecturerMapper lecturerMapper;
 
-    public LecturerService(LecturerRepository lecturerRepository, StudySubjectRepository studySubjectRepository, LecturerMapper lecturerMapper) {
+    public LecturerService(LecturerRepository lecturerRepository, SubjectRepository subjectRepository,
+                           LecturerMapper lecturerMapper) {
         this.lecturerRepository = lecturerRepository;
-        this.studySubjectRepository = studySubjectRepository;
+        this.subjectRepository = subjectRepository;
         this.lecturerMapper = lecturerMapper;
     }
 
@@ -55,24 +58,24 @@ public class LecturerService {
     }
 
     public void assignSubjectToLecturer(long subjectId, long lecturerId) {
-        StudySubject subject = studySubjectRepository.findById(subjectId).orElseThrow(
-                () -> new EntityNotFoundException(StudySubject.class, String.valueOf(subjectId)));
+        Subject subject = subjectRepository.findById(subjectId).orElseThrow(
+                () -> new EntityNotFoundException(Subject.class, String.valueOf(subjectId)));
         Lecturer lecturer = lecturerRepository.findById(lecturerId).orElseThrow(
                 () -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId))
         );
-        if (lecturer.getStudySubjects().add(subject)) {
+        if (lecturer.getSubjects().add(subject)) {
             log.info("Lecturer assigned to keep this subject. lecturerId: {}, subjectId: {}", lecturerId, subjectId);
         }
     }
 
     public void removeSubjectFromLecturer(long subjectId, long lecturerId) {
-        StudySubject subject = studySubjectRepository.findById(subjectId)
-                .orElseThrow(() -> new EntityNotFoundException(StudySubject.class, String.valueOf(subjectId)));
+        Subject subject = subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new EntityNotFoundException(Subject.class, String.valueOf(subjectId)));
 
         Lecturer lecturer = lecturerRepository.findById(lecturerId)
                 .orElseThrow(() -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId)));
 
-        boolean isRemoved = lecturer.getStudySubjects().remove(subject);
+        boolean isRemoved = lecturer.getSubjects().remove(subject);
         if (!isRemoved) {
             throw new ServiceException("Subject " + subjectId + " is not related to lecturer " + lecturerId);
         }
@@ -97,15 +100,22 @@ public class LecturerService {
         log.debug("Lecturer updated successfully. ID: {}", lecturerId);
     }
 
+    public Page<Lecturer> findAll(Pageable pageable) {
+        log.debug("Trying to get paginated Lecturers: {}", pageable);
+        return lecturerRepository.findAll(pageable);
+    }
+
     private void resolveRelations(LecturerDTO dto, Lecturer lecturer) {
         if (dto.getStudySubjectIds() != null && !dto.getStudySubjectIds().isEmpty()) {
-            List<StudySubject> subjects = studySubjectRepository.findAllById(dto.getStudySubjectIds());
+            List<Subject> subjects = subjectRepository.findAllById(dto.getStudySubjectIds());
 
             if (subjects.size() != dto.getStudySubjectIds().size()) {
                 throw new EntityNotFoundException(Lecturer.class, lecturer.getName());
             }
 
-            lecturer.setStudySubjects(new HashSet<>(subjects));
+            lecturer.setSubjects(new HashSet<>(subjects));
         }
     }
+
+
 }

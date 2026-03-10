@@ -5,8 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.service.EntityValidationException;
 import placeholder.organisation.unicms.repository.GroupRepository;
@@ -52,9 +50,9 @@ class LessonValidatorTest {
     @Test
     void validateLesson_shouldThrowException_whenLecturerNotAuthorizedForSubject() {
         Lesson lesson = createBaseLesson();
-        lesson.getLecturer().setStudySubjects(new HashSet<>());
+        lesson.getLecturer().setSubjects(new HashSet<>());
 
-        lesson.getLecturer().getStudySubjects().clear();
+        lesson.getLecturer().getSubjects().clear();
 
         assertThatThrownBy(() -> lessonValidator.validateLesson(lesson, -1L))
                 .isInstanceOf(EntityValidationException.class)
@@ -65,9 +63,9 @@ class LessonValidatorTest {
     void validateLesson_shouldThrowException_whenCapacityIsNotSufficient() {
         Lesson lesson = createBaseLesson();
 
-        long roomCapacity = lesson.getClassRoom().getClassRoomType().getCapacity();
+        long roomCapacity = lesson.getRoom().getRoomType().getCapacity();
 
-        lesson.getLecturer().getStudySubjects().add(lesson.getStudySubject());
+        lesson.getLecturer().getSubjects().add(lesson.getSubject());
 
         when(groupRepository.findById(anyLong())).thenReturn(Optional.of(lesson.getGroup()));
 
@@ -96,7 +94,7 @@ class LessonValidatorTest {
 
         mockNoConflicts(lesson);
 
-        lesson.getLecturer().getStudySubjects().add(lesson.getStudySubject());
+        lesson.getLecturer().getSubjects().add(lesson.getSubject());
 
         assertDoesNotThrow(() -> lessonValidator.validateLesson(lesson, -1L));
     }
@@ -104,7 +102,7 @@ class LessonValidatorTest {
     @Test
     void validateLesson_shouldPass_whenAllConditionsAreMet() {
         Lesson lesson = createBaseLesson();
-        lesson.getLecturer().getStudySubjects().add(lesson.getStudySubject());
+        lesson.getLecturer().getSubjects().add(lesson.getSubject());
 
         mockNoConflicts(lesson);
         assertDoesNotThrow(() -> lessonValidator.validateLesson(lesson, -1L));
@@ -121,9 +119,9 @@ class LessonValidatorTest {
     }
 
     private Lesson createBaseLesson() {
-        StudySubject subject = new StudySubject(1L, "Math");
+        Subject subject = new Subject(1L, "Math");
         Lecturer lecturer = getLecturer();
-        lecturer.setStudySubjects(new HashSet<>());
+        lecturer.setSubjects(new HashSet<>());
 
         return new Lesson(
                 10L,
@@ -148,7 +146,7 @@ class LessonValidatorTest {
         return new Group(1L, "A-122");
     }
 
-    private ClassRoom getClassRoom() {
-        return new ClassRoom(1L, "A-101", new ClassRoomType(1L, "Hall", 100L));
+    private Room getClassRoom() {
+        return new Room(1L, "A-101", new RoomType(1L, "Hall", 100L));
     }
 }

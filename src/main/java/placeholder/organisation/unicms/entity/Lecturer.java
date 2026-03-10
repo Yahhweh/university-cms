@@ -27,6 +27,10 @@ public class Lecturer extends Person {
     @JoinTable(name = "lecturer_study_subject",
             joinColumns = @JoinColumn(name = "lecturer_id"),
             inverseJoinColumns = @JoinColumn(name = "study_subject_id"))
-    private Set<StudySubject> studySubjects = new HashSet<>();
+    private Set<Subject> subjects = new HashSet<>();
 
+    public String toString(){
+        return this.getName() + " " + this.getSureName();
+    }
 }
+

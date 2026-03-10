@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{styles/css.html :: my-css}">
+    <meta charset="UTF-8">
+    <title>Lecturer List</title>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th>
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
+                First Name
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='sureName,' + (${page.sort.getOrderFor('sureName')?.ascending} ? 'desc' : 'asc'))}">
+                Last Name
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='email,' + (${page.sort.getOrderFor('email')?.ascending} ? 'desc' : 'asc'))}">
+                Email
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='dateOfBirth,' + (${page.sort.getOrderFor('dateOfBirth')?.ascending} ? 'desc' : 'asc'))}">
+                Date of Birth
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='salary,' + (${page.sort.getOrderFor('salary')?.ascending} ? 'desc' : 'asc'))}">
+                Salary
+            </a>
+        </th>
+
+        <th>Subjects</th>
+
+        <th>
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='address.country,' + (${page.sort.getOrderFor('address.country')?.ascending} ? 'desc' : 'asc'))}">
+                Country
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='address.phoneNumber,' + (${page.sort.getOrderFor('address.phoneNumber')?.ascending} ? 'desc' : 'asc'))}">
+                Phone
+            </a>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="lecturer : ${lecturers}">
+        <td th:text="${lecturer.name}">Name</td>
+        <td th:text="${lecturer.sureName}">Surname</td>
+        <td th:text="${lecturer.email}">Email</td>
+        <td th:text="${lecturer.dateOfBirth}">1990-01-01</td>
+        <td th:text="${lecturer.salary}">0.00</td>
+        <td th:text="${#strings.setJoin(lecturer.getSubjects(), ', ')?: '-'}">Subjects</td>
+        <td th:text="${lecturer.address?.country ?: '-'}">Country</td>
+        <td th:text="${lecturer.address?.phoneNumber ?: '-'}">Phone</td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:insert="~{page :: pageNavigation}"></div>
+</body>
+</html>

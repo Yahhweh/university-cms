@@ -46,7 +46,7 @@ class LessonRepositoryTest {
         assertThat(foundLesson.getLecturer().getName()).isEqualTo("Darius");
         assertThat(foundLesson.getLecturer().getSalary().intValue()).isEqualTo(3000);
 
-        assertThat(foundLesson.getStudySubject().getName()).isEqualTo("Java Programming");
+        assertThat(foundLesson.getSubject().getName()).isEqualTo("Java Programming");
     }
 
     @Test
@@ -62,7 +62,7 @@ class LessonRepositoryTest {
         Lesson foundLesson = lessons.get(0);
 
         assertThat(foundLesson.getGroup().getId()).isEqualTo(groupId);
-        assertThat(foundLesson.getStudySubject().getName()).isEqualTo("Java Programming");
+        assertThat(foundLesson.getSubject().getName()).isEqualTo("Java Programming");
     }
 
     @Test
@@ -98,7 +98,7 @@ class LessonRepositoryTest {
 
         assertThat(foundLesson.getLecturer()).isNotNull();
         assertThat(foundLesson.getLecturer().getName()).isEqualTo("Darius");
-        assertThat(foundLesson.getStudySubject().getName()).isEqualTo("Java Programming");
+        assertThat(foundLesson.getSubject().getName()).isEqualTo("Java Programming");
     }
 
     @Test
@@ -126,8 +126,8 @@ class LessonRepositoryTest {
 
 
         assertThat(lessons.size()).isEqualTo(expectedLessonsSize);
-        assertThat(lessons.get(0).getStudySubject().getName()).isEqualTo(nameOfFirstLesson);
-        assertThat(lessons.get(1).getStudySubject().getName()).isEqualTo(nameOfSecondLesson);
+        assertThat(lessons.get(0).getSubject().getName()).isEqualTo(nameOfFirstLesson);
+        assertThat(lessons.get(1).getSubject().getName()).isEqualTo(nameOfSecondLesson);
     }
 
     @Test
@@ -145,9 +145,9 @@ class LessonRepositoryTest {
         List<Lesson> lessons = lessonRepository.findInRangeForLecturer(fromDate, toDate, lecturerId);
 
         assertThat(lessons.size()).isEqualTo(expectedLessonsSize);
-        assertThat(lessons.get(0).getStudySubject().getName()).isEqualTo(nameOfFirstLesson);
-        assertThat(lessons.get(1).getStudySubject().getName()).isEqualTo(nameOfSecondLesson);
-        assertThat(lessons.get(2).getStudySubject().getName()).isEqualTo(nameOfThirdLesson);
+        assertThat(lessons.get(0).getSubject().getName()).isEqualTo(nameOfFirstLesson);
+        assertThat(lessons.get(1).getSubject().getName()).isEqualTo(nameOfSecondLesson);
+        assertThat(lessons.get(2).getSubject().getName()).isEqualTo(nameOfThirdLesson);
     }
 
     @Test

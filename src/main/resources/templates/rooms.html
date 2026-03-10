@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{styles/css.html :: my-css}">
+    <meta charset="UTF-8">
+    <title>Room List</title>
+</head>
+<body>
+<table>
+    <thead>
+    <tr>
+        <th>
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='room,' + (${page.sort.getOrderFor('room')?.ascending} ? 'desc' : 'asc'))}">
+                Room Number
+            </a>
+        </th>
+
+        <th>
+            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='roomType.name,' + (${page.sort.getOrderFor('roomType.name')?.ascending} ? 'desc' : 'asc'))}">
+                Room Type
+            </a>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="room : ${rooms}">
+        <td th:text="${room.room}">B-102</td>
+        <td th:text="${room.roomType?.name ?: '-'}">LECTURE_HALL</td>
+    </tr>
+    </tbody>
+</table>
+
+<div th:insert="~{page :: pageNavigation}"></div>
+</body>
+</html>

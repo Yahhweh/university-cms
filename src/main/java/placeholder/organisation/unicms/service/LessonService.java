@@ -1,9 +1,13 @@
 package placeholder.organisation.unicms.service;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.*;
+import placeholder.organisation.unicms.entity.Lecturer;
+import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.repository.*;
 import placeholder.organisation.unicms.service.dto.LessonDTO;
 import placeholder.organisation.unicms.service.mapper.LessonMapper;
@@ -24,24 +28,24 @@ public class LessonService {
     private final StudentRepository studentRepository;
     private final LecturerRepository lecturerRepository;
     private final DurationRepository durationRepository;
-    private final StudySubjectRepository studySubjectRepository;
+    private final SubjectRepository subjectRepository;
     private final GroupRepository groupRepository;
-    private final ClassRoomRepository classRoomRepository;
+    private final RoomRepository roomRepository;
 
     public LessonService(LessonRepository lessonRepository, LessonMapper lessonMapper,
                          LessonValidator lessonValidator, StudentRepository studentRepository,
                          LecturerRepository lecturerRepository, DurationRepository durationRepository,
-                         StudySubjectRepository studySubjectRepository, GroupRepository groupRepository,
-                         ClassRoomRepository classRoomRepository) {
+                         SubjectRepository subjectRepository, GroupRepository groupRepository,
+                         RoomRepository roomRepository) {
         this.lessonRepository = lessonRepository;
         this.lessonMapper = lessonMapper;
         this.lessonValidator = lessonValidator;
         this.lecturerRepository = lecturerRepository;
         this.studentRepository = studentRepository;
         this.durationRepository = durationRepository;
-        this.studySubjectRepository = studySubjectRepository;
+        this.subjectRepository = subjectRepository;
         this.groupRepository = groupRepository;
-        this.classRoomRepository = classRoomRepository;
+        this.roomRepository = roomRepository;
     }
 
     public List<Lesson> findAllLessons() {
@@ -52,7 +56,7 @@ public class LessonService {
 
     public Optional<Lesson> findLesson(long id) {
         Optional<Lesson> lesson = lessonRepository.findById(id);
-        lesson.ifPresent(l -> log.debug("Found lesson: {} with id: {}", l.getStudySubject(), id));
+        lesson.ifPresent(l -> log.debug("Found lesson: {} with id: {}", l.getSubject(), id));
         return lesson;
     }
 
@@ -60,7 +64,7 @@ public class LessonService {
     public void createLesson(Lesson lesson) {
         lessonValidator.validateLesson(lesson, -1L);
         lessonRepository.save(lesson);
-        log.info("Lesson saved successfully: {}", lesson.getStudySubject());
+        log.info("Lesson saved successfully: {}", lesson.getSubject());
     }
 
     public List<Lesson> findLessonsInRange(LocalDate startDate, LocalDate endDate, long personId) {
@@ -105,13 +109,18 @@ public class LessonService {
         log.debug("Lesson updated successfully. ID: {}", lessonId);
     }
 
+    public Page<Lesson> findAll(Pageable pageable) {
+        log.debug("Trying to get paginated Lessons: {}", pageable);
+        return lessonRepository.findAll(pageable);
+    }
+
     private void resolveRelations(LessonDTO dto, Lesson lesson) {
         if (dto.getDurationId() != null) {
             lesson.setDuration(durationRepository.findById(dto.getDurationId())
                     .orElse(lesson.getDuration()));
         }
         if (dto.getStudySubjectId() != null) {
-            lesson.setStudySubject(studySubjectRepository.getReferenceById(dto.getStudySubjectId()));
+            lesson.setSubject(subjectRepository.getReferenceById(dto.getStudySubjectId()));
         }
         if (dto.getGroupId() != null) {
             lesson.setGroup(groupRepository.getReferenceById(dto.getGroupId()));
@@ -122,7 +131,7 @@ public class LessonService {
         }
 
         if (dto.getClassRoomId() != null) {
-            lesson.setClassRoom(classRoomRepository.getReferenceById(dto.getClassRoomId()));
+            lesson.setRoom(roomRepository.getReferenceById(dto.getClassRoomId()));
         }
     }
 }

@@ -1,8 +1,8 @@
 package placeholder.organisation.unicms.service.validation;
 
 import org.springframework.stereotype.Component;
-import placeholder.organisation.unicms.entity.ClassRoom;
-import placeholder.organisation.unicms.entity.ClassRoomType;
+import placeholder.organisation.unicms.entity.Room;
+import placeholder.organisation.unicms.entity.RoomType;
 import placeholder.organisation.unicms.service.EntityValidationException;
 
 import java.util.List;
@@ -16,29 +16,29 @@ public class ClassRoomValidator {
     private static final List<String> typesForC = List.of("Library", "Study Area", "Working Room");
     private static final List<String> typesForD = List.of("Sport Room");
 
-    public void validateClassRoom(ClassRoom classRoom) {
-        if (!isClassRoomInCorrectCorpus(classRoom)) {
+    public void validateClassRoom(Room room) {
+        if (!isClassRoomInCorrectCorpus(room)) {
             throw new EntityValidationException(
-                    "Classroom type is not compatible with the assigned corpus letter", ClassRoom.class, classRoom.getRoom());
+                    "Classroom type is not compatible with the assigned corpus letter", Room.class, room.getRoom());
         }
     }
 
-    private boolean isClassRoomInCorrectCorpus(ClassRoom classRoom) {
-        ClassRoomType classRoomType = classRoom.getClassRoomType();
+    private boolean isClassRoomInCorrectCorpus(Room classRoom) {
+        RoomType roomType = classRoom.getRoomType();
         String room = classRoom.getRoom();
         String realCorpus = String.valueOf(room.charAt(0));
 
-        if (classRoomType == null) {
+        if (roomType == null) {
             return false;
         }
-        if (realCorpus.equals("A") && typesForA.contains(classRoomType.getName())) {
+        if (realCorpus.equals("A") && typesForA.contains(roomType.getName())) {
             return true;
-        } else if (realCorpus.equals("B") && typesForB.contains(classRoomType.getName())) {
+        } else if (realCorpus.equals("B") && typesForB.contains(roomType.getName())) {
             return true;
-        } else if (realCorpus.equals("C") && typesForC.contains(classRoomType.getName())) {
+        } else if (realCorpus.equals("C") && typesForC.contains(roomType.getName())) {
             return true;
-        } else if (realCorpus.equals("D") && typesForD.contains(classRoomType.getName())) {
+        } else if (realCorpus.equals("D") && typesForD.contains(roomType.getName())) {
             return true;
-        } else return realCorpus.equals("E") && typesForE.contains(classRoomType.getName());
+        } else return realCorpus.equals("E") && typesForE.contains(roomType.getName());
     }
 }

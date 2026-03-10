@@ -9,13 +9,12 @@ import org.mockito.Spy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.repository.LecturerRepository;
-import placeholder.organisation.unicms.repository.StudySubjectRepository;
+import placeholder.organisation.unicms.repository.SubjectRepository;
 import placeholder.organisation.unicms.entity.Lecturer;
-import placeholder.organisation.unicms.entity.StudySubject;
+import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.service.dto.LecturerDTO;
 import placeholder.organisation.unicms.service.mapper.LecturerMapper;
 
-import javax.security.auth.Subject;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -31,7 +30,7 @@ class LecturerServiceTest {
     private LecturerRepository lecturerRepository;
 
     @Mock
-    private StudySubjectRepository studySubjectRepository;
+    private SubjectRepository subjectRepository;
 
     @Spy
     LecturerMapper lecturerMapper = Mappers.getMapper(LecturerMapper.class);
@@ -44,17 +43,17 @@ class LecturerServiceTest {
         long subjectId = 1L;
         long lecturerId = 2L;
 
-        StudySubject subject = new StudySubject();
+        Subject subject = new Subject();
         Lecturer lecturer = new Lecturer();
-        lecturer.setStudySubjects(new HashSet<>());
+        lecturer.setSubjects(new HashSet<>());
 
-        when(studySubjectRepository.findById(subjectId)).thenReturn(Optional.of(subject));
+        when(subjectRepository.findById(subjectId)).thenReturn(Optional.of(subject));
         when(lecturerRepository.findById(lecturerId)).thenReturn(Optional.of(lecturer));
 
         lecturerService.assignSubjectToLecturer(subjectId, lecturerId);
 
-        assertTrue(lecturer.getStudySubjects().contains(subject));
-        verify(studySubjectRepository).findById(subjectId);
+        assertTrue(lecturer.getSubjects().contains(subject));
+        verify(subjectRepository).findById(subjectId);
         verify(lecturerRepository).findById(lecturerId);
     }
 
@@ -63,7 +62,7 @@ class LecturerServiceTest {
         long subjectId = 1L;
         long lecturerId = 2L;
 
-        when(studySubjectRepository.findById(subjectId)).thenThrow(new EntityNotFoundException(Subject.class, "1"));
+        when(subjectRepository.findById(subjectId)).thenThrow(new EntityNotFoundException(javax.security.auth.Subject.class, "1"));
 
         assertThrows(EntityNotFoundException.class, () ->
                 lecturerService.assignSubjectToLecturer(subjectId, lecturerId)
@@ -75,19 +74,19 @@ class LecturerServiceTest {
         long subjectId = 10L;
         long lecturerId = 20L;
 
-        StudySubject subject = new StudySubject();
+        Subject subject = new Subject();
         Lecturer lecturer = new Lecturer();
-        Set<StudySubject> subjects = new HashSet<>();
+        Set<Subject> subjects = new HashSet<>();
         subjects.add(subject);
-        lecturer.setStudySubjects(subjects);
+        lecturer.setSubjects(subjects);
 
-        when(studySubjectRepository.findById(subjectId)).thenReturn(Optional.of(subject));
+        when(subjectRepository.findById(subjectId)).thenReturn(Optional.of(subject));
         when(lecturerRepository.findById(lecturerId)).thenReturn(Optional.of(lecturer));
 
         lecturerService.removeSubjectFromLecturer(subjectId, lecturerId);
 
-        assertTrue(lecturer.getStudySubjects().isEmpty());
-        verify(studySubjectRepository).findById(subjectId);
+        assertTrue(lecturer.getSubjects().isEmpty());
+        verify(subjectRepository).findById(subjectId);
         verify(lecturerRepository).findById(lecturerId);
     }
 
@@ -96,7 +95,7 @@ class LecturerServiceTest {
         long subjectId = 1L;
         long lecturerId = 2L;
 
-        when(studySubjectRepository.findById(subjectId)).thenThrow(new ServiceException(""));
+        when(subjectRepository.findById(subjectId)).thenThrow(new ServiceException(""));
 
         assertThrows(ServiceException.class, () ->
                 lecturerService.removeSubjectFromLecturer(subjectId, lecturerId)

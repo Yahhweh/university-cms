@@ -1,0 +1,56 @@
+package placeholder.organisation.unicms.controller;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import placeholder.organisation.unicms.entity.Duration;
+import placeholder.organisation.unicms.service.DurationService;
+
+import java.time.LocalTime;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+@WebMvcTest(DurationController.class)
+class DurationControllerTest {
+
+    @MockitoBean
+    DurationService durationService;
+
+    @Autowired
+    MockMvc mockMvc;
+
+    @Test
+    void getDurations_ShouldReturnViewAndModelAttributes_WhenPageableParametersProvided() throws Exception {
+        List<Duration> durations = List.of(getDuration());
+        Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
+        Page<Duration> durationPage = new PageImpl<>(durations, pageable, durations.size());
+
+        when(durationService.findAll(pageable)).thenReturn(durationPage);
+
+        mockMvc.perform(get("/durations")
+                        .param("page", "0")
+                        .param("size", "9")
+                        .param("sort", "id,asc"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("durations"))
+                .andExpect(model().attribute("durations", durationPage.getContent()))
+                .andExpect(model().attribute("page", durationPage))
+                .andExpect(model().attribute("url", "durations"));
+    }
+
+    private Duration getDuration(){
+        return new Duration(1L, LocalTime.of(10, 00), LocalTime.of(12, 00));
+    }
+}

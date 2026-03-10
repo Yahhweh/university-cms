@@ -24,4 +24,8 @@ public class Group {
     @Pattern(regexp = "^[A-Z]-[0-9]+$", message = "{group.name.pattern}")
     @Column(name = "name")
     String name;
+
+    public String toString(){
+        return this.getName();
+    }
 }
