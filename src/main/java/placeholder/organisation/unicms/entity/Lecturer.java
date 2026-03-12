@@ -20,6 +20,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "id")
+@DiscriminatorValue("Lecturer")
 public class Lecturer extends Person {
 
     @Column(name = "salary")

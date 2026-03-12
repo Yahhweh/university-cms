@@ -1,9 +1,11 @@
-package placeholder.organisation.unicms.service.dto;
+package placeholder.organisation.unicms.service.dto.request;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import placeholder.organisation.unicms.entity.GenderType;
+import placeholder.organisation.unicms.service.dto.request.AddressRequestDTO;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -12,7 +14,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonDTO {
+public class PersonRequestDTO {
     @Null
     private Long id;
 
@@ -29,14 +31,11 @@ public class PersonDTO {
     @NotNull
     private GenderType gender;
 
-    @NotBlank
-    @Email
-    @Pattern(regexp = "^[a-z]+\\.[a-z]+\\d*@student\\.university\\.com$",
-            message = "Email must follow format: name.surname@student.university.com")
-    private String email;
+    @NotNull
+    private String password;
 
     @Valid
-    private AddressDTO address;
+    private AddressRequestDTO address;
 
     @NotNull
     @Past

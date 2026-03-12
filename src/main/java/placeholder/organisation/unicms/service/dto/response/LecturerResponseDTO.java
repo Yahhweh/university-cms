@@ -1,4 +1,4 @@
-package placeholder.organisation.unicms.service.dto;
+package placeholder.organisation.unicms.service.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,8 +15,7 @@ import java.util.Set;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class LecturerDTO extends PersonDTO {
-
+public class LecturerResponseDTO extends PersonResponseDTO {
     @NotNull
     @Min(0)
     private Integer salary;

@@ -166,11 +166,6 @@
     <a sec:authorize="hasRole('ADMIN')" th:href="@{/lecturers}">Lecturers</a>
     <a sec:authorize="hasRole('ADMIN')" th:href="@{/lessons}">Lessons</a>
 
-    <a sec:authorize="hasRole('STUDENT')" th:href="@{/my-schedule/student}">My
-        Schedule</a>
-    <a sec:authorize="hasRole('LECTURER')" th:href="@{/my-schedule/lecturer}">My
-        Schedule</a>
-
     <div class="nav-wrapper" sec:authorize="hasRole('ADMIN')">
         <div id="dropdown-other" class="dropdown-content"></div>
         <div id="nav-other">Other</div>

@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status; // ✅
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = {AdminController.class, AuthenticationController.class, LecturerController.class, StudentController.class})
 @Import(WebSecurityConfig.class)
@@ -95,15 +95,15 @@ class WebSecurityConfigTest {
     @Test
     void filterChain_shouldReturnOk_whenStudentAccessesOwnProfile() throws Exception {
         UserDetails userDetails = User.withUsername("kirill.kovalenko@student.university.com")
-                .password("123").roles("STUDENT").build();
+            .password("123").roles("STUDENT").build();
 
         when(customUserDetailsService.loadUserByUsername("kirill.kovalenko@student.university.com")).thenReturn(userDetails);
 
         when(studentService.findByEmail(userDetails.getUsername())).thenReturn(getStudent());
 
         mockMvc.perform(get("/students/profile").with(authentication(
-            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())
-        )))
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities())
+            )))
             .andExpect(status().isOk());
     }
 
@@ -122,7 +122,7 @@ class WebSecurityConfigTest {
             .andExpect(status().isOk());
     }
 
-    Student getStudent(){
+    Student getStudent() {
         Student student = new Student();
         student.setId(1L);
         student.setName("Kirill");

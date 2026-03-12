@@ -12,6 +12,7 @@ import org.springframework.lang.Nullable;
 @AllArgsConstructor
 @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "id")
+@DiscriminatorValue("Student")
 public class  Student extends Person {
 
     @ManyToOne(fetch = FetchType.LAZY)

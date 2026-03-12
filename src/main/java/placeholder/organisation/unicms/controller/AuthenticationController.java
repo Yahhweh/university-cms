@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AuthenticationController {
 
     @GetMapping("/login")
-    String getLogin(Model model){
+    String getLogin(Model model) {
         return "login";
     }
 
     @GetMapping("/access-denied")
-    String getAccessDenied(){
+    String getAccessDenied() {
         return "access-denied";
     }
 }

@@ -2,11 +2,9 @@ package placeholder.organisation.unicms.service.validation;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.Duration;
 import placeholder.organisation.unicms.service.EntityValidationException;
-import placeholder.organisation.unicms.service.dto.DurationDTO;
 
 import java.time.LocalTime;
 

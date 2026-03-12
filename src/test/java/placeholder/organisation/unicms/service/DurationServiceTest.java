@@ -10,7 +10,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.Duration;
 import placeholder.organisation.unicms.repository.DurationRepository;
-import placeholder.organisation.unicms.service.dto.DurationDTO;
+import placeholder.organisation.unicms.service.dto.response.DurationResponseDTO;
 import placeholder.organisation.unicms.service.mapper.DurationMapper;
 import placeholder.organisation.unicms.service.validation.DurationValidator;
 
@@ -34,7 +34,7 @@ class DurationServiceTest {
     @Test
     void updateDuration_shouldSave_whenDurationIsCorrect() {
         Duration initial = getDuration();
-        DurationDTO changes = getDurationDto();
+        DurationResponseDTO changes = getDurationDto();
         long id = initial.getId();
 
         when(durationRepository.findById(id)).thenReturn(Optional.of(initial));
@@ -62,16 +62,16 @@ class DurationServiceTest {
     @Test
     void updateDuration_shouldThrowEntityValidationException_whenWrongDTOGiven() {
         Duration duration = getDuration();
-        DurationDTO durationDTO = getDurationDto();
+        DurationResponseDTO durationResponseDTO = getDurationDto();
 
-        durationDTO.setStart(LocalTime.of(9, 0, 0));
-        durationDTO.setEnd(LocalTime.of(10, 0, 0));
+        durationResponseDTO.setStart(LocalTime.of(9, 0, 0));
+        durationResponseDTO.setEnd(LocalTime.of(10, 0, 0));
 
         when(durationRepository.findById(duration.getId())).thenReturn(Optional.of(duration));
         doThrow(EntityValidationException.class).when(durationValidator).validateDuration(any(Duration.class));
 
         assertThrows(EntityValidationException.class, () ->
-                durationService.updateDuration(duration.getId(), durationDTO)
+                durationService.updateDuration(duration.getId(), durationResponseDTO)
         );
     }
 
@@ -109,7 +109,7 @@ class DurationServiceTest {
     Duration getDuration(){
         return new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00));
     }
-    DurationDTO getDurationDto(){
-        return new DurationDTO(LocalTime.of(10, 00), LocalTime.of(11, 30));
+    DurationResponseDTO getDurationDto(){
+        return new DurationResponseDTO(LocalTime.of(10, 00), LocalTime.of(11, 30));
     }
 }

@@ -11,6 +11,7 @@ import placeholder.organisation.unicms.service.GroupService;
 import placeholder.organisation.unicms.service.LecturerService;
 import placeholder.organisation.unicms.service.StudentService;
 import placeholder.organisation.unicms.service.SubjectService;
+import placeholder.organisation.unicms.service.dto.response.AddressResponseDTO;
 import placeholder.organisation.unicms.service.mapper.AddressMapper;
 
 import java.util.List;
@@ -120,7 +121,7 @@ class AdminControllerTest {
     @Test
     void addStudent_shouldRedirectToAddStudent_whenStudentCreated() throws Exception {
         when(passwordEncoder.encode("secret")).thenReturn("encoded");
-        when(addressMapper.toEntity(any())).thenReturn(new Address());
+        when(addressMapper.toEntity((AddressResponseDTO) any())).thenReturn(new Address());
 
         mockMvc.perform(post("/admin/add-student")
                         .param("name", "Ivan")
@@ -139,7 +140,7 @@ class AdminControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/add-student"));
 
-        verify(studentService).createStudent(any());
+        verify(studentService).createStudent((Student) any());
     }
 
 
@@ -158,7 +159,7 @@ class AdminControllerTest {
     @Test
     void addLecturer_shouldRedirectToAddLecturer_whenLecturerCreated() throws Exception {
         when(passwordEncoder.encode("secret")).thenReturn("encoded");
-        when(addressMapper.toEntity(any())).thenReturn(new Address());
+        when(addressMapper.toEntity((AddressResponseDTO) any())).thenReturn(new Address());
 
         mockMvc.perform(post("/admin/add-lecturer")
                         .param("name", "Anna")
@@ -177,7 +178,7 @@ class AdminControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/admin/add-lecturer"));
 
-        verify(lecturerService).createLecturer(any());
+        verify(lecturerService).createLecturer((Lecturer) any());
     }
 
     private Student getStudent() {

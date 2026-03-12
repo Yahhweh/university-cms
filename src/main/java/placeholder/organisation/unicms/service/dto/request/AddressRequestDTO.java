@@ -1,20 +1,17 @@
-package placeholder.organisation.unicms.service.dto;
+package placeholder.organisation.unicms.service.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddressDTO {
-    @Null
-    private Long id;
+public class AddressRequestDTO {
 
     @NotBlank
     @Size(min = 2, max = 100)
@@ -36,7 +33,7 @@ public class AddressDTO {
     @Size(max = 20)
     private String houseNumber;
 
-    @NotBlank()
+    @NotBlank
     @Pattern(regexp = "^[A-Z0-9]{3,10}$", message = "Postal code must be 3-10 alphanumeric characters")
     private String postalCode;
 }

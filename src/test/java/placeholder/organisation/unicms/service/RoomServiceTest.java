@@ -11,7 +11,7 @@ import placeholder.organisation.unicms.entity.Room;
 import placeholder.organisation.unicms.entity.RoomType;
 import placeholder.organisation.unicms.repository.RoomRepository;
 import placeholder.organisation.unicms.repository.RoomTypeRepository;
-import placeholder.organisation.unicms.service.dto.RoomDTO;
+import placeholder.organisation.unicms.service.dto.response.RoomResponseDTO;
 import placeholder.organisation.unicms.service.mapper.ClassRoomMapper;
 import placeholder.organisation.unicms.service.validation.ClassRoomValidator;
 
@@ -38,7 +38,7 @@ class RoomServiceTest {
     @Test
     void updateClassRoom_shouldChangeNumberOfRoom_whenDTOisGiven() {
         Room initialRoom = getClassRoom();
-        RoomDTO requestedChanges = getClassRoomDTO();
+        RoomResponseDTO requestedChanges = getClassRoomDTO();
         requestedChanges.setClassRoomTypeId(4L);
 
         RoomType newType = new RoomType(4L, "Physics Lab", 100L);
@@ -57,16 +57,16 @@ class RoomServiceTest {
 
     @Test
     void updateClassRoom_shouldThrowException_whenDTOIsNotValidated(){
-        RoomDTO roomDTO = getClassRoomDTO();
+        RoomResponseDTO roomResponseDTO = getClassRoomDTO();
         Room room = getClassRoom();
-        roomDTO.setRoom("B-102");
+        roomResponseDTO.setRoom("B-102");
         long id = room.getId();
 
         when(roomRepository.findById(id)).thenReturn(Optional.of(room));
 
         doThrow(EntityValidationException.class).when(classRoomValidator).validateClassRoom(room);
 
-        assertThrows(EntityValidationException.class, () -> roomService.updateClassRoom(id, roomDTO));
+        assertThrows(EntityValidationException.class, () -> roomService.updateClassRoom(id, roomResponseDTO));
     }
 
     @Test
@@ -117,7 +117,7 @@ class RoomServiceTest {
         return new Room(1L, "A-101", new RoomType(1L, "Hall", 100L));
     }
 
-    RoomDTO getClassRoomDTO() {
-        return new RoomDTO("B-102");
+    RoomResponseDTO getClassRoomDTO() {
+        return new RoomResponseDTO("B-102");
     }
 }

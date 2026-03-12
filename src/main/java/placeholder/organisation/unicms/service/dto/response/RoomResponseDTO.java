@@ -1,4 +1,4 @@
-package placeholder.organisation.unicms.service.dto;
+package placeholder.organisation.unicms.service.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import javax.validation.constraints.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomDTO {
+public class RoomResponseDTO {
     @NotBlank()
     @Size(min = 3, max = 35)
     @Pattern(regexp = "^[a-zA-Z]-[0-9]+$", message = "Room must follow format: Letter-Number (e.g., A-101)")
@@ -20,11 +20,11 @@ public class RoomDTO {
     @Valid
     private Long classRoomTypeId;
 
-    public RoomDTO(String room) {
+    public RoomResponseDTO(String room) {
         this.room = room;
     }
 
-    public RoomDTO(long classRoomTypeId) {
+    public RoomResponseDTO(long classRoomTypeId) {
         this.classRoomTypeId = classRoomTypeId;
     }
 

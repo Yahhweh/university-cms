@@ -3,13 +3,11 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.repository.*;
-import placeholder.organisation.unicms.service.dto.LessonDTO;
+import placeholder.organisation.unicms.service.dto.response.LessonResponseDTO;
 import placeholder.organisation.unicms.service.mapper.LessonMapper;
 import placeholder.organisation.unicms.service.validation.LessonValidator;
 
@@ -94,13 +92,13 @@ public class LessonService {
     }
 
     @Transactional
-    public void updateLesson(long lessonId, LessonDTO lessonDTO) {
+    public void updateLesson(long lessonId, LessonResponseDTO lessonResponseDTO) {
         Lesson lesson = lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new EntityNotFoundException(Lesson.class, String.valueOf(lessonId)));
+            .orElseThrow(() -> new EntityNotFoundException(Lesson.class, String.valueOf(lessonId)));
 
-        lessonMapper.updateEntityFromDto(lessonDTO, lesson);
+        lessonMapper.updateEntityFromDto(lessonResponseDTO, lesson);
 
-        resolveRelations(lessonDTO, lesson);
+        resolveRelations(lessonResponseDTO, lesson);
 
         lessonValidator.validateLesson(lesson, lessonId);
 
@@ -114,10 +112,10 @@ public class LessonService {
         return lessonRepository.findAll(pageable);
     }
 
-    private void resolveRelations(LessonDTO dto, Lesson lesson) {
+    private void resolveRelations(LessonResponseDTO dto, Lesson lesson) {
         if (dto.getDurationId() != null) {
             lesson.setDuration(durationRepository.findById(dto.getDurationId())
-                    .orElse(lesson.getDuration()));
+                .orElse(lesson.getDuration()));
         }
         if (dto.getStudySubjectId() != null) {
             lesson.setSubject(subjectRepository.getReferenceById(dto.getStudySubjectId()));

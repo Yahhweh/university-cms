@@ -1,4 +1,4 @@
-package placeholder.organisation.unicms.service.dto;
+package placeholder.organisation.unicms.service.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudentDTO extends PersonDTO {
+public class StudentResponseDTO extends PersonResponseDTO {
     @Valid
     @NotNull
     private Long groupId;
