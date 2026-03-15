@@ -4,27 +4,28 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import placeholder.organisation.unicms.entity.Person;
 import placeholder.organisation.unicms.entity.Role;
+import placeholder.organisation.unicms.service.dto.request.FilterRequestDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PersonSpecification {
 
-    public static Specification<Person> filter(String name, String sureName, String email, Role role) {
+    public static Specification<Person> filter(FilterRequestDTO filterRequestDTO) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (name != null && !name.isBlank()) {
-                predicates.add(cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
+            if (filterRequestDTO.getName() != null && !filterRequestDTO.getName().isBlank()) {
+                predicates.add(cb.like(cb.lower(root.get("name")), "%" + filterRequestDTO.getName().toLowerCase() + "%"));
             }
-            if (sureName != null && !sureName.isBlank()) {
-                predicates.add(cb.like(cb.lower(root.get("sureName")), "%" + sureName.toLowerCase() + "%"));
+            if (filterRequestDTO.getSureName() != null && !filterRequestDTO.getSureName().isBlank()) {
+                predicates.add(cb.like(cb.lower(root.get("sureName")), "%" + filterRequestDTO.getSureName().toLowerCase() + "%"));
             }
-            if (email != null && !email.isBlank()) {
-                predicates.add(cb.like(cb.lower(root.get("email")), "%" + email.toLowerCase() + "%"));
+            if (filterRequestDTO.getEmail() != null && !filterRequestDTO.getEmail().isBlank()) {
+                predicates.add(cb.like(cb.lower(root.get("email")), "%" + filterRequestDTO.getEmail().toLowerCase() + "%"));
             }
-            if (role != null) {
-                predicates.add(cb.equal(root.get("role"), role));
+            if (filterRequestDTO.getRole() != null) {
+                predicates.add(cb.equal(root.get("role"), filterRequestDTO.getRole()));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

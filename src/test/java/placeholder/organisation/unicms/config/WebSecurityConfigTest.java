@@ -50,6 +50,9 @@ class WebSecurityConfigTest {
     private GroupService groupService;
 
     @MockitoBean
+    private PersonService personService;
+
+    @MockitoBean
     private SubjectService subjectService;
 
     @MockitoBean

@@ -4,13 +4,22 @@
     <meta charset="UTF-8">
     <title>Admin Panel</title>
 </head>
-<body>
-<div class="container" style="padding: 40px; text-align: center;">
-    <h1>Welcome to Admin Panel</h1>
-    <div style="margin-top: 40px; display: flex; gap: 20px; justify-content: center;">
-        <a th:href="@{/admin/change-role}" class="btn">Change Person Role</a>
-        <a th:href="@{/admin/add-student}" class="btn">Add Student</a>
-        <a th:href="@{admin/add-lecturer}" class="btn">Add Lecturer</a>
+<body class="py-5">
+<div class="container">
+    <div class="card shadow mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-primary text-white text-center">
+            <h1 class="h3 mb-0">Admin Panel</h1>
+        </div>
+        <div class="card-body text-center py-4">
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a th:href="@{/admin/change-role}" class="btn btn-primary">Change Person Role</a>
+                <a th:href="@{/admin/add-student}" class="btn btn-primary">Add Student</a>
+                <a th:href="@{admin/add-lecturer}" class="btn btn-primary">Add Lecturer</a>
+                <a th:href="@{admin/list-users}" class="btn btn-primary"> List Users</a>
+                <a th:href="@{/admin/assign-subject}" class="btn btn-primary">Assign Subject</a>
+                <a th:href="@{/admin/remove-subject}" class="btn btn-primary">Remove Subject</a>
+            </div>
+        </div>
     </div>
 </div>
 </body>

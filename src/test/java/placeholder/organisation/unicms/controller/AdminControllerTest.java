@@ -3,55 +3,56 @@ package placeholder.organisation.unicms.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.*;
-import placeholder.organisation.unicms.service.GroupService;
-import placeholder.organisation.unicms.service.LecturerService;
-import placeholder.organisation.unicms.service.StudentService;
-import placeholder.organisation.unicms.service.SubjectService;
+import placeholder.organisation.unicms.service.*;
+import placeholder.organisation.unicms.service.dto.request.FilterRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.LecturerRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.StudentRequestDTO;
 import placeholder.organisation.unicms.service.dto.response.AddressResponseDTO;
 import placeholder.organisation.unicms.service.mapper.AddressMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(AdminController.class)
+@WithMockUser(username = "user", roles = {"ADMIN"})
 class AdminControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @MockitoBean
     private StudentService studentService;
-
     @MockitoBean
     private LecturerService lecturerService;
-
+    @MockitoBean
+    private PersonService personService;
     @MockitoBean
     private GroupService groupService;
-
     @MockitoBean
     private SubjectService subjectService;
-
     @MockitoBean
     private PasswordEncoder passwordEncoder;
-
     @MockitoBean
     private AddressMapper addressMapper;
 
-
     @Test
-    void showAdminPanel_shouldReturnAdminView() throws Exception {
+    void showAdminPanel_shouldReturnAdminView_whenAdmin() throws Exception {
         mockMvc.perform(get("/admin"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin"));
@@ -63,51 +64,53 @@ class AdminControllerTest {
         List<Student> students = List.of(getStudent());
         List<Lecturer> lecturers = List.of(getLecturer());
 
-        when(studentService.findAllStudents()).thenReturn(students);
-        when(lecturerService.findAllLecturers()).thenReturn(lecturers);
+        List<Person> people = new ArrayList<>();
+        people.addAll(students);
+        people.addAll(lecturers);
 
-        mockMvc.perform(get("/admin/change-role"))
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Person> page = new PageImpl<>(people, pageable, 2);
+
+        when(personService.findAllFiltered(any(FilterRequestDTO.class), any(Pageable.class))).thenReturn(page);
+
+        mockMvc.perform(get("/admin/change-role")
+                .param("page", "0")
+                .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("change-role"))
-                .andExpect(model().attribute("students", students))
-                .andExpect(model().attribute("lecturers", lecturers));
+                .andExpect(model().attributeExists("persons"));
     }
 
 
     @Test
-    void changeUserRole_shouldRedirectAndUpdateStudent_whenStudentFound() throws Exception {
-        Student student = getStudent();
-        when(studentService.findStudent(1L)).thenReturn(Optional.of(student));
+    void changeUserRole_shouldReturnSuccessView_whenRoleChanged() throws Exception {
+        mockMvc.perform(post("/admin/change-role")
+                .param("id", "1")
+                .param("role", "ROLE_ADMIN")
+                .with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(view().name("success"))
+            .andExpect(model().attributeExists("subtitle"))
+            .andExpect(model().attributeExists("message"));
 
+        verify(personService).changeRole(1L, Role.ADMIN);
+    }
+
+    @Test
+    void changeUserRole_shouldReturnSuccessView_whenRoleChangedToStudent() throws Exception {
         mockMvc.perform(post("/admin/change-role")
                         .param("id", "1")
-                        .param("role", "ROLE_ADMIN")
-                        .with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/change-role"));
-
-        verify(studentService).createStudent(student);
-    }
-
-    @Test
-    void changeUserRole_shouldRedirectAndUpdateLecturer_whenStudentNotFound() throws Exception {
-        Lecturer lecturer = getLecturer();
-        when(studentService.findStudent(2L)).thenReturn(Optional.empty());
-        when(lecturerService.findLecturer(2L)).thenReturn(Optional.of(lecturer));
-
-        mockMvc.perform(post("/admin/change-role")
-                        .param("id", "2")
                         .param("role", "ROLE_STUDENT")
                         .with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/change-role"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("success"))
+                .andExpect( model().attributeExists("returnUrl"));
 
-        verify(lecturerService).createLecturer(lecturer);
+        verify(personService).changeRole(1L, Role.STUDENT);
     }
 
-
     @Test
-    void showAddStudentForm_shouldReturnAddStudentView_withGroups() throws Exception {
+    void showAddStudentForm_shouldReturnAddStudentView_whenGroupExists() throws Exception {
         List<Group> groups = List.of(new Group(1L, "AB-11"));
         when(groupService.findAllGroups()).thenReturn(groups);
 
@@ -137,10 +140,10 @@ class AdminControllerTest {
                         .param("postalCode", "01001")
                         .param("country", "Ukraine")
                         .with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/add-student"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("success"));
 
-        verify(studentService).createStudent((Student) any());
+        verify(studentService).createStudent((any(StudentRequestDTO.class)));
     }
 
 
@@ -175,10 +178,84 @@ class AdminControllerTest {
                         .param("country", "Ukraine")
                         .param("salary", "55000")
                         .with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/add-lecturer"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("success"));
 
-        verify(lecturerService).createLecturer((Lecturer) any());
+        verify(lecturerService).createLecturer((any(LecturerRequestDTO.class)));
+    }
+
+    @Test
+    void getListUsers_shouldReturnFilteredPage_whenFilterByNameAndRole() throws Exception {
+        Student student = getStudent();
+        student.setName("John");
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Person> people = new PageImpl<>(List.of(student), pageable, 1);
+        FilterRequestDTO filterRequestDTO = new FilterRequestDTO();
+        filterRequestDTO.setRole(Role.STUDENT);
+        filterRequestDTO.setName("oh");
+
+        when(personService.findAllFiltered(any(FilterRequestDTO.class), any(Pageable.class))).thenReturn(people);
+        mockMvc.perform(get("/admin/list-users")
+            .param("name","oh")
+            .param("role", "STUDENT"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("list-users"))
+            .andExpect(model().attribute( "page", people))
+            .andExpect(model().attribute("persons", people.getContent()))
+            .andExpect(model().attribute("url", "admin/list-users"))
+            .andExpect(model().attribute("filters", filterRequestDTO));
+    }
+
+    @Test
+    void deleteUser_shouldReturnSuccessView_whenPersonDeleted() throws Exception {
+        mockMvc.perform(post("/admin/delete-person").param("id", "1").with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(view().name("success"));
+        verify(personService).deletePerson(1L);
+    }
+
+    @Test
+    void getAssignSubjectForm_shouldReturnAssignSubjectView_withLecturersAndSubjects() throws Exception {
+        mockMvc.perform(get("/admin/assign-subject"))
+            .andExpect(view().name("assign-subject"))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    void assignSubjectForm_shouldReturnSuccessView_whenSubjectAssigned() throws Exception {
+        mockMvc.perform(post("/admin/assign-subject")
+                .param("lecturerId", "1")
+                .param("subjectId", "1")
+                .with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(view().name("success"));
+
+        verify(lecturerService).assignSubjectToLecturer(1L, 1L);
+    }
+
+    @Test
+    void removeSubject_shouldReturnSuccessView_whenSubjectRemoved() throws Exception {
+        mockMvc.perform(post("/admin/remove-subject")
+                .param("lecturerId", "1")
+                .param("subjectId", "1")
+                .with(csrf()))
+            .andExpect(status().isOk())
+            .andExpect(view().name("success"));
+
+        verify(lecturerService).removeSubjectFromLecturer(1L, 1L);
+    }
+
+    @Test
+    void getRemoveSubjectForm_shouldReturnSelectedLecturer_whenLecturerIdProvided() throws Exception {
+        Lecturer lecturer = getLecturer();
+        when(lecturerService.findAllLecturers()).thenReturn(List.of(lecturer));
+        when(lecturerService.findLecturer(2L)).thenReturn(Optional.of(lecturer));
+
+        mockMvc.perform(get("/admin/remove-subject").param("lecturerId", "2"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("remove-subject"))
+            .andExpect(model().attributeExists("selectedLecturer"))
+            .andExpect(model().attributeExists("subjects"));
     }
 
     private Student getStudent() {

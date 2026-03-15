@@ -4,71 +4,79 @@
     <meta charset="UTF-8">
     <title>Add Lecturer</title>
 </head>
-<body>
-<div class="container" style="padding: 40px;">
-    <h1>Add Lecturer</h1>
-    <form th:action="@{/admin/add-lecturer}" method="post">
-        <div class="form-group">
-            <label>Name</label>
-            <input type="text" name="name" placeholder="John" required>
+<body class="py-5">
+<div class="container">
+    <div class="card shadow mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-primary text-white">
+            <h1 class="h3 mb-0">Add Lecturer</h1>
         </div>
-        <div class="form-group">
-            <label>Sure Name</label>
-            <input type="text" name="sureName" placeholder="Smith" required>
+        <div class="card-body">
+            <form th:action="@{/admin/add-lecturer}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <input type="text" name="name" placeholder="John" required class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Sure Name</label>
+                    <input type="text" name="sureName" placeholder="Smith" required class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" name="password" required class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Gender</label>
+                    <select name="gender" required class="form-select">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Date of Birth</label>
+                    <input type="date" name="dateOfBirth" required class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">City</label>
+                    <input type="text" name="address.city" required class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Street</label>
+                    <input type="text" name="address.street" required class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" name="address.phoneNumber" required class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Country</label>
+                    <input type="text" name="address.country" required class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">House Number</label>
+                    <input type="text" name="address.houseNumber" required class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Postal Code</label>
+                    <input type="text" name="address.postalCode" required class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Salary</label>
+                    <input type="number" name="salary" min="0" required class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Subjects</label>
+                    <select name="studySubjectIds" multiple class="form-select" style="height: 120px;">
+                        <option th:each="subject : ${subjects}" th:value="${subject.id}" th:text="${subject.name}"></option>
+                    </select>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Add Lecturer</button>
+                    <a th:href="@{/admin}" class="btn btn-secondary">Back to Admin Panel</a>
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" name="password" required>
-        </div>
-        <div class="form-group">
-            <label>Gender</label>
-            <select name="gender" required>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label>Date of Birth</label>
-            <input type="date" name="dateOfBirth" required>
-        </div>
-        <div class="form-group">
-            <label>City</label>
-            <input type="text" name="address.city" required>
-        </div>
-        <div class="form-group">
-            <label>Street</label>
-            <input type="text" name="address.street" required>
-        </div>
-        <div class="form-group">
-            <label>Phone number</label>
-            <input type="text" name="address.phoneNumber" required>
-        </div>
-        <div class="form-group">
-            <label>Country</label>
-            <input type="text" name="address.country" required>
-        </div>
-        <div class="form-group">
-            <label>House Number</label>
-            <input type="text" name="address.houseNumber" required>
-        </div>
-        <div class="form-group">
-            <label>Postal Code</label>
-            <input type="text" name="address.postalCode" required>
-        </div>
-        <div class="form-group">
-            <label>Salary</label>
-            <input type="number" name="salary" min="0" required>
-        </div>
-        <div class="form-group">
-            <label>Subjects</label>
-            <select name="studySubjectIds" multiple style="height: 120px;">
-                <option th:each="subject : ${subjects}" th:value="${subject.id}" th:text="${subject.name}"></option>
-            </select>
-        </div>
-        <button type="submit" class="btn">Add Lecturer</button>
-    </form>
-    <a th:href="@{/admin}" class="back-button" style="margin-top: 20px; display: inline-block;">Back to Admin Panel</a>
+    </div>
 </div>
 </body>
 </html>

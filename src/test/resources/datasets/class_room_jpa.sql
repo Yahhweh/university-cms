@@ -5,8 +5,23 @@ INSERT INTO "group" (id, name) VALUES (1, 'A-1');
 
 INSERT INTO study_subject (id, name) VALUES (1, 'Java');
 
-INSERT INTO person (id, password, name, sure_name, gender, address_id, date_of_birth, email)
-VALUES (1, '123', 'John', 'Doe', 'Male', 1, '1985-05-15', 'j.doe@university.edu');
+INSERT INTO person (    password,
+                        name,
+                        sure_name,
+                        gender,
+                        address_id,
+                        date_of_birth,
+                        email,role,dtype) VALUES (
+                                                     '123',
+                                                     'John',
+                                                     'Doe',
+                                                     '',
+                                                     1,
+                                                     '1995-06-15',
+                                                     'john.doe@student.university.com',
+                                                     'STUDENT',
+                                                     'Student'
+                                                 );
 
 INSERT INTO lecturer (id, salary) VALUES (1, 50000);
 

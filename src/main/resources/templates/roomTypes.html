@@ -4,31 +4,34 @@
     <meta charset="UTF-8">
     <title>Room Types List</title>
 </head>
-<body>
-<table>
-    <thead>
-    <tr>
-        <th>
-            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
-                Type Name
-            </a>
-        </th>
-
-        <th>
-            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='capacity,' + (${page.sort.getOrderFor('capacity')?.ascending} ? 'desc' : 'asc'))}">
-                Capacity
-            </a>
-        </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="type : ${roomTypes}">
-        <td th:text="${type.name}">Lecture Hall</td>
-        <td th:text="${type.capacity}">0</td>
-    </tr>
-    </tbody>
-</table>
-
-<div th:insert="~{page :: pageNavigation}"></div>
+<body class="py-4">
+<div class="container">
+    <h2 class="text-white mb-3">Room Types</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover bg-white">
+            <thead class="table-dark">
+            <tr>
+                <th>
+                    <a class="text-white" th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
+                        Type Name
+                    </a>
+                </th>
+                <th>
+                    <a class="text-white" th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='capacity,' + (${page.sort.getOrderFor('capacity')?.ascending} ? 'desc' : 'asc'))}">
+                        Capacity
+                    </a>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="type : ${roomTypes}">
+                <td th:text="${type.name}">Lecture Hall</td>
+                <td th:text="${type.capacity}">0</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:insert="~{page :: pageNavigation}"></div>
+</div>
 </body>
 </html>

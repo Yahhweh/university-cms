@@ -6,14 +6,17 @@ INSERT INTO person (
     address_id,
     date_of_birth,
     email,
-    gender_type_attr
+    role,
+    dtype
 ) VALUES (
              '123',
              'John',
              'Doe',
-             'MALE',
+             '',
              1,
              '1995-06-15',
-             'john.doe@example.com',
+             'john.doe@student.university.com',
+            'STUDENT',
+          'Student'
          );
 

@@ -3,109 +3,74 @@
 <head th:insert="~{styles/css.html :: my-css}">
     <title>Profile</title>
 </head>
-<body>
-<style>
-    .schedule-container {
-        max-width: 900px;
-        margin: 0 auto;
-        background: white;
-        border-radius: 10px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        overflow: hidden;
-    }
+<body class="py-5">
 
-    .schedule-header {
-        background-color: #2089f1;
-        color: white;
-        padding: 30px;
-        text-align: center;
-    }
-
-    .schedule-content {
-        padding: 30px;
-    }
-
-    .section {
-        margin-bottom: 25px;
-    }
-
-    .section-title {
-        background-color: #1e3a8a;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 5px 5px 0 0;
-        font-weight: bold;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-    }
-</style>
-
-<div class="schedule-container">
-    <div class="schedule-header">
-        <h1 th:text="${student.name + ' ' + student.sureName}">John Doe</h1>
-        <p class="role">Lecturer Profile</p>
+<div class="card shadow mx-auto" style="max-width: 900px;">
+    <div class="card-header bg-primary text-white text-center py-4">
+        <h1 class="h2 mb-1" th:text="${student.name + ' ' + student.sureName}">John Doe</h1>
+        <p class="mb-0 opacity-75">Student Profile</p>
     </div>
 
-    <div class="schedule-content">
+    <div class="card-body p-4">
 
-        <div class="section">
-            <div class="section-title">Personal Information</div>
-            <table>
-                <tr>
-                    <th>Name</th>
-                    <td th:text="${student.name}">John</td>
-                </tr>
-                <tr>
-                    <th>Surname</th>
-                    <td th:text="${student.sureName}">Doe</td>
-                </tr>
-                <tr>
-                    <th>Email</th>
-                    <td th:text="${student.email}">john.doe@university.com</td>
-                </tr>
-                <tr>
-                    <th>Gender</th>
-                    <td th:text="${student.gender}">MALE</td>
-                </tr>
-                <tr>
-                    <th>Date of Birth</th>
-                    <td th:text="${#temporals.format(student.dateOfBirth, 'yyyy-MM-dd')}">2007-01-01</td>
-                </tr>
-                <tr>
-                    <th>Role</th>
-                    <td th:text="${student.role}">Student</td>
-                </tr>
-                <tr>
-                    <th>Salary</th>
-                    <td th:text="${student.degree != null ? student.group: 'N/A'}">AB-12</td>
-                </tr>
-            </table>
-        </div>
+        <h6 class="bg-primary text-white text-uppercase fw-bold px-3 py-2 rounded-top mb-0" style="letter-spacing: 1px;">Personal Information</h6>
+        <table class="table table-bordered table-striped mb-4">
+            <tr>
+                <th class="table-primary w-25">Name</th>
+                <td th:text="${student.name}">John</td>
+            </tr>
+            <tr>
+                <th class="table-primary">Surname</th>
+                <td th:text="${student.sureName}">Doe</td>
+            </tr>
+            <tr>
+                <th class="table-primary">Email</th>
+                <td th:text="${student.email}">john.doe@university.com</td>
+            </tr>
+            <tr>
+                <th class="table-primary">Gender</th>
+                <td th:text="${student.gender}">MALE</td>
+            </tr>
+            <tr>
+                <th class="table-primary">Date of Birth</th>
+                <td th:text="${#temporals.format(student.dateOfBirth, 'yyyy-MM-dd')}">2007-01-01</td>
+            </tr>
+            <tr>
+                <th class="table-primary">Role</th>
+                <td th:text="${student.role}">Student</td>
+            </tr>
+            <tr>
+                <th class="table-primary">Degree</th>
+                <td th:text="${student.degree}">MASTER</td>
+            </tr>
+            <tr>
+                <th class="table-primary">Group</th>
+                <td th:text="${student.degree != null ? student.group: 'N/A'}">AB-12</td>
+            </tr>
+        </table>
 
-        <div class="section">
-            <div class="section-title">Address</div>
-            <table th:if="${student.address != null}">
-                <tr>
-                    <th>Street</th>
-                    <td th:text="${student.address.street}">Main Street</td>
-                </tr>
-                <tr>
-                    <th>House Number</th>
-                    <td th:text="${student.address.houseNumber}">123</td>
-                </tr>
-                <tr>
-                    <th>City</th>
-                    <td th:text="${student.address.city}">Vilnius</td>
-                </tr>
-                <tr>
-                    <th>Country</th>
-                    <td th:text="${student.address.country}">Lithuania</td>
-                </tr>
-            </table>
-            <p th:if="${student.address == null}" class="empty-state" style="padding: 10px 15px; background: #f9f9f9;">No address information available</p>
-        </div>
+        <h6 class="bg-primary text-white text-uppercase fw-bold px-3 py-2 rounded-top mb-0" style="letter-spacing: 1px;">Address</h6>
+        <table class="table table-bordered table-striped mb-4" th:if="${student.address != null}">
+            <tr>
+                <th class="table-primary w-25">Street</th>
+                <td th:text="${student.address.street}">Main Street</td>
+            </tr>
+            <tr>
+                <th class="table-primary">House Number</th>
+                <td th:text="${student.address.houseNumber}">123</td>
+            </tr>
+            <tr>
+                <th class="table-primary">City</th>
+                <td th:text="${student.address.city}">Vilnius</td>
+            </tr>
+            <tr>
+                <th class="table-primary">Country</th>
+                <td th:text="${student.address.country}">Lithuania</td>
+            </tr>
+        </table>
+        <p th:if="${student.address == null}" class="text-muted fst-italic px-2 py-2 bg-light">No address information available</p>
 
-        <a th:href="@{/}" class="back-button">Back to Main page</a>
+        <a th:href="@{/}" class="btn btn-primary mt-2">Back to Main page</a>
     </div>
 </div>
 

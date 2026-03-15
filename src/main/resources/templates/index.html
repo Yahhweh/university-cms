@@ -1,177 +1,61 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
+<head th:insert="~{styles/css.html :: my-css}">
     <title>Vilnius Tech</title>
-    <link rel="stylesheet"
-          th:href="@{/webjars/bootswatch-{name}/bootstrap.min.css(name=${theme})}">
-    <style>
-        .header-top {
-            background-color: #1e3a8a;
-            color: white;
-            padding: 20px 0;
-            border-bottom: 2px solid #7dd3fc;
-        }
-
-        .header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-header {
-            padding: 8px 16px;
-            border: 2px solid white;
-            background: transparent;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
-            text-decoration: none;
-            transition: background 0.2s;
-            text-transform: uppercase;
-        }
-
-        .btn-header:hover {
-            background-color: rgba(125, 211, 252, 0.2);
-            color: #7dd3fc;
-        }
-
-        .nav-wrapper {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown-content {
-            position: absolute;
-            bottom: 100%;
-            left: 0;
-            display: none;
-            background: #1e3a8a;
-            padding: 10px 0;
-            min-width: 170px;
-            margin-bottom: 10px;
-            z-index: 2000;
-        }
-
-        .dropdown-link {
-            display: block;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 14px;
-            transition: background 0.2s;
-        }
-
-        .dropdown-link:hover {
-            background-color: rgba(125, 211, 252, 0.2);
-            color: #7dd3fc;
-        }
-
-        #nav-other {
-            cursor: pointer;
-            color: white;
-            padding: 8px 20px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .entity-nav {
-            background-color: #1e3a8a;
-            padding: 15px 0;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-
-        .entity-nav a {
-            color: white;
-            text-decoration: none;
-            padding: 8px 20px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .university-section {
-            position: relative;
-            height: 400px;
-            overflow: hidden;
-        }
-
-        .university-text {
-            position: absolute;
-            bottom: 20%;
-            right: 10%;
-            background: lightcyan;
-            padding: 25px;
-            max-width: 400px;
-            border-radius: 4px;
-        }
-    </style>
 </head>
 <body>
 
-<header class="header-top">
-    <div class="container header-content">
-        <h2 style="letter-spacing: 2px; text-transform: uppercase; margin: 0;">
-            University</h2>
-
+<nav class="navbar navbar-dark bg-primary px-3">
+    <span class="navbar-brand text-uppercase fw-bold" style="letter-spacing: 2px;">University</span>
+    <div class="d-flex gap-2 align-items-center">
         <div sec:authorize="hasRole('STUDENT')">
-            <div class="header-buttons">
-                <a th:href="@{/students/profile}" class="btn-header">Profile</a>
-            </div>
+            <a th:href="@{/students/profile}" class="btn btn-outline-light btn-sm">Profile</a>
         </div>
         <div sec:authorize="hasRole('LECTURER')">
-            <div class="header-buttons">
-                <a th:href="@{/lecturers/profile}"
-                   class="btn-header">Profile</a>
-            </div>
-        </div>
-        <div sec:authorize="hasAnyRole('STUDENT', 'LECTURER', 'ADMIN')">
-            <form th:action="@{/logout}" method="post" style="margin: 0;">
-                <button type="submit" class="btn-header">Logout</button>
-            </form>
+            <a th:href="@{/lecturers/profile}" class="btn btn-outline-light btn-sm">Profile</a>
         </div>
         <div sec:authorize="hasRole('ADMIN')">
-            <div class="header-buttons">
-                <a th:href="@{/admin}" class="btn-header">admin</a>
-            </div>
+            <a th:href="@{/admin}" class="btn btn-outline-light btn-sm">Admin</a>
         </div>
-    </div>
-</header>
-
-<section class="university-section bg-light border-bottom">
-    <div class="container-fluid p-0">
-        <img th:src="@{/images/university-section.jpeg}" class="w-100 h-100"
-             style="object-fit: cover;" alt="Hero">
-        <div class="university-text shadow">
-            <h3>University cms</h3>
-            <p class="small">University Content Management System for Vilnius
-                Tech</p>
+        <div sec:authorize="isAuthenticated()">
+            <form th:action="@{/logout}" method="post" class="m-0">
+                <button type="submit" class="btn btn-outline-light btn-sm">Logout</button>
+            </form>
         </div>
-    </div>
-</section>
-
-<nav class="entity-nav" sec:authorize="isAuthenticated()">
-    <a sec:authorize="hasRole('ADMIN')" th:href="@{/students}">Students</a>
-    <a sec:authorize="hasRole('ADMIN')" th:href="@{/lecturers}">Lecturers</a>
-    <a sec:authorize="hasRole('ADMIN')" th:href="@{/lessons}">Lessons</a>
-
-    <div class="nav-wrapper" sec:authorize="hasRole('ADMIN')">
-        <div id="dropdown-other" class="dropdown-content"></div>
-        <div id="nav-other">Other</div>
     </div>
 </nav>
 
-<script th:src="@{/tooltip.js}"></script>
+<section style="position: relative; height: 400px; overflow: hidden;">
+    <img th:src="@{/images/university-section.jpeg}" class="w-100 h-100"
+         style="object-fit: cover;" alt="Hero">
+    <div class="shadow" style="position: absolute; bottom: 20%; right: 10%; background: lightcyan; padding: 25px; max-width: 400px; border-radius: 4px;">
+        <h3>University cms</h3>
+        <p class="small">University Content Management System for Vilnius Tech</p>
+    </div>
+</section>
+
+<nav class="navbar navbar-dark bg-primary px-3" sec:authorize="hasRole('ADMIN')">
+    <div class="d-flex gap-2 flex-wrap justify-content-center w-100">
+        <a th:href="@{/students}" class="btn btn-outline-light btn-sm">Students</a>
+        <a th:href="@{/lecturers}" class="btn btn-outline-light btn-sm">Lecturers</a>
+        <a th:href="@{/lessons}" class="btn btn-outline-light btn-sm">Lessons</a>
+        <div class="dropdown">
+            <button class="btn btn-outline-light btn-sm dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                Other
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" th:href="@{/durations}">Duration</a></li>
+                <li><a class="dropdown-item" th:href="@{/groups}">Group</a></li>
+                <li><a class="dropdown-item" th:href="@{/rooms}">Room</a></li>
+                <li><a class="dropdown-item" th:href="@{/room-types}">Room Type</a></li>
+                <li><a class="dropdown-item" th:href="@{/subjects}">Subject</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

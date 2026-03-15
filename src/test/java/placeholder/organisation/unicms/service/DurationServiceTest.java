@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.test.context.support.WithMockUser;
 import placeholder.organisation.unicms.entity.Duration;
 import placeholder.organisation.unicms.repository.DurationRepository;
 import placeholder.organisation.unicms.service.dto.response.DurationResponseDTO;

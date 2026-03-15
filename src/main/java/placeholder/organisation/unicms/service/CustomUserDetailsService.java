@@ -22,15 +22,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        try {
-            Person person = personService.findByEmail(username);
+    public UserDetails loadUserByUsername(String username){
+        Person person = personService.findByEmail(username)
+            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
             return new User(person.getEmail(),
                 person.getPassword(),
                 List.of(new SimpleGrantedAuthority("ROLE_" + person.getRole().name())));
-
-        } catch (Exception e) {
-            throw new UsernameNotFoundException("User not found: " + username);
         }
     }
-}

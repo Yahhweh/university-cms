@@ -16,17 +16,17 @@ import placeholder.organisation.unicms.service.LecturerService;
 @RequestMapping("/lecturers")
 public class LecturerController {
 
-    private final LecturerService service;
+    private final LecturerService lecturerService;
 
     public LecturerController(LecturerService lecturerService) {
-        this.service = lecturerService;
+        this.lecturerService = lecturerService;
     }
 
     @GetMapping()
     public String getLecturers(Model model,
                                @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
-        Page<Lecturer> page = service.findAll(pageable);
+        Page<Lecturer> page = lecturerService.findAll(pageable);
 
         model.addAttribute("lecturers", page.getContent());
         model.addAttribute("page", page);
@@ -40,7 +40,7 @@ public class LecturerController {
         Model model,
         Authentication authentication
     ){
-        Lecturer lecturer = service.findByEmail(authentication.getName());
+        Lecturer lecturer = lecturerService.findByEmail(authentication.getName());
 
         model.addAttribute("lecturer", lecturer);
         return "lecturer-profile";

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="styles/css.html :: my-css">
+    <meta charset="UTF-8">
+    <title>Assign Subject</title>
+</head>
+<body class="py-5">
+<div class="container">
+    <div class="card shadow mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-primary text-white">
+            <h1 class="h3 mb-0">Assign Subject to Lecturer</h1>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/admin/assign-subject}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Lecturer</label>
+                    <select name="lecturerId" required class="form-select">
+                        <option value="" disabled selected>Select lecturer</option>
+                        <option th:each="lecturer : ${lecturers}"
+                                th:value="${lecturer.id}"
+                                th:text="${lecturer.name + ' ' + lecturer.sureName}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Subject</label>
+                    <select name="subjectId" required class="form-select">
+                        <option value="" disabled selected>Select subject</option>
+                        <option th:each="subject : ${subjects}"
+                                th:value="${subject.id}"
+                                th:text="${subject.name}"></option>
+                    </select>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Assign</button>
+                    <a th:href="@{/admin}" class="btn btn-secondary">Back to Admin Panel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
