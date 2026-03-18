@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.repository.GroupRepository;
-import placeholder.organisation.unicms.service.dto.response.GroupResponseDTO;
+import placeholder.organisation.unicms.service.dto.request.GroupRequestDTO;
 import placeholder.organisation.unicms.service.mapper.GroupMapper;
 
 import java.util.List;
@@ -51,7 +51,7 @@ public class GroupService {
     }
 
     @Transactional
-    public void updateGroup(long groupId, GroupResponseDTO groupResponseDTO) {
+    public void updateGroup(long groupId, GroupRequestDTO groupResponseDTO) {
         Group group = groupRepository.findById(groupId)
             .orElseThrow(() -> new EntityNotFoundException(Group.class, String.valueOf(groupId)));
 

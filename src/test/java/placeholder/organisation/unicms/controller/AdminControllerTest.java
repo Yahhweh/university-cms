@@ -13,9 +13,11 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.service.*;
+import placeholder.organisation.unicms.service.dto.request.AddressRequestDTO;
 import placeholder.organisation.unicms.service.dto.request.FilterRequestDTO;
 import placeholder.organisation.unicms.service.dto.request.LecturerRequestDTO;
 import placeholder.organisation.unicms.service.dto.request.StudentRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.UserRequestDTO;
 import placeholder.organisation.unicms.service.dto.response.AddressResponseDTO;
 import placeholder.organisation.unicms.service.mapper.AddressMapper;
 
@@ -41,7 +43,7 @@ class AdminControllerTest {
     @MockitoBean
     private LecturerService lecturerService;
     @MockitoBean
-    private PersonService personService;
+    private UserService userService;
     @MockitoBean
     private GroupService groupService;
     @MockitoBean
@@ -60,24 +62,24 @@ class AdminControllerTest {
 
 
     @Test
-    void showChangeRoleForm_shouldReturnChangeRoleView_withStudentsAndLecturers() throws Exception {
+    void getUsers_shouldReturnChangeRoleView_withStudentsAndLecturers() throws Exception {
         List<Student> students = List.of(getStudent());
         List<Lecturer> lecturers = List.of(getLecturer());
 
-        List<Person> people = new ArrayList<>();
+        List<User> people = new ArrayList<>();
         people.addAll(students);
         people.addAll(lecturers);
 
         Pageable pageable = PageRequest.of(0, 10);
-        Page<Person> page = new PageImpl<>(people, pageable, 2);
+        Page<User> page = new PageImpl<>(people, pageable, 2);
 
-        when(personService.findAllFiltered(any(FilterRequestDTO.class), any(Pageable.class))).thenReturn(page);
+        when(userService.findAllFiltered(any(FilterRequestDTO.class), any(Pageable.class))).thenReturn(page);
 
-        mockMvc.perform(get("/admin/change-role")
+        mockMvc.perform(get("/admin/users")
                 .param("page", "0")
                 .param("size", "10"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("change-role"))
+                .andExpect(view().name("users"))
                 .andExpect(model().attributeExists("persons"));
     }
 
@@ -86,45 +88,45 @@ class AdminControllerTest {
     void changeUserRole_shouldReturnSuccessView_whenRoleChanged() throws Exception {
         mockMvc.perform(post("/admin/change-role")
                 .param("id", "1")
-                .param("role", "ROLE_ADMIN")
+                .param("changeRole", "ROLE_ADMIN")
                 .with(csrf()))
-            .andExpect(status().isOk())
-            .andExpect(view().name("success"))
-            .andExpect(model().attributeExists("subtitle"))
-            .andExpect(model().attributeExists("message"));
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("/admin/users*"));
 
-        verify(personService).changeRole(1L, Role.ADMIN);
+        verify(userService).changeRole(1L, Role.ADMIN);
     }
 
     @Test
     void changeUserRole_shouldReturnSuccessView_whenRoleChangedToStudent() throws Exception {
         mockMvc.perform(post("/admin/change-role")
                         .param("id", "1")
-                        .param("role", "ROLE_STUDENT")
+                        .param("changeRole", "ROLE_STUDENT")
                         .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("success"))
-                .andExpect( model().attributeExists("returnUrl"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/admin/users*"));
 
-        verify(personService).changeRole(1L, Role.STUDENT);
+        verify(userService).changeRole(1L, Role.STUDENT);
     }
 
     @Test
-    void showAddStudentForm_shouldReturnAddStudentView_whenGroupExists() throws Exception {
+    void showAddUserForm_shouldReturnAddUserView_withGroupsAndSubjects() throws Exception {
         List<Group> groups = List.of(new Group(1L, "AB-11"));
+        List<Subject> subjects = List.of(new Subject(1L, "Math"));
         when(groupService.findAllGroups()).thenReturn(groups);
+        when(subjectService.findAllSubjects()).thenReturn(subjects);
 
-        mockMvc.perform(get("/admin/add-student"))
+        mockMvc.perform(get("/admin/add-user"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("add-student"))
-                .andExpect(model().attribute("groups", groups));
+                .andExpect(view().name("add-user"))
+                .andExpect(model().attribute("groups", groups))
+                .andExpect(model().attribute("subjects", subjects));
     }
 
 
     @Test
     void addStudent_shouldRedirectToAddStudent_whenStudentCreated() throws Exception {
         when(passwordEncoder.encode("secret")).thenReturn("encoded");
-        when(addressMapper.toEntity((AddressResponseDTO) any())).thenReturn(new Address());
+        when(addressMapper.toEntity((AddressRequestDTO) any())).thenReturn(new Address());
 
         mockMvc.perform(post("/admin/add-student")
                         .param("name", "Ivan")
@@ -140,22 +142,10 @@ class AdminControllerTest {
                         .param("postalCode", "01001")
                         .param("country", "Ukraine")
                         .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("success"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/add-user"));
 
         verify(studentService).createStudent((any(StudentRequestDTO.class)));
-    }
-
-
-    @Test
-    void showAddLecturerForm_shouldReturnAddLecturerView_withSubjects() throws Exception {
-        List<Subject> subjects = List.of(new Subject(1L, "Math"));
-        when(subjectService.findAllSubjects()).thenReturn(subjects);
-
-        mockMvc.perform(get("/admin/add-lecturer"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("add-lecturer"))
-                .andExpect(model().attribute("subjects", subjects));
     }
 
 
@@ -178,8 +168,8 @@ class AdminControllerTest {
                         .param("country", "Ukraine")
                         .param("salary", "55000")
                         .with(csrf()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("success"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/add-user"));
 
         verify(lecturerService).createLecturer((any(LecturerRequestDTO.class)));
     }
@@ -189,29 +179,29 @@ class AdminControllerTest {
         Student student = getStudent();
         student.setName("John");
         Pageable pageable = PageRequest.of(0, 10);
-        Page<Person> people = new PageImpl<>(List.of(student), pageable, 1);
+        Page<User> people = new PageImpl<>(List.of(student), pageable, 1);
         FilterRequestDTO filterRequestDTO = new FilterRequestDTO();
         filterRequestDTO.setRole(Role.STUDENT);
         filterRequestDTO.setName("oh");
 
-        when(personService.findAllFiltered(any(FilterRequestDTO.class), any(Pageable.class))).thenReturn(people);
-        mockMvc.perform(get("/admin/list-users")
+        when(userService.findAllFiltered(any(FilterRequestDTO.class), any(Pageable.class))).thenReturn(people);
+        mockMvc.perform(get("/admin/users")
             .param("name","oh")
             .param("role", "STUDENT"))
             .andExpect(status().isOk())
-            .andExpect(view().name("list-users"))
+            .andExpect(view().name("users"))
             .andExpect(model().attribute( "page", people))
             .andExpect(model().attribute("persons", people.getContent()))
-            .andExpect(model().attribute("url", "admin/list-users"))
+            .andExpect(model().attribute("url", "admin/users"))
             .andExpect(model().attribute("filters", filterRequestDTO));
     }
 
     @Test
     void deleteUser_shouldReturnSuccessView_whenPersonDeleted() throws Exception {
         mockMvc.perform(post("/admin/delete-person").param("id", "1").with(csrf()))
-            .andExpect(status().isOk())
-            .andExpect(view().name("success"));
-        verify(personService).deletePerson(1L);
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("/admin/users*"));
+        verify(userService).deletePerson(1L);
     }
 
     @Test
@@ -222,25 +212,25 @@ class AdminControllerTest {
     }
 
     @Test
-    void assignSubjectForm_shouldReturnSuccessView_whenSubjectAssigned() throws Exception {
+    void assignSubjectForm_shouldReturnSuccess_whenSubjectAssigned() throws Exception {
         mockMvc.perform(post("/admin/assign-subject")
                 .param("lecturerId", "1")
                 .param("subjectId", "1")
                 .with(csrf()))
-            .andExpect(status().isOk())
-            .andExpect(view().name("success"));
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/admin/assign-subject"));
 
         verify(lecturerService).assignSubjectToLecturer(1L, 1L);
     }
 
     @Test
-    void removeSubject_shouldReturnSuccessView_whenSubjectRemoved() throws Exception {
+    void removeSubject_shouldReturnSuccess_whenSubjectRemoved() throws Exception {
         mockMvc.perform(post("/admin/remove-subject")
                 .param("lecturerId", "1")
                 .param("subjectId", "1")
                 .with(csrf()))
-            .andExpect(status().isOk())
-            .andExpect(view().name("success"));
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/admin/remove-subject"));
 
         verify(lecturerService).removeSubjectFromLecturer(1L, 1L);
     }

@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS study_subject (
                                              name VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS person (
+CREATE TABLE IF NOT EXISTS "user" (
                                       id SERIAL PRIMARY KEY,
                                       password VARCHAR(255) NOT NULL,
                                       name VARCHAR(255) NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS person (
                                       address_id INTEGER NOT NULL,
                                       date_of_birth DATE NOT NULL,
                                       email VARCHAR(255) NOT NULL UNIQUE,
-                                      CONSTRAINT fk_person_address FOREIGN KEY (address_id) REFERENCES address(id)
+                                      CONSTRAINT fk_user_address FOREIGN KEY (address_id) REFERENCES address(id)
 );
 
 CREATE TABLE IF NOT EXISTS class_room (
@@ -64,14 +64,14 @@ CREATE TABLE IF NOT EXISTS student (
                                        id INTEGER PRIMARY KEY,
                                        group_id INTEGER,
                                        degree degree_type,
-                                       CONSTRAINT fk_student_person FOREIGN KEY (id) REFERENCES person(id),
+                                       CONSTRAINT fk_student_user FOREIGN KEY (id) REFERENCES "user"(id),
                                        CONSTRAINT fk_student_group FOREIGN KEY (group_id) REFERENCES "group"(id)
 );
 
 CREATE TABLE IF NOT EXISTS lecturer (
                                         id INTEGER PRIMARY KEY,
                                         salary INTEGER NOT NULL DEFAULT 0,
-                                        CONSTRAINT fk_lecturer_person FOREIGN KEY (id) REFERENCES person(id)
+                                        CONSTRAINT fk_lecturer_user FOREIGN KEY (id) REFERENCES "user"(id)
 );
 
 CREATE TABLE IF NOT EXISTS lesson (

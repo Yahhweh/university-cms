@@ -1,4 +1,4 @@
-INSERT INTO person (
+INSERT INTO "user" (
     password,
     name,
     sure_name,

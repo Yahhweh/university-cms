@@ -55,7 +55,6 @@ public class StudentService {
     @Transactional
     public void createStudent(StudentRequestDTO studentRequestDTO) {
         Student student= studentMapper.toEntity(studentRequestDTO);
-        student.setEmail(generateEmail(studentRequestDTO.getName(), studentRequestDTO.getSureName()));
         student.setPassword(passwordEncoder.encode(studentRequestDTO.getPassword()));
         student.setRole(Role.STUDENT);
 
@@ -72,7 +71,7 @@ public class StudentService {
     }
 
     @Transactional
-    public void updateStudent(long studentId, StudentResponseDTO studentDTO) {
+    public void updateStudent(long studentId, StudentRequestDTO studentDTO) {
         Student student = studentRepository.findById(studentId)
             .orElseThrow(() -> new EntityNotFoundException(Student.class, String.valueOf(studentId)));
 
@@ -100,7 +99,9 @@ public class StudentService {
         }
     }
 
-    public String generateEmail(String name, String sureName){
-        return name + "." + sureName + "@student.university.com";
+    private void resolveRelations(StudentRequestDTO dto, Student student) {
+        if (dto.getGroupId() != null) {
+            student.setGroup(groupRepository.getReferenceById(dto.getGroupId()));
+        }
     }
 }

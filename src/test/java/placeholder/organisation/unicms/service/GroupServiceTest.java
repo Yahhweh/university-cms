@@ -9,7 +9,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.repository.GroupRepository;
-import placeholder.organisation.unicms.service.dto.response.GroupResponseDTO;
+import placeholder.organisation.unicms.service.dto.request.GroupRequestDTO;
 import placeholder.organisation.unicms.service.mapper.GroupMapper;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -32,7 +32,7 @@ class GroupServiceTest {
     @Test
     void updateGroup_shouldSave_whenCorrectGroup() {
         Group initial = getGroup();
-        GroupResponseDTO changes = getGroupDTO();
+        GroupRequestDTO changes = getGroupDTO();
         long id = initial.getId();
 
         when(groupRepository.findById(id)).thenReturn(Optional.of(initial));
@@ -78,8 +78,8 @@ class GroupServiceTest {
         return new Group(1L, "A-122");
     }
 
-    GroupResponseDTO getGroupDTO() {
-        return new GroupResponseDTO("G-1");
+    GroupRequestDTO getGroupDTO() {
+        return new GroupRequestDTO("G-1");
     }
 
 }

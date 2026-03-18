@@ -2,13 +2,13 @@ package placeholder.organisation.unicms.service.mapper;
 
 import org.mapstruct.*;
 import placeholder.organisation.unicms.entity.RoomType;
-import placeholder.organisation.unicms.service.dto.response.RoomTypeResponseDTO;
+import placeholder.organisation.unicms.service.dto.request.RoomTypeRequestDTO;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, componentModel = "spring")
 public interface ClassRoomTypeMapper {
-    RoomTypeResponseDTO toDto(RoomType classRoom);
+    RoomTypeRequestDTO toDto(RoomType classRoom);
 
     @Mapping(target = "id", ignore = true)
-    void updateEntityFromDto(RoomTypeResponseDTO dto, @MappingTarget RoomType entity);
+    void updateEntityFromDto(RoomTypeRequestDTO dto, @MappingTarget RoomType entity);
 }

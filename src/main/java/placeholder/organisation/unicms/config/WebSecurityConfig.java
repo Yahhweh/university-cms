@@ -28,13 +28,6 @@ public class WebSecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request -> {
                 request.requestMatchers("/login", "/css/**", "/js/**", "/webjars/**", "/images/**").permitAll();
-                request.requestMatchers(
-                    "/lecturers", "/students", "/durations", "/subjects",
-                    "/rooms", "/groups", "/lessons", "/room-types", "/admin/**"
-                ).hasRole("ADMIN");
-                request.requestMatchers("/lecturers/**").hasAnyRole("LECTURER", "ADMIN");
-                request.requestMatchers("/students/**").hasAnyRole("STUDENT", "ADMIN");
-                request.requestMatchers("/admin/**").hasRole("ADMIN");
                 request.anyRequest().authenticated();
             })
             .formLogin((form) -> form.loginPage("/login").permitAll().usernameParameter("username").passwordParameter("password").defaultSuccessUrl("/", true).permitAll()).logout(LogoutConfigurer::permitAll)

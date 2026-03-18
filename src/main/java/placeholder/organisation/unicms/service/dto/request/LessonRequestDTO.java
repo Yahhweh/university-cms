@@ -1,4 +1,4 @@
-package placeholder.organisation.unicms.service.dto.response;
+package placeholder.organisation.unicms.service.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class LessonResponseDTO {
+public class LessonRequestDTO {
     @NotNull
     @Valid
     private Long durationId;
@@ -37,7 +37,7 @@ public class LessonResponseDTO {
     @NotNull
     private LocalDate date;
 
-    public LessonResponseDTO(LocalDate date) {
+    public LessonRequestDTO(LocalDate date) {
         this.date = date;
     }
 

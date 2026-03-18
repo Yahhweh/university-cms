@@ -5,12 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
 
 import javax.validation.constraints.Pattern;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -21,7 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "id")
 @DiscriminatorValue("Lecturer")
-public class Lecturer extends Person {
+public class Lecturer extends User {
 
     @Column(name = "salary")
     @Pattern(regexp = "^[0-9]+$")

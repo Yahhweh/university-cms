@@ -8,11 +8,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.service.*;
 import placeholder.organisation.unicms.service.dto.request.FilterRequestDTO;
 import placeholder.organisation.unicms.service.dto.request.LecturerRequestDTO;
 import placeholder.organisation.unicms.service.dto.request.StudentRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.UserRequestDTO;
 
 import javax.validation.Valid;
 
@@ -21,18 +23,18 @@ import javax.validation.Valid;
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
-    private final PersonService personService;
+    private final UserService userService;
     private final GroupService groupService;
     private final SubjectService subjectService;
     private final StudentService studentService;
     private final LecturerService lecturerService;
 
-    public AdminController(PersonService personService, GroupService groupService,
+    public AdminController(UserService userService, GroupService groupService,
                            SubjectService subjectService, StudentService studentService,
                            LecturerService lecturerService) {
         this.groupService = groupService;
         this.subjectService = subjectService;
-        this.personService = personService;
+        this.userService = userService;
         this.studentService = studentService;
         this.lecturerService = lecturerService;
     }
@@ -42,86 +44,87 @@ public class AdminController {
         return "admin";
     }
 
-    @GetMapping("/change-role")
-    public String showChangeRoleForm(Model model,
-                                     @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
-                                     @ModelAttribute FilterRequestDTO filterRequestDTO) {
-
-        Page<Person> page = personService.findAllFiltered(filterRequestDTO, pageable);
-        model.addAttribute("page", page);
-        model.addAttribute("persons", page.getContent());
-        model.addAttribute("url", "admin/change-role");
-        model.addAttribute("roles", Role.values());
-        model.addAttribute("filters", filterRequestDTO);
-        return "change-role";
-    }
-
     @PostMapping("/change-role")
-    public String changeUserRole(@RequestParam Long id, @RequestParam String role,
-                                 Model model) {
-        Role enumRole = Role.valueOf(role.replace("ROLE_", ""));
-        personService.changeRole(id, enumRole);
-        model.addAttribute("subtitle", "Successfully changed Role");
-        model.addAttribute("message", "User`s role has been successfully changed");
-        model.addAttribute("returnUrl", "/admin/change-role");
-        model.addAttribute("returnLabel", "Go to table");
-        return "success";
+    public String changeUserRole(@RequestParam Long id, @RequestParam String changeRole,
+                                 RedirectAttributes redirectAttributes,
+                                 @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
+                                 @ModelAttribute FilterRequestDTO requestDTO) {
+        Role enumRole = Role.valueOf(changeRole.replace("ROLE_", ""));
+        userService.changeRole(id, enumRole);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Role has been successfully changed");
+        redirectAttributes.addAttribute("page", pageable.getPageNumber());
+        redirectAttributes.addAttribute("size", pageable.getPageSize());
+        pageable.getSort().forEach(order ->
+            redirectAttributes.addAttribute("sort",
+                order.getProperty() + "," + order.getDirection().name().toLowerCase())
+        );
+        redirectAttributes.addAttribute("name", requestDTO.getName() != null ? requestDTO.getName().toLowerCase() : "");
+        redirectAttributes.addAttribute("sureName", requestDTO.getSureName() != null ? requestDTO.getSureName().toLowerCase() : "");
+        redirectAttributes.addAttribute("email", requestDTO.getEmail() != null ? requestDTO.getEmail().toLowerCase() : "");
+        redirectAttributes.addAttribute("role", requestDTO.getRole() != null ? requestDTO.getRole().toString() : "");
+        return "redirect:/admin/users";
     }
 
-    @GetMapping("/add-student")
-    public String showAddStudentForm(Model model) {
+    @GetMapping("/add-user")
+    public String showAddUserForm(Model model) {
         model.addAttribute("groups", groupService.findAllGroups());
-        return "add-student";
+        model.addAttribute("subjects", subjectService.findAllSubjects());
+        return "add-user";
+    }
+
+    @PostMapping("/add-user")
+    public String addUser(@Valid @ModelAttribute UserRequestDTO userDTO, RedirectAttributes redirectAttributes) {
+        userService.createUser(userDTO);
+        redirectAttributes.addFlashAttribute("successMessage", "User has been successfully created");
+        return "redirect:/admin/add-user";
     }
 
     @PostMapping("/add-student")
-    public String addStudent(@Valid @ModelAttribute StudentRequestDTO studentDTO, Model model) {
+    public String addStudent(@Valid @ModelAttribute StudentRequestDTO studentDTO, RedirectAttributes redirectAttributes) {
         studentService.createStudent(studentDTO);
-        model.addAttribute("subtitle", "Successfully created");
-        model.addAttribute("message", studentDTO.getName());
-        model.addAttribute("returnUrl", "/admin/add-student");
-        model.addAttribute("returnLabel", "Go to table");
-        return "success";
-    }
-
-    @GetMapping("/add-lecturer")
-    public String showAddLecturerForm(Model model) {
-        model.addAttribute("subjects", subjectService.findAllSubjects());
-        return "add-lecturer";
+        redirectAttributes.addFlashAttribute("successMessage", "Student has been successfully created");
+        return "redirect:/admin/add-user";
     }
 
     @PostMapping("/add-lecturer")
-    public String addLecturer(@Valid @ModelAttribute LecturerRequestDTO lecturerDTO, Model model) {
+    public String addLecturer(@Valid @ModelAttribute LecturerRequestDTO lecturerDTO, RedirectAttributes redirectAttributes) {
         lecturerService.createLecturer(lecturerDTO);
-        model.addAttribute("subtitle", "Successfully created");
-        model.addAttribute("message", lecturerDTO.getName());
-        model.addAttribute("returnUrl", "/admin/add-student");
-        model.addAttribute("returnLabel", "Go to table");
-        return "success";
+        redirectAttributes.addFlashAttribute("successMessage", "Lecturer has been successfully created");
+        return "redirect:/admin/add-user";
     }
 
-    @GetMapping("/list-users")
-    public String getListUsers(Model model, @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
+    @GetMapping("/users")
+    public String getUsers(Model model, @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
                                @ModelAttribute FilterRequestDTO requestDTO){
-        Page<Person> pageList = personService.findAllFiltered(requestDTO, pageable);
-        model.addAttribute("persons", pageList.getContent());
-        model.addAttribute("page", pageList);
-        model.addAttribute("url", "admin/list-users");
+        Page<User> pages = userService.findAllFiltered(requestDTO, pageable);
+        model.addAttribute("persons", pages.getContent());
+        model.addAttribute("page", pages);
+        model.addAttribute("url", "admin/users");
         model.addAttribute("filters", requestDTO);
-        return "list-users";
+        model.addAttribute("roles", Role.values());
+        return "users";
     }
 
     @PostMapping("/delete-person")
-    public String deleteUser(@RequestParam Long id, Model model){
-        personService.deletePerson(id);
-        model.addAttribute("subtitle", "Successfully deleted");
-        model.addAttribute("message", "User has been successfully deleted");
-        model.addAttribute("returnUrl", "/admin/change-role");
-        model.addAttribute("returnLabel", "Go to table");
-        return "success";
+    public String deleteUser(@RequestParam Long id, RedirectAttributes redirectAttributes,
+                             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
+                             @ModelAttribute FilterRequestDTO requestDTO){
+        userService.deletePerson(id);
+        redirectAttributes.addFlashAttribute("successMessage", "User has been successfully deleted");
+        redirectAttributes.addAttribute("page", pageable.getPageNumber());
+        redirectAttributes.addAttribute("size", pageable.getPageSize());
+        pageable.getSort().forEach(order ->
+            redirectAttributes.addAttribute("sort",
+                order.getProperty() + "," + order.getDirection().name().toLowerCase())
+        );
+        redirectAttributes.addAttribute("name", requestDTO.getName() != null ? requestDTO.getName().toLowerCase() : "");
+        redirectAttributes.addAttribute("sureName", requestDTO.getSureName() != null ? requestDTO.getSureName().toLowerCase() : "");
+        redirectAttributes.addAttribute("email", requestDTO.getEmail() != null ? requestDTO.getEmail().toLowerCase() : "");
+        redirectAttributes.addAttribute("role", requestDTO.getRole() != null ? requestDTO.getRole().toString() : "");
+        return "redirect:/admin/users";
     }
-
-
+    
     @GetMapping("/assign-subject")
     public String getAssignSubjectForm(Model model) {
         model.addAttribute("lecturers", lecturerService.findAllLecturers());
@@ -132,13 +135,10 @@ public class AdminController {
     @PostMapping("/assign-subject")
     public String assignSubject(@RequestParam Long lecturerId,
                                 @RequestParam Long subjectId,
-                                Model model) {
+                                RedirectAttributes redirectAttributes) {
         lecturerService.assignSubjectToLecturer(subjectId, lecturerId);
-        model.addAttribute("subtitle", "Successfully assigned");
-        model.addAttribute("message", "Subject assigned to lecturer");
-        model.addAttribute("returnUrl", "/admin/assign-subject");
-        model.addAttribute("returnLabel", "Assign more");
-        return "success";
+        redirectAttributes.addFlashAttribute("successMessage", "You have successfully added subject");
+        return "redirect:/admin/assign-subject";
     }
 
     @GetMapping("/remove-subject")
@@ -157,12 +157,9 @@ public class AdminController {
     @PostMapping("/remove-subject")
     public String removeSubject(@RequestParam Long lecturerId,
                                 @RequestParam Long subjectId,
-                                Model model) {
+                                RedirectAttributes redirectAttributes) {
         lecturerService.removeSubjectFromLecturer(subjectId, lecturerId);
-        model.addAttribute("subtitle", "Successfully removed");
-        model.addAttribute("message", "Subject removed from lecturer");
-        model.addAttribute("returnUrl", "/admin/remove-subject");
-        model.addAttribute("returnLabel", "Remove more");
-        return "success";
+        redirectAttributes.addFlashAttribute("successMessage", "You have successfully removed subject");
+        return "redirect:/admin/remove-subject";
     }
 }

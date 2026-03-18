@@ -5,15 +5,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 import placeholder.organisation.unicms.controller.AdminController;
 import placeholder.organisation.unicms.controller.AuthenticationController;
 import placeholder.organisation.unicms.controller.LecturerController;
@@ -50,7 +47,7 @@ class WebSecurityConfigTest {
     private GroupService groupService;
 
     @MockitoBean
-    private PersonService personService;
+    private UserService userService;
 
     @MockitoBean
     private SubjectService subjectService;

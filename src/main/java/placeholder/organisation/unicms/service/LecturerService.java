@@ -51,7 +51,6 @@ public class LecturerService {
     @Transactional
     public void createLecturer(LecturerRequestDTO lecturerRequestDTO){
         Lecturer lecturer = lecturerMapper.toEntity(lecturerRequestDTO);
-        lecturer.setEmail(generateEmail(lecturerRequestDTO.getName(), lecturerRequestDTO.getSureName()));
         lecturer.setPassword(passwordEncoder.encode(lecturerRequestDTO.getPassword()));
         lecturer.setRole(Role.LECTURER);
         lecturerRepository.save(lecturer);
@@ -69,6 +68,7 @@ public class LecturerService {
         return lecturer;
     }
 
+    @Transactional
     public void assignSubjectToLecturer(long subjectId, long lecturerId) {
         Subject subject = subjectRepository.findById(subjectId).orElseThrow(
             () -> new EntityNotFoundException(Subject.class, String.valueOf(subjectId)));
@@ -80,6 +80,7 @@ public class LecturerService {
         }
     }
 
+    @Transactional
     public void removeSubjectFromLecturer(long subjectId, long lecturerId) {
         Subject subject = subjectRepository.findById(subjectId)
             .orElseThrow(() -> new EntityNotFoundException(Subject.class, String.valueOf(subjectId)));
@@ -103,7 +104,7 @@ public class LecturerService {
     }
 
     @Transactional
-    public void updateLecturer(long lecturerId, LecturerResponseDTO lecturerDTO) {
+    public void updateLecturer(long lecturerId, LecturerRequestDTO lecturerDTO) {
         Lecturer lecturer = lecturerRepository.findById(lecturerId)
             .orElseThrow(() -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId)));
         lecturerMapper.updateEntityFromDto(lecturerDTO, lecturer);
@@ -124,7 +125,7 @@ public class LecturerService {
         return lecturer;
     }
 
-    private void resolveRelations(LecturerResponseDTO dto, Lecturer lecturer) {
+    private void resolveRelations(LecturerRequestDTO dto, Lecturer lecturer) {
         if (dto.getStudySubjectIds() != null && !dto.getStudySubjectIds().isEmpty()) {
             List<Subject> subjects = subjectRepository.findAllById(dto.getStudySubjectIds());
 
@@ -134,9 +135,5 @@ public class LecturerService {
 
             lecturer.setSubjects(new HashSet<>(subjects));
         }
-    }
-
-    public String generateEmail(String name, String sureName){
-        return name + "." + sureName + "@lecturer.university.com";
     }
 }

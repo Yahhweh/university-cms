@@ -9,9 +9,8 @@ import javax.validation.constraints.NotNull;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class StudentRequestDTO extends PersonRequestDTO{
+public class StudentRequestDTO extends UserRequestDTO {
     @Valid
-    @NotNull
     private Long groupId;
 
     @NotNull

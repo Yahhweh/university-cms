@@ -1,4 +1,0 @@
-CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY,
-    CONSTRAINT fk_users_person FOREIGN KEY (id) REFERENCES person(id)
-);

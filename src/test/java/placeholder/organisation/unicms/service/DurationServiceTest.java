@@ -8,10 +8,9 @@ import org.mockito.Mock;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.test.context.support.WithMockUser;
 import placeholder.organisation.unicms.entity.Duration;
 import placeholder.organisation.unicms.repository.DurationRepository;
-import placeholder.organisation.unicms.service.dto.response.DurationResponseDTO;
+import placeholder.organisation.unicms.service.dto.request.DurationRequestDTO;
 import placeholder.organisation.unicms.service.mapper.DurationMapper;
 import placeholder.organisation.unicms.service.validation.DurationValidator;
 
@@ -35,7 +34,7 @@ class DurationServiceTest {
     @Test
     void updateDuration_shouldSave_whenDurationIsCorrect() {
         Duration initial = getDuration();
-        DurationResponseDTO changes = getDurationDto();
+        DurationRequestDTO changes = getDurationDto();
         long id = initial.getId();
 
         when(durationRepository.findById(id)).thenReturn(Optional.of(initial));
@@ -63,16 +62,16 @@ class DurationServiceTest {
     @Test
     void updateDuration_shouldThrowEntityValidationException_whenWrongDTOGiven() {
         Duration duration = getDuration();
-        DurationResponseDTO durationResponseDTO = getDurationDto();
+        DurationRequestDTO durationRequestDTO = getDurationDto();
 
-        durationResponseDTO.setStart(LocalTime.of(9, 0, 0));
-        durationResponseDTO.setEnd(LocalTime.of(10, 0, 0));
+        durationRequestDTO.setStart(LocalTime.of(9, 0, 0));
+        durationRequestDTO.setEnd(LocalTime.of(10, 0, 0));
 
         when(durationRepository.findById(duration.getId())).thenReturn(Optional.of(duration));
         doThrow(EntityValidationException.class).when(durationValidator).validateDuration(any(Duration.class));
 
         assertThrows(EntityValidationException.class, () ->
-                durationService.updateDuration(duration.getId(), durationResponseDTO)
+                durationService.updateDuration(duration.getId(), durationRequestDTO)
         );
     }
 
@@ -110,7 +109,7 @@ class DurationServiceTest {
     Duration getDuration(){
         return new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00));
     }
-    DurationResponseDTO getDurationDto(){
-        return new DurationResponseDTO(LocalTime.of(10, 00), LocalTime.of(11, 30));
+    DurationRequestDTO getDurationDto(){
+        return new DurationRequestDTO(LocalTime.of(10, 00), LocalTime.of(11, 30));
     }
 }

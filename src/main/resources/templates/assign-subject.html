@@ -5,6 +5,7 @@
     <title>Assign Subject</title>
 </head>
 <body class="py-5">
+<div th:if="${successMessage}" th:insert="~{success-toast :: success-toast(${successMessage})}" class="py-4"></div>
 <div class="container">
     <div class="card shadow mx-auto" style="max-width: 600px;">
         <div class="card-header bg-primary text-white">
@@ -20,6 +21,7 @@
                                 th:value="${lecturer.id}"
                                 th:text="${lecturer.name + ' ' + lecturer.sureName}"></option>
                     </select>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Subject</label>

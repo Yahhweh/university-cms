@@ -6,27 +6,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.security.core.CredentialsContainer;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
 
 @Log4j2
 @Entity
 @Data
-@Table(name = "person")
+@Table(name = "\"user\"")
 @AllArgsConstructor
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
-@DiscriminatorValue("Person")
-public class Person {
+@DiscriminatorValue("User")
+public class User {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,7 +45,7 @@ public class Person {
     private GenderType gender;
 
     @Column(name = "email")
-    @Pattern(regexp = "^[a-z]+\\.[a-z]+\\d*@[a-z]+\\.university\\.com$", message = "{person.email.pattern}")
+    @Pattern(regexp = "^[a-z]+\\.[a-z]+\\d*@[a-z]+\\.com$", message = "{person.email.pattern}")
     private String email;
 
     @ToString.Exclude
@@ -70,6 +63,6 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person{id=" + id + ", name=" + name + ", sureName=" + sureName + ", role=" + role + "}";
+        return "User{id=" + id + ", name=" + name + ", sureName=" + sureName + ", role=" + role + "}";
     }
 }

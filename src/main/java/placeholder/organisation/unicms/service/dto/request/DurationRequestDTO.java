@@ -1,4 +1,4 @@
-package placeholder.organisation.unicms.service.dto.response;
+package placeholder.organisation.unicms.service.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import java.time.LocalTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DurationResponseDTO {
+public class DurationRequestDTO {
     @NotNull
     private LocalTime start;
 

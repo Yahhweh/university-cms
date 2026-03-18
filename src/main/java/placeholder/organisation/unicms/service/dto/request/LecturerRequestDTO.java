@@ -11,7 +11,7 @@ import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class LecturerRequestDTO extends PersonRequestDTO {
+public class LecturerRequestDTO extends UserRequestDTO {
     @NotNull
     @Min(0)
     private Integer salary;

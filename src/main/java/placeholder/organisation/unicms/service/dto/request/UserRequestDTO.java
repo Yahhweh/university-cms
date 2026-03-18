@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import placeholder.organisation.unicms.entity.GenderType;
-import placeholder.organisation.unicms.service.dto.request.AddressRequestDTO;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -14,10 +13,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonRequestDTO {
-    @Null
-    private Long id;
-
+public class UserRequestDTO {
     @NotBlank
     @Pattern(regexp = "^[A-Z][a-z]+$", message = "Name must start with uppercase letter and contain only letters")
     @Size(min = 2, max = 50)
@@ -40,4 +36,8 @@ public class PersonRequestDTO {
     @NotNull
     @Past
     private LocalDate dateOfBirth;
+
+    @NotNull
+    @Pattern(regexp = "^[a-z]+\\.[a-z]+\\d*@[a-z]+\\.com$")
+    private String email;
 }

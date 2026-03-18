@@ -2,16 +2,15 @@ package placeholder.organisation.unicms.repository;
 
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
-import placeholder.organisation.unicms.entity.Person;
-import placeholder.organisation.unicms.entity.Role;
+import placeholder.organisation.unicms.entity.User;
 import placeholder.organisation.unicms.service.dto.request.FilterRequestDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PersonSpecification {
+public class UserSpecification {
 
-    public static Specification<Person> filter(FilterRequestDTO filterRequestDTO) {
+    public static Specification<User> filter(FilterRequestDTO filterRequestDTO) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 

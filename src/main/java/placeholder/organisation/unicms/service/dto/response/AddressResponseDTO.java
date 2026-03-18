@@ -13,8 +13,6 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AddressResponseDTO {
-    private Long id;
-
     private String city;
 
     private String street;

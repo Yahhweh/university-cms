@@ -1,4 +1,4 @@
-package placeholder.organisation.unicms.service.dto.response;
+package placeholder.organisation.unicms.service.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,7 +10,7 @@ import javax.validation.constraints.Pattern;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroupResponseDTO {
+public class GroupRequestDTO {
     @NotBlank
     @Pattern(regexp = "^[A-Z]-[0-9]+$", message = "Group name must follow format: UppercaseLetter-Number (e.g., A-101)")
     private String name;

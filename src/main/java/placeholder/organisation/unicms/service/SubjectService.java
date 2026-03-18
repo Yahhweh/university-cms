@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.repository.SubjectRepository;
-import placeholder.organisation.unicms.service.dto.response.SubjectResponseDTO;
+import placeholder.organisation.unicms.service.dto.request.SubjectRequestDTO;
 import placeholder.organisation.unicms.service.mapper.StudySubjectMapper;
 
 import java.util.List;
@@ -55,11 +55,11 @@ public class SubjectService {
     }
 
     @Transactional
-    public void updateStudySubject(long studySubjectId, SubjectResponseDTO subjectResponseDTO) {
+    public void updateStudySubject(long studySubjectId, SubjectRequestDTO subjectRequestDTO) {
         Subject subject = subjectRepository.findById(studySubjectId)
             .orElseThrow(() -> new EntityNotFoundException(Subject.class, String.valueOf(studySubjectId)));
 
-        studySubjectMapper.updateEntityFromDto(subjectResponseDTO, subject);
+        studySubjectMapper.updateEntityFromDto(subjectRequestDTO, subject);
         subjectRepository.save(subject);
 
         log.debug("Study subject updated successfully. ID: {}", studySubjectId);

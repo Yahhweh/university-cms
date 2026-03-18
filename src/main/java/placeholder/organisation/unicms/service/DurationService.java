@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.Duration;
 import placeholder.organisation.unicms.repository.DurationRepository;
-import placeholder.organisation.unicms.service.dto.response.DurationResponseDTO;
+import placeholder.organisation.unicms.service.dto.request.DurationRequestDTO;
 import placeholder.organisation.unicms.service.mapper.DurationMapper;
 import placeholder.organisation.unicms.service.validation.DurationValidator;
 
@@ -51,11 +51,11 @@ public class DurationService {
     }
 
     @Transactional
-    public void updateDuration(long durationId, DurationResponseDTO durationResponseDTO) {
+    public void updateDuration(long durationId, DurationRequestDTO durationRequestDTO) {
         Duration duration = durationRepository.findById(durationId)
             .orElseThrow(() -> new EntityNotFoundException(Duration.class, String.valueOf(durationId)));
 
-        durationMapper.updateEntityFromDto(durationResponseDTO, duration);
+        durationMapper.updateEntityFromDto(durationRequestDTO, duration);
         durationValidator.validateDuration(duration);
 
         durationRepository.save(duration);

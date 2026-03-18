@@ -14,5 +14,5 @@ public interface LecturerMapper {
     Lecturer toEntity(LecturerRequestDTO dto);
 
     @Mapping(target = "subjects", ignore = true)
-    void updateEntityFromDto(LecturerResponseDTO dto, @MappingTarget Lecturer entity);
+    void updateEntityFromDto(LecturerRequestDTO dto, @MappingTarget Lecturer entity);
 }

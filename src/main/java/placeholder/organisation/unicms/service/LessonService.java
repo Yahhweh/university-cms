@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.repository.*;
-import placeholder.organisation.unicms.service.dto.response.LessonResponseDTO;
+import placeholder.organisation.unicms.service.dto.request.LessonRequestDTO;
 import placeholder.organisation.unicms.service.mapper.LessonMapper;
 import placeholder.organisation.unicms.service.validation.LessonValidator;
 
@@ -71,7 +71,7 @@ public class LessonService {
         } else if (lecturerRepository.existsById(personId)) {
             return lessonRepository.findInRangeForLecturer(startDate, endDate, personId);
         }
-        throw new IllegalArgumentException("Person with id " + personId + " is neither student nor lecturer");
+        throw new IllegalArgumentException("User with id " + personId + " is neither student nor lecturer");
     }
 
     public List<Lesson> findByDate(LocalDate date, long personId) {
@@ -80,7 +80,7 @@ public class LessonService {
         } else if (lecturerRepository.existsById(personId)) {
             return lessonRepository.findByDateAndLecturerId(date, personId);
         }
-        throw new IllegalArgumentException("Person with id " + personId + " is neither student nor lecturer");
+        throw new IllegalArgumentException("User with id " + personId + " is neither student nor lecturer");
     }
 
     @Transactional
@@ -92,13 +92,13 @@ public class LessonService {
     }
 
     @Transactional
-    public void updateLesson(long lessonId, LessonResponseDTO lessonResponseDTO) {
+    public void updateLesson(long lessonId, LessonRequestDTO lessonRequestDTO) {
         Lesson lesson = lessonRepository.findById(lessonId)
             .orElseThrow(() -> new EntityNotFoundException(Lesson.class, String.valueOf(lessonId)));
 
-        lessonMapper.updateEntityFromDto(lessonResponseDTO, lesson);
+        lessonMapper.updateEntityFromDto(lessonRequestDTO, lesson);
 
-        resolveRelations(lessonResponseDTO, lesson);
+        resolveRelations(lessonRequestDTO, lesson);
 
         lessonValidator.validateLesson(lesson, lessonId);
 
@@ -112,7 +112,7 @@ public class LessonService {
         return lessonRepository.findAll(pageable);
     }
 
-    private void resolveRelations(LessonResponseDTO dto, Lesson lesson) {
+    private void resolveRelations(LessonRequestDTO dto, Lesson lesson) {
         if (dto.getDurationId() != null) {
             lesson.setDuration(durationRepository.findById(dto.getDurationId())
                 .orElse(lesson.getDuration()));

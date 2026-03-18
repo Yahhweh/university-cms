@@ -1,32 +1,29 @@
 package placeholder.organisation.unicms.service;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import placeholder.organisation.unicms.entity.Person;
-import placeholder.organisation.unicms.entity.Student;
-import placeholder.organisation.unicms.repository.PersonRepository;
+import placeholder.organisation.unicms.entity.User;
 
 import java.util.List;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final PersonService personService;
+    private final UserService userService;
 
-    public CustomUserDetailsService(PersonService personService) {
-        this.personService = personService;
+    public CustomUserDetailsService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username){
-        Person person = personService.findByEmail(username)
+        User user = userService.findByEmail(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-            return new User(person.getEmail(),
-                person.getPassword(),
-                List.of(new SimpleGrantedAuthority("ROLE_" + person.getRole().name())));
+            return new org.springframework.security.core.userdetails.User(user.getEmail(),
+                user.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
         }
     }

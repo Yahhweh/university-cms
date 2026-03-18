@@ -7,5 +7,5 @@ CREATE TYPE role_type AS ENUM ('LECTURER', 'STUDENT', 'ADMIN');
 END IF;
 END $$;
 
-ALTER TABLE person
+ALTER TABLE "user"
     ADD COLUMN role role_type NOT NULL DEFAULT 'STUDENT';

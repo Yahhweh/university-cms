@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.RoomType;
 import placeholder.organisation.unicms.repository.RoomTypeRepository;
-import placeholder.organisation.unicms.service.dto.response.RoomTypeResponseDTO;
+import placeholder.organisation.unicms.service.dto.request.RoomTypeRequestDTO;
 import placeholder.organisation.unicms.service.mapper.ClassRoomTypeMapper;
 
 import java.util.List;
@@ -60,11 +60,11 @@ public class RoomTypeService {
     }
 
     @Transactional
-    public void updateClassRoomType(long classRoomTypeId, RoomTypeResponseDTO roomTypeResponseDTO) {
+    public void updateClassRoomType(long classRoomTypeId, RoomTypeRequestDTO roomTypeRequestDTO) {
         RoomType roomType = roomTypeRepository.findById(classRoomTypeId)
             .orElseThrow(() -> new EntityNotFoundException(RoomType.class, String.valueOf(classRoomTypeId)));
 
-        classRoomTypeMapper.updateEntityFromDto(roomTypeResponseDTO, roomType);
+        classRoomTypeMapper.updateEntityFromDto(roomTypeRequestDTO, roomType);
         roomTypeRepository.save(roomType);
 
         log.debug("Classroom type updated successfully. ID: {}", classRoomTypeId);

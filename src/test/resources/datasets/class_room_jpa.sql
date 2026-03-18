@@ -5,7 +5,7 @@ INSERT INTO "group" (id, name) VALUES (1, 'A-1');
 
 INSERT INTO study_subject (id, name) VALUES (1, 'Java');
 
-INSERT INTO person (    password,
+INSERT INTO "user" (    password,
                         name,
                         sure_name,
                         gender,

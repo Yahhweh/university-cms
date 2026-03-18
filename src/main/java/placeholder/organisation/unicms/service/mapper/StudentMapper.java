@@ -15,6 +15,10 @@ public interface StudentMapper {
     @Mapping(target = "group", ignore = true)
     void updateEntityFromDto(StudentResponseDTO dto, @MappingTarget Student entity);
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "group", ignore = true)
+    void updateEntityFromDto(StudentRequestDTO dto, @MappingTarget Student entity);
+
     Student toEntity(StudentRequestDTO requestDTO);
 
     Student toEntity(StudentResponseDTO studentResponseDTO);

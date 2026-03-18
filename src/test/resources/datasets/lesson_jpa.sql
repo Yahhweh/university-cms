@@ -1,13 +1,13 @@
 INSERT INTO address (id, city, street, country, phone_number, house_number)
 VALUES (1, 'Vilnius', 'Sauletekio al.', 'Lithuania', '+37060000000', '11');
 
-INSERT INTO person (id, password, name, sure_name, gender, address_id, date_of_birth, email, role, dtype)
+INSERT INTO "user" (id, password, name, sure_name, gender, address_id, date_of_birth, email, role, dtype)
 VALUES (1,'bobo', 'John', 'Doe', 'Male', 1, '2005-01-01', 'john.doe@student.university.com', 'STUDENT', 'Student');
 
-INSERT INTO person (id, password, name, sure_name, gender, address_id, date_of_birth, email, role, dtype)
+INSERT INTO "user" (id, password, name, sure_name, gender, address_id, date_of_birth, email, role, dtype)
 VALUES (2,'bobo', 'Darius', 'Zabuluonis', 'Male', 1, '1980-01-01', 'darius.zabuluonis@lecturer.university.com', 'LECTURER', 'Lecturer');
 
-INSERT INTO person (id, password, name, sure_name, gender, address_id, date_of_birth, email, role, dtype)
+INSERT INTO "user" (id, password, name, sure_name, gender, address_id, date_of_birth, email, role, dtype)
 VALUES (3, 'bobo', 'Bilbo', 'Begins', 'Male', 1, '2005-01-01',
         'begins@gmail.com', 'STUDENT', 'Student');
 

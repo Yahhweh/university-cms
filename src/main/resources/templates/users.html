@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{styles/css.html :: my-css}">
+    <meta charset="UTF-8">
+    <title>Users</title>
+</head>
+<body>
+<div th:if="${successMessage}" th:insert="~{success-toast :: success-toast(${successMessage})}" class="py-4"></div>
+<div class="container">
+    <h1 class="h2 text-white mb-4">Users</h1>
+
+    <form th:action="@{/admin/users}" method="get" class="row g-2 mb-4">
+        <div class="col-auto">
+            <input type="text" name="name" placeholder="First name"
+                   th:value="${filters.name}" class="form-control">
+        </div>
+        <div class="col-auto">
+            <input type="text" name="sureName" placeholder="Last name"
+                   th:value="${filters.sureName}" class="form-control">
+        </div>
+        <div class="col-auto">
+            <input type="text" name="email" placeholder="Email"
+                   th:value="${filters.email}" class="form-control">
+        </div>
+        <div class="col-auto">
+            <select name="role" class="form-select">
+                <option value="">All roles</option>
+                <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"
+                        th:selected="${r == filterRole}"></option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+        <div class="col-auto">
+            <a th:href="@{/admin/users}" class="btn btn-outline-light">Reset</a>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover bg-white">
+            <thead class="table-dark">
+            <tr>
+                <th>
+                    <a class="text-white"
+                       th:href="@{/{path}(path=${url}, page=${page.number}, size=${page.size}, sort='id,' + (${page.sort.getOrderFor('id')?.ascending} ? 'desc' : 'asc'))}">
+                        ID
+                    </a>
+                </th>
+                <th>
+                    <a class="text-white"
+                       th:href="@{/{path}(path=${url}, page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
+                        First Name
+                    </a>
+                </th>
+                <th>
+                    <a class="text-white"
+                       th:href="@{/{path}(path=${url}, page=${page.number}, size=${page.size}, sort='sureName,' + (${page.sort.getOrderFor('sureName')?.ascending} ? 'desc' : 'asc'))}">
+                        Last Name
+                    </a>
+                </th>
+                <th>
+                    <a class="text-white"
+                       th:href="@{/{path}(path=${url}, page=${page.number}, size=${page.size}, sort='email,' + (${page.sort.getOrderFor('email')?.ascending} ? 'desc' : 'asc'))}">
+                        Email
+                    </a>
+                </th>
+                <th>
+                    <a class="text-white"
+                       th:href="@{/{path}(path=${url}, page=${page.number}, size=${page.size}, sort='role,' + (${page.sort.getOrderFor('role')?.ascending} ? 'desc' : 'asc'))}">
+                        Role
+                    </a>
+                </th>
+                <th>Change Role</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${persons}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.name}"></td>
+                <td th:text="${user.sureName}"></td>
+                <td th:text="${user.email}"></td>
+                <td th:text="${user.role}"></td>
+                <td>
+                    <form th:action="@{/admin/change-role}" method="post" class="d-flex gap-2">
+                        <input type="hidden" name="id"       th:value="${user.id}">
+                        <input type="hidden" name="page"     th:value="${page.number}">
+                        <input type="hidden" name="size"     th:value="${page.size}">
+                        <th:block th:each="order : ${page.sort}">
+                            <input type="hidden" name="sort"
+                                   th:value="${order.property + ',' + order.direction.name().toLowerCase()}">
+                        </th:block>
+                        <input type="hidden" name="name"     th:value="${filters.name}">
+                        <input type="hidden" name="sureName" th:value="${filters.sureName}">
+                        <input type="hidden" name="email"    th:value="${filters.email}">
+                        <input type="hidden" name="role"    th:value="${filters.role}">
+
+                        <select name="changeRole" class="form-select form-select-sm">
+                            <option value="ADMIN">ADMIN</option>
+                            <option value="STUDENT">STUDENT</option>
+                            <option value="LECTURER">LECTURER</option>
+                            <option value="STUFF">STUFF</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm">Change</button>
+                    </form>
+                </td>
+                <td>
+                    <form th:action="@{/admin/delete-person}" method="post">
+                        <input type="hidden" name="id" th:value="${user.id}">
+                        <input type="hidden" name="page"     th:value="${page.number}">
+                        <input type="hidden" name="size"     th:value="${page.size}">
+                        <th:block th:each="order : ${page.sort}">
+                            <input type="hidden" name="sort"
+                                   th:value="${order.property + ',' + order.direction.name().toLowerCase()}">
+                        </th:block>
+                        <input type="hidden" name="name"     th:value="${filters.name}">
+                        <input type="hidden" name="sureName" th:value="${filters.sureName}">
+                        <input type="hidden" name="email"    th:value="${filters.email}">
+                        <input type="hidden" name="role"    th:value="${filters.role}">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:insert="~{page :: pageNavigation}"></div>
+</div>
+</body>
+</html>

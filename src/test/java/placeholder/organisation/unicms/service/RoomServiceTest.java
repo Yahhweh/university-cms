@@ -11,7 +11,7 @@ import placeholder.organisation.unicms.entity.Room;
 import placeholder.organisation.unicms.entity.RoomType;
 import placeholder.organisation.unicms.repository.RoomRepository;
 import placeholder.organisation.unicms.repository.RoomTypeRepository;
-import placeholder.organisation.unicms.service.dto.response.RoomResponseDTO;
+import placeholder.organisation.unicms.service.dto.request.RoomRequestDTO;
 import placeholder.organisation.unicms.service.mapper.ClassRoomMapper;
 import placeholder.organisation.unicms.service.validation.ClassRoomValidator;
 
@@ -38,7 +38,7 @@ class RoomServiceTest {
     @Test
     void updateClassRoom_shouldChangeNumberOfRoom_whenDTOisGiven() {
         Room initialRoom = getClassRoom();
-        RoomResponseDTO requestedChanges = getClassRoomDTO();
+        RoomRequestDTO requestedChanges = getClassRoomDTO();
         requestedChanges.setClassRoomTypeId(4L);
 
         RoomType newType = new RoomType(4L, "Physics Lab", 100L);
@@ -57,16 +57,16 @@ class RoomServiceTest {
 
     @Test
     void updateClassRoom_shouldThrowException_whenDTOIsNotValidated(){
-        RoomResponseDTO roomResponseDTO = getClassRoomDTO();
+        RoomRequestDTO roomRequestDTO = getClassRoomDTO();
         Room room = getClassRoom();
-        roomResponseDTO.setRoom("B-102");
+        roomRequestDTO.setRoom("B-102");
         long id = room.getId();
 
         when(roomRepository.findById(id)).thenReturn(Optional.of(room));
 
         doThrow(EntityValidationException.class).when(classRoomValidator).validateClassRoom(room);
 
-        assertThrows(EntityValidationException.class, () -> roomService.updateClassRoom(id, roomResponseDTO));
+        assertThrows(EntityValidationException.class, () -> roomService.updateClassRoom(id, roomRequestDTO));
     }
 
     @Test
@@ -117,7 +117,7 @@ class RoomServiceTest {
         return new Room(1L, "A-101", new RoomType(1L, "Hall", 100L));
     }
 
-    RoomResponseDTO getClassRoomDTO() {
-        return new RoomResponseDTO("B-102");
+    RoomRequestDTO getClassRoomDTO() {
+        return new RoomRequestDTO("B-102");
     }
 }

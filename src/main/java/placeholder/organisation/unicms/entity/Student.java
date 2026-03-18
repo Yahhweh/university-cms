@@ -2,7 +2,6 @@ package placeholder.organisation.unicms.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.lang.Nullable;
 
 @Getter
 @Setter
@@ -13,7 +12,7 @@ import org.springframework.lang.Nullable;
 @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "id")
 @DiscriminatorValue("Student")
-public class  Student extends Person {
+public class Student extends User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = true,
