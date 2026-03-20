@@ -32,16 +32,16 @@ public class UserService {
     }
 
     public Optional<User> findByEmail(String email){
-        Optional<User> person = userRepository.findByEmail(email);
+        Optional<User> user = userRepository.findByEmail(email);
         log.debug("Found User with email {}", email);
-        return person;
+        return user;
     }
 
-    public Optional<User> findPerson(Long id){
+    public Optional<User> findUser(Long id){
         return userRepository.findById(id);
     }
 
-    public List<User> findAllPersons(){
+    public List<User> findAllUsers(){
         return userRepository.findAll();
     }
 
@@ -64,12 +64,12 @@ public class UserService {
     }
 
     @Transactional
-    public void deletePerson(Long id){
+    public void deleteUser(Long id){
         if(!userRepository.existsById(id)){
             throw  new EntityNotFoundException(User.class, String.valueOf(id));
         }
         userRepository.deleteById(id);
-        log.debug("Deleted person with id: {}", id);
+        log.debug("Deleted user with id: {}", id);
     }
 
     public User saveUser(User user){

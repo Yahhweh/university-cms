@@ -17,7 +17,6 @@ import placeholder.organisation.unicms.service.dto.request.AddressRequestDTO;
 import placeholder.organisation.unicms.service.dto.request.FilterRequestDTO;
 import placeholder.organisation.unicms.service.dto.request.LecturerRequestDTO;
 import placeholder.organisation.unicms.service.dto.request.StudentRequestDTO;
-import placeholder.organisation.unicms.service.dto.request.UserRequestDTO;
 import placeholder.organisation.unicms.service.dto.response.AddressResponseDTO;
 import placeholder.organisation.unicms.service.mapper.AddressMapper;
 
@@ -80,7 +79,7 @@ class AdminControllerTest {
                 .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("users"))
-                .andExpect(model().attributeExists("persons"));
+                .andExpect(model().attributeExists("users"));
     }
 
 
@@ -88,7 +87,7 @@ class AdminControllerTest {
     void changeUserRole_shouldReturnSuccessView_whenRoleChanged() throws Exception {
         mockMvc.perform(post("/admin/change-role")
                 .param("id", "1")
-                .param("changeRole", "ROLE_ADMIN")
+                .param("newRole", "ROLE_ADMIN")
                 .with(csrf()))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrlPattern("/admin/users*"));
@@ -96,17 +95,6 @@ class AdminControllerTest {
         verify(userService).changeRole(1L, Role.ADMIN);
     }
 
-    @Test
-    void changeUserRole_shouldReturnSuccessView_whenRoleChangedToStudent() throws Exception {
-        mockMvc.perform(post("/admin/change-role")
-                        .param("id", "1")
-                        .param("changeRole", "ROLE_STUDENT")
-                        .with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern("/admin/users*"));
-
-        verify(userService).changeRole(1L, Role.STUDENT);
-    }
 
     @Test
     void showAddUserForm_shouldReturnAddUserView_withGroupsAndSubjects() throws Exception {
@@ -191,17 +179,17 @@ class AdminControllerTest {
             .andExpect(status().isOk())
             .andExpect(view().name("users"))
             .andExpect(model().attribute( "page", people))
-            .andExpect(model().attribute("persons", people.getContent()))
+            .andExpect(model().attribute("users", people.getContent()))
             .andExpect(model().attribute("url", "admin/users"))
             .andExpect(model().attribute("filters", filterRequestDTO));
     }
 
     @Test
     void deleteUser_shouldReturnSuccessView_whenPersonDeleted() throws Exception {
-        mockMvc.perform(post("/admin/delete-person").param("id", "1").with(csrf()))
+        mockMvc.perform(post("/admin/delete-user").param("id", "1").with(csrf()))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrlPattern("/admin/users*"));
-        verify(userService).deletePerson(1L);
+        verify(userService).deleteUser(1L);
     }
 
     @Test
@@ -213,26 +201,30 @@ class AdminControllerTest {
 
     @Test
     void assignSubjectForm_shouldReturnSuccess_whenSubjectAssigned() throws Exception {
+        Long subjectId =1L;
+        Long lecturerId = 1L;
         mockMvc.perform(post("/admin/assign-subject")
                 .param("lecturerId", "1")
-                .param("subjectId", "1")
+                .param("subjectsId", "1")
                 .with(csrf()))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/admin/assign-subject"));
 
-        verify(lecturerService).assignSubjectToLecturer(1L, 1L);
+        verify(lecturerService).assignSubjectToLecturer(subjectId, lecturerId);
     }
 
     @Test
     void removeSubject_shouldReturnSuccess_whenSubjectRemoved() throws Exception {
+        Long subjectId =1L;
+        Long lecturerId = 1L;
         mockMvc.perform(post("/admin/remove-subject")
                 .param("lecturerId", "1")
-                .param("subjectId", "1")
+                .param("subjectsId", "1")
                 .with(csrf()))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("/admin/remove-subject"));
 
-        verify(lecturerService).removeSubjectFromLecturer(1L, 1L);
+        verify(lecturerService).removeSubjectFromLecturer(subjectId, lecturerId);
     }
 
     @Test

@@ -48,25 +48,25 @@ class UserServiceTest {
     }
 
     @Test
-    void deletePerson() {
+    void deleteUser() {
 
     }
 
     @Test
-    void deletePerson_shouldDeletePerson_whenPersonExists() {
+    void deletePerson_shouldDeletePerson_whenUserExists() {
         when(mockPersonRepository.existsById(1L)).thenReturn(true);
 
-        userService.deletePerson(1L);
+        userService.deleteUser(1L);
 
         verify(mockPersonRepository).deleteById(1L);
     }
 
     @Test
-    void deletePerson_shouldThrowEntityNotFoundException_whenPersonNotFound() {
+    void deletePerson_shouldThrowEntityNotFoundException_whenUserNotFound() {
         when(mockPersonRepository.existsById(99L)).thenReturn(false);
 
         assertThrows(EntityNotFoundException.class,
-            () -> userService.deletePerson(99L));
+            () -> userService.deleteUser(99L));
 
         verify(mockPersonRepository, never()).deleteById(any());
     }

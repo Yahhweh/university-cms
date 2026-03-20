@@ -43,12 +43,6 @@
             <tr>
                 <th>
                     <a class="text-white"
-                       th:href="@{/{path}(path=${url}, page=${page.number}, size=${page.size}, sort='id,' + (${page.sort.getOrderFor('id')?.ascending} ? 'desc' : 'asc'))}">
-                        ID
-                    </a>
-                </th>
-                <th>
-                    <a class="text-white"
                        th:href="@{/{path}(path=${url}, page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
                         First Name
                     </a>
@@ -71,54 +65,33 @@
                         Role
                     </a>
                 </th>
-                <th>Change Role</th>
-                <th>Delete</th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="user : ${persons}">
-                <td th:text="${user.id}"></td>
+            <tr th:each="user : ${users}">
                 <td th:text="${user.name}"></td>
                 <td th:text="${user.sureName}"></td>
                 <td th:text="${user.email}"></td>
                 <td th:text="${user.role}"></td>
-                <td>
+                <td class="d-flex gap-2">
                     <form th:action="@{/admin/change-role}" method="post" class="d-flex gap-2">
-                        <input type="hidden" name="id"       th:value="${user.id}">
-                        <input type="hidden" name="page"     th:value="${page.number}">
-                        <input type="hidden" name="size"     th:value="${page.size}">
-                        <th:block th:each="order : ${page.sort}">
-                            <input type="hidden" name="sort"
-                                   th:value="${order.property + ',' + order.direction.name().toLowerCase()}">
-                        </th:block>
-                        <input type="hidden" name="name"     th:value="${filters.name}">
-                        <input type="hidden" name="sureName" th:value="${filters.sureName}">
-                        <input type="hidden" name="email"    th:value="${filters.email}">
-                        <input type="hidden" name="role"    th:value="${filters.role}">
-
-                        <select name="changeRole" class="form-select form-select-sm">
+                        <div th:replace="~{hidden-inputs :: inputs}">Hidden Inputs</div>
+                        <select name="newRole" class="form-select form-select-sm">
                             <option value="ADMIN">ADMIN</option>
                             <option value="STUDENT">STUDENT</option>
                             <option value="LECTURER">LECTURER</option>
                             <option value="STUFF">STUFF</option>
                         </select>
-                        <button type="submit" class="btn btn-primary btn-sm">Change</button>
+                        <button type="submit" class="btn btn-link p-0" title="Change role">
+                            <i class="bi bi-arrow-repeat fs-5"></i>
+                        </button>
                     </form>
-                </td>
-                <td>
-                    <form th:action="@{/admin/delete-person}" method="post">
-                        <input type="hidden" name="id" th:value="${user.id}">
-                        <input type="hidden" name="page"     th:value="${page.number}">
-                        <input type="hidden" name="size"     th:value="${page.size}">
-                        <th:block th:each="order : ${page.sort}">
-                            <input type="hidden" name="sort"
-                                   th:value="${order.property + ',' + order.direction.name().toLowerCase()}">
-                        </th:block>
-                        <input type="hidden" name="name"     th:value="${filters.name}">
-                        <input type="hidden" name="sureName" th:value="${filters.sureName}">
-                        <input type="hidden" name="email"    th:value="${filters.email}">
-                        <input type="hidden" name="role"    th:value="${filters.role}">
-                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    <form th:action="@{/admin/delete-user}" method="post">
+                        <div th:replace="~{hidden-inputs :: inputs}">Hidden Inputs</div>
+                        <button type="submit" class="btn btn-link p-0 text-danger" title="Delete user">
+                            <i class="bi bi-trash fs-5"></i>
+                        </button>
                     </form>
                 </td>
             </tr>

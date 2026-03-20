@@ -40,7 +40,7 @@
                     <input type="hidden" name="lecturerId" th:value="${selectedLecturer.id}"/>
                     <div class="mb-3">
                         <label class="form-label">Subject</label>
-                        <select name="subjectId" required class="form-select">
+                        <select name="subjectsId" multiple class="form-select">
                             <option value="" disabled selected>Select subject</option>
                             <option th:each="s : ${subjects}"
                                     th:value="${s.id}"

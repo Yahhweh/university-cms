@@ -1828,7 +1828,12 @@ SELECT pg_catalog.setval('public.user_id_seq', 163, true);
 
 SELECT pg_catalog.setval('public.study_subject_id_seq', 10, true);
 
-
---
--- PostgreSQL database dump complete
---
+UPDATE "user"
+SET role= 'STUDENT'
+where id BETWEEN 14 and 163;
+UPDATE "user"
+SET role= 'LECTURER'
+where id BETWEEN 1 and 10;
+UPDATE "user"
+SET role = 'ADMIN'
+where id IN (11, 12, 13);

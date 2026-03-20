@@ -2,7 +2,8 @@ spring:
   data:
     web:
       pageable:
-        max-page-size: 9
+          max-page-size: 9
+          default-page-size: 9
 
   application:
     name: uni-cms
@@ -27,7 +28,7 @@ spring:
 
   sql:
       init:
-          mode: never
+          mode: always
 
   thymeleaf:
     cache: false
