@@ -3,13 +3,11 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.repository.SubjectRepository;
-import placeholder.organisation.unicms.service.dto.SubjectDTO;
+import placeholder.organisation.unicms.service.dto.request.SubjectRequestDTO;
 import placeholder.organisation.unicms.service.mapper.StudySubjectMapper;
 
 import java.util.List;
@@ -57,11 +55,11 @@ public class SubjectService {
     }
 
     @Transactional
-    public void updateStudySubject(long studySubjectId, SubjectDTO subjectDTO) {
+    public void updateStudySubject(long studySubjectId, SubjectRequestDTO subjectRequestDTO) {
         Subject subject = subjectRepository.findById(studySubjectId)
-                .orElseThrow(() -> new EntityNotFoundException(Subject.class, String.valueOf(studySubjectId)));
+            .orElseThrow(() -> new EntityNotFoundException(Subject.class, String.valueOf(studySubjectId)));
 
-        studySubjectMapper.updateEntityFromDto(subjectDTO, subject);
+        studySubjectMapper.updateEntityFromDto(subjectRequestDTO, subject);
         subjectRepository.save(subject);
 
         log.debug("Study subject updated successfully. ID: {}", studySubjectId);

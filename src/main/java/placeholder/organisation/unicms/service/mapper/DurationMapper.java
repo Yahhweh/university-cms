@@ -2,14 +2,14 @@ package placeholder.organisation.unicms.service.mapper;
 
 import org.mapstruct.*;
 import placeholder.organisation.unicms.entity.Duration;
-import placeholder.organisation.unicms.service.dto.DurationDTO;
+import placeholder.organisation.unicms.service.dto.request.DurationRequestDTO;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface DurationMapper {
-    DurationDTO toDto(Duration duration);
+    DurationRequestDTO toDto(Duration duration);
 
     @Mapping(target = "id", ignore = true)
-    void updateEntityFromDto(DurationDTO dto, @MappingTarget Duration entity);
+    void updateEntityFromDto(DurationRequestDTO dto, @MappingTarget Duration entity);
 }

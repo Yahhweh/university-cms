@@ -9,7 +9,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.RoomType;
 import placeholder.organisation.unicms.repository.RoomTypeRepository;
-import placeholder.organisation.unicms.service.dto.RoomTypeDTO;
+import placeholder.organisation.unicms.service.dto.request.RoomTypeRequestDTO;
 import placeholder.organisation.unicms.service.mapper.ClassRoomTypeMapper;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -31,7 +31,7 @@ class RoomTypeServiceTest {
     @Test
     void updateClassRoomType_shouldChangesObject_whenCorrectDtoIsGiven() {
         RoomType initialRoomType = getClassRoomType();
-        RoomTypeDTO requestedChanges = getClassRoomTypeDTO();
+        RoomTypeRequestDTO requestedChanges = getClassRoomTypeDTO();
         long id = initialRoomType.getId();
 
         when(roomTypeRepository.findById(id)).thenReturn(Optional.of(initialRoomType));
@@ -78,7 +78,7 @@ class RoomTypeServiceTest {
         return new RoomType(1L, "Hall", 200L);
     }
 
-    RoomTypeDTO getClassRoomTypeDTO() {
-        return new RoomTypeDTO("Working room");
+    RoomTypeRequestDTO getClassRoomTypeDTO() {
+        return new RoomTypeRequestDTO("Working room");
     }
 }

@@ -1,20 +1,18 @@
 package placeholder.organisation.unicms.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import org.springframework.lang.Nullable;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "student")
 @AllArgsConstructor
 @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "id")
-public class  Student extends Person {
+@DiscriminatorValue("Student")
+public class Student extends User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = true,

@@ -11,7 +11,7 @@ public class GlobalThemeAdvice {
     private String theme;
 
     @ModelAttribute("theme")
-    public String getTheme(){
+    public String getTheme() {
         return theme;
     }
 }

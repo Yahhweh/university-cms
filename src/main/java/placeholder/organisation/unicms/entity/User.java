@@ -4,31 +4,37 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.extern.log4j.Log4j2;
 
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
+@Log4j2
 @Entity
 @Data
-@Table(name = "person")
+@Table(name = "\"user\"")
 @AllArgsConstructor
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Person {
-
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("User")
+public class User {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "password")
-    @Size(min = 8, max = 50, message = "{person.password.size}")
     private String password;
 
     @Column(name = "name")
     @Pattern(regexp = "[A-Z][a-z]+$", message = "{person.name.pattern}")
     private String name;
+
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Column(name = "sure_name")
     @Pattern(regexp = "[A-Z][a-z]+$", message = "{person.surname.pattern}")
@@ -39,10 +45,11 @@ public abstract class Person {
     private GenderType gender;
 
     @Column(name = "email")
-    @Pattern(regexp = "^[a-z]+\\.[a-z]+\\d*@[a-z]+\\.university\\.com$", message = "{person.email.pattern}")
+    @Pattern(regexp = "^[a-z]+\\.[a-z]+\\d*@[a-z]+\\.com$", message = "{person.email.pattern}")
     private String email;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id",
             foreignKey = @ForeignKey(name = "fk_person_address"),
             referencedColumnName = "id")
@@ -51,4 +58,11 @@ public abstract class Person {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
+    @Column(insertable=false, updatable=false)
+    private String dtype;
+
+    @Override
+    public String toString() {
+        return "User{id=" + id + ", name=" + name + ", sureName=" + sureName + ", role=" + role + "}";
+    }
 }

@@ -3,15 +3,16 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.entity.Lecturer;
+import placeholder.organisation.unicms.entity.Role;
 import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.repository.LecturerRepository;
 import placeholder.organisation.unicms.repository.SubjectRepository;
-import placeholder.organisation.unicms.service.dto.LecturerDTO;
+import placeholder.organisation.unicms.service.dto.request.LecturerRequestDTO;
+import placeholder.organisation.unicms.service.dto.response.LecturerResponseDTO;
 import placeholder.organisation.unicms.service.mapper.LecturerMapper;
 
 import java.util.HashSet;
@@ -25,12 +26,14 @@ public class LecturerService {
     private final LecturerRepository lecturerRepository;
     private final SubjectRepository subjectRepository;
     private final LecturerMapper lecturerMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public LecturerService(LecturerRepository lecturerRepository, SubjectRepository subjectRepository,
-                           LecturerMapper lecturerMapper) {
+                           LecturerMapper lecturerMapper, PasswordEncoder passwordEncoder) {
         this.lecturerRepository = lecturerRepository;
         this.subjectRepository = subjectRepository;
         this.lecturerMapper = lecturerMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<Lecturer> findAllLecturers() {
@@ -45,6 +48,14 @@ public class LecturerService {
         log.debug("Lecturer saved successfully. Name: {}}", lecturer.getName());
     }
 
+    @Transactional
+    public void createLecturer(LecturerRequestDTO lecturerRequestDTO){
+        Lecturer lecturer = lecturerMapper.toEntity(lecturerRequestDTO);
+        lecturer.setPassword(passwordEncoder.encode(lecturerRequestDTO.getPassword()));
+        lecturer.setRole(Role.LECTURER);
+        lecturerRepository.save(lecturer);
+    }
+
     public Optional<Lecturer> findLecturerByNameAndSureName(String name, String sureName) {
         Optional<Lecturer> lecturer = lecturerRepository.findByNameAndSureName(name, sureName);
         lecturer.ifPresent(value -> log.debug("Found lecturer {}", value));
@@ -57,23 +68,25 @@ public class LecturerService {
         return lecturer;
     }
 
+    @Transactional
     public void assignSubjectToLecturer(long subjectId, long lecturerId) {
         Subject subject = subjectRepository.findById(subjectId).orElseThrow(
-                () -> new EntityNotFoundException(Subject.class, String.valueOf(subjectId)));
+            () -> new EntityNotFoundException(Subject.class, String.valueOf(subjectId)));
         Lecturer lecturer = lecturerRepository.findById(lecturerId).orElseThrow(
-                () -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId))
+            () -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId))
         );
         if (lecturer.getSubjects().add(subject)) {
             log.info("Lecturer assigned to keep this subject. lecturerId: {}, subjectId: {}", lecturerId, subjectId);
         }
     }
 
+    @Transactional
     public void removeSubjectFromLecturer(long subjectId, long lecturerId) {
         Subject subject = subjectRepository.findById(subjectId)
-                .orElseThrow(() -> new EntityNotFoundException(Subject.class, String.valueOf(subjectId)));
+            .orElseThrow(() -> new EntityNotFoundException(Subject.class, String.valueOf(subjectId)));
 
         Lecturer lecturer = lecturerRepository.findById(lecturerId)
-                .orElseThrow(() -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId)));
+            .orElseThrow(() -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId)));
 
         boolean isRemoved = lecturer.getSubjects().remove(subject);
         if (!isRemoved) {
@@ -91,9 +104,9 @@ public class LecturerService {
     }
 
     @Transactional
-    public void updateLecturer(long lecturerId, LecturerDTO lecturerDTO) {
+    public void updateLecturer(long lecturerId, LecturerRequestDTO lecturerDTO) {
         Lecturer lecturer = lecturerRepository.findById(lecturerId)
-                .orElseThrow(() -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId)));
+            .orElseThrow(() -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId)));
         lecturerMapper.updateEntityFromDto(lecturerDTO, lecturer);
         resolveRelations(lecturerDTO, lecturer);
         lecturerRepository.save(lecturer);
@@ -105,7 +118,14 @@ public class LecturerService {
         return lecturerRepository.findAll(pageable);
     }
 
-    private void resolveRelations(LecturerDTO dto, Lecturer lecturer) {
+    @Transactional(readOnly = true)
+    public Lecturer findByEmail(String email) {
+        Lecturer lecturer = lecturerRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException(Lecturer.class, email));
+        log.debug("Found lecturer with email {}", email);
+        return lecturer;
+    }
+
+    private void resolveRelations(LecturerRequestDTO dto, Lecturer lecturer) {
         if (dto.getStudySubjectIds() != null && !dto.getStudySubjectIds().isEmpty()) {
             List<Subject> subjects = subjectRepository.findAllById(dto.getStudySubjectIds());
 
@@ -116,6 +136,4 @@ public class LecturerService {
             lecturer.setSubjects(new HashSet<>(subjects));
         }
     }
-
-
 }

@@ -9,7 +9,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.repository.SubjectRepository;
-import placeholder.organisation.unicms.service.dto.SubjectDTO;
+import placeholder.organisation.unicms.service.dto.request.SubjectRequestDTO;
 import placeholder.organisation.unicms.service.mapper.StudySubjectMapper;
 
 import java.util.Optional;
@@ -33,7 +33,7 @@ class SubjectServiceTest {
     @Test
     void updateStudySubject_whenValidStudySubjectDTO_thenStudySubjectIsUpdated() {
         Subject initial = getStudySubject();
-        SubjectDTO changes = getStudySubjectDto();
+        SubjectRequestDTO changes = getStudySubjectDto();
         long id = initial.getId();
 
         when(subjectRepository.findById(id)).thenReturn(Optional.of(initial));
@@ -53,8 +53,8 @@ class SubjectServiceTest {
         return subject;
     }
 
-    private SubjectDTO getStudySubjectDto() {
-        SubjectDTO dto = new SubjectDTO();
+    private SubjectRequestDTO getStudySubjectDto() {
+        SubjectRequestDTO dto = new SubjectRequestDTO();
         dto.setName("Math");
         return dto;
     }

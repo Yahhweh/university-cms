@@ -12,7 +12,8 @@ import placeholder.organisation.unicms.repository.LecturerRepository;
 import placeholder.organisation.unicms.repository.SubjectRepository;
 import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.Subject;
-import placeholder.organisation.unicms.service.dto.LecturerDTO;
+import placeholder.organisation.unicms.service.dto.request.LecturerRequestDTO;
+import placeholder.organisation.unicms.service.dto.response.LecturerResponseDTO;
 import placeholder.organisation.unicms.service.mapper.LecturerMapper;
 
 import java.util.HashSet;
@@ -105,7 +106,7 @@ class LecturerServiceTest {
     @Test
     void updateLecturer_whenValidLecturerDTO_thanLecturerIsUpdated() {
         Lecturer initial = getLecturer();
-        LecturerDTO changes = getLecturerDto();
+        LecturerRequestDTO changes = getLecturerDto();
         long id = initial.getId();
 
         when(lecturerRepository.findById(id)).thenReturn(Optional.of(initial));
@@ -158,8 +159,8 @@ class LecturerServiceTest {
         return lecturer;
     }
 
-    LecturerDTO getLecturerDto() {
-        LecturerDTO dto = new LecturerDTO();
+    LecturerRequestDTO getLecturerDto() {
+        LecturerRequestDTO dto = new LecturerRequestDTO();
         dto.setName("Jane");
         dto.setSureName("Doe");
         dto.setSalary(55000);

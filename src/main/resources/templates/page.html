@@ -1,15 +1,21 @@
 <div th:fragment="pageNavigation">
-    <div th:if="${page.totalPages > 1}">
-        <a th:if="${!page.first}"
-           th:href="@{'/'+${url}(page=${page.number - 1}, size=${page.size}, sort=${#strings.replace(page.sort.toString(), ': ', ',')})}">
-            Back
-        </a>
-
-        <span>[[${page.number + 1}]] / [[${page.totalPages}]]</span>
-
-        <a th:if="${!page.last}"
-           th:href="@{'/'+${url}(page=${page.number + 1}, size=${page.size}, sort=${#strings.replace(page.sort.toString(), ': ', ',')})}">
-            Next
-        </a>
-    </div>
+    <nav th:if="${page.totalPages > 1}">
+        <ul class="pagination">
+            <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{'/'+${url}(page=${page.number - 1}, size=${page.size}, sort=${#strings.replace(page.sort.toString(), ': ', ',')})}">
+                    &laquo; Back
+                </a>
+            </li>
+            <li class="page-item disabled">
+                <span class="page-link">[[${page.number + 1}]] / [[${page.totalPages}]]</span>
+            </li>
+            <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{'/'+${url}(page=${page.number + 1}, size=${page.size}, sort=${#strings.replace(page.sort.toString(), ': ', ',')})}">
+                    Next &raquo;
+                </a>
+            </li>
+        </ul>
+    </nav>
 </div>

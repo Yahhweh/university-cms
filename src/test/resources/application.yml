@@ -12,7 +12,7 @@ spring:
   flyway:
     enabled: true
     locations: classpath:/db/migration
-    target: 1
+    target: latest
 
 subject:
   generator:

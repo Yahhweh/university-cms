@@ -4,61 +4,58 @@
     <meta charset="UTF-8">
     <title>Lessons List</title>
 </head>
-
-<body>
-<table>
-    <thead>
-    <tr>
-        <th>
-            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='date,' + (${page.sort.getOrderFor('date')?.ascending} ? 'desc' : 'asc'))}">
-                Date
-            </a>
-        </th>
-
-        <th>
-            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='duration,' + (${page.sort.getOrderFor('duration')?.ascending} ? 'desc' : 'asc'))}">
-                Duration
-            </a>
-        </th>
-
-        <th>
-            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='subject,' + (${page.sort.getOrderFor('subject')?.ascending} ? 'desc' : 'asc'))}">
-                Subject
-            </a>
-        </th>
-
-        <th>
-            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='group,' + (${page.sort.getOrderFor('group')?.ascending} ? 'desc' : 'asc'))}">
-                Group
-            </a>
-        </th>
-
-        <th>
-            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='lecturer,' + (${page.sort.getOrderFor('lecturer')?.ascending} ? 'desc' : 'asc'))}">
-                Lecturer
-            </a>
-        </th>
-
-        <th>
-            <a th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='room,' + (${page.sort.getOrderFor('room')?.ascending} ? 'desc' : 'asc'))}">
-                Room
-            </a>
-        </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="lesson : ${lessons}">
-        <td th:text="${#temporals.format(lesson.date, 'dd.MM.yyyy')}">01.01.2024</td>
-        <td th:text="${lesson.duration}">Duration</td>
-        <td th:text="${lesson.subject}">Subject</td>
-        <td th:text="${lesson.group}">Group</td>
-        <td th:text="${lesson.lecturer}">Lecturer Name</td>
-        <td th:text="${lesson.room}">Room</td>
-    </tr>
-    </tbody>
-</table>
-
-<div th:insert="~{page :: pageNavigation}"></div>
-
+<body class="py-4">
+<div class="container">
+    <h2 class="text-white mb-3">Lessons</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover bg-white">
+            <thead class="table-dark">
+            <tr>
+                <th>
+                    <a class="text-white" th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='date,' + (${page.sort.getOrderFor('date')?.ascending} ? 'desc' : 'asc'))}">
+                        Date
+                    </a>
+                </th>
+                <th>
+                    <a class="text-white" th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='duration,' + (${page.sort.getOrderFor('duration')?.ascending} ? 'desc' : 'asc'))}">
+                        Duration
+                    </a>
+                </th>
+                <th>
+                    <a class="text-white" th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='subject,' + (${page.sort.getOrderFor('subject')?.ascending} ? 'desc' : 'asc'))}">
+                        Subject
+                    </a>
+                </th>
+                <th>
+                    <a class="text-white" th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='group,' + (${page.sort.getOrderFor('group')?.ascending} ? 'desc' : 'asc'))}">
+                        Group
+                    </a>
+                </th>
+                <th>
+                    <a class="text-white" th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='lecturer,' + (${page.sort.getOrderFor('lecturer')?.ascending} ? 'desc' : 'asc'))}">
+                        Lecturer
+                    </a>
+                </th>
+                <th>
+                    <a class="text-white" th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='room,' + (${page.sort.getOrderFor('room')?.ascending} ? 'desc' : 'asc'))}">
+                        Room
+                    </a>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="lesson : ${lessons}">
+                <td th:text="${#temporals.format(lesson.date, 'dd.MM.yyyy')}">01.01.2024</td>
+                <td th:text="${lesson.duration}">Duration</td>
+                <td th:text="${lesson.subject}">Subject</td>
+                <td th:text="${lesson.group}">Group</td>
+                <td th:text="${lesson.lecturer}">Lecturer Name</td>
+                <td th:text="${lesson.room}">Room</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:insert="~{page :: pageNavigation}"></div>
+</div>
 </body>
 </html>

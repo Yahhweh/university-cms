@@ -10,7 +10,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.Degree;
 import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.repository.StudentRepository;
-import placeholder.organisation.unicms.service.dto.StudentDTO;
+import placeholder.organisation.unicms.service.dto.request.StudentRequestDTO;
+import placeholder.organisation.unicms.service.dto.response.StudentResponseDTO;
 import placeholder.organisation.unicms.service.mapper.StudentMapper;
 
 import java.util.Optional;
@@ -36,7 +37,7 @@ class StudentServiceTest {
     @Test
     void updateStudent_whenValidStudentDTO_thenStudentIsUpdated() {
         Student initial = getStudent();
-        StudentDTO changes = getStudentDto();
+        StudentRequestDTO changes = getStudentDto();
         long id = initial.getId();
 
         when(studentRepository.findById(id)).thenReturn(Optional.of(initial));
@@ -53,7 +54,7 @@ class StudentServiceTest {
     @Test
     void updateStudent_whenValidStudentDTO_thanStudentIsUpdated() {
         Student initial = getStudent();
-        StudentDTO changes = getStudentDto();
+        StudentRequestDTO changes = getStudentDto();
         long id = initial.getId();
 
         when(studentRepository.findById(id)).thenReturn(Optional.of(initial));
@@ -105,8 +106,8 @@ class StudentServiceTest {
         return student;
     }
 
-    private StudentDTO getStudentDto() {
-        StudentDTO dto = new StudentDTO();
+    private StudentRequestDTO getStudentDto() {
+        StudentRequestDTO dto = new StudentRequestDTO();
         dto.setName("Jane");
         dto.setSureName("Doe");
         dto.setDegree(Degree.Master);

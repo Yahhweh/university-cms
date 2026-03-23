@@ -3,14 +3,12 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.entity.Room;
 import placeholder.organisation.unicms.repository.RoomRepository;
 import placeholder.organisation.unicms.repository.RoomTypeRepository;
-import placeholder.organisation.unicms.service.dto.RoomDTO;
+import placeholder.organisation.unicms.service.dto.request.RoomRequestDTO;
 import placeholder.organisation.unicms.service.mapper.ClassRoomMapper;
 import placeholder.organisation.unicms.service.validation.ClassRoomValidator;
 
@@ -66,12 +64,12 @@ public class RoomService {
     }
 
     @Transactional
-    public void updateClassRoom(long classRoomId, RoomDTO roomDTO) {
+    public void updateClassRoom(long classRoomId, RoomRequestDTO roomRequestDTO) {
         Room room = roomRepository.findById(classRoomId)
-                .orElseThrow(() -> new EntityNotFoundException(Room.class, String.valueOf(classRoomId)));
+            .orElseThrow(() -> new EntityNotFoundException(Room.class, String.valueOf(classRoomId)));
 
-        classRoomMapper.updateEntityFromDto(roomDTO, room);
-        resolveRelations(roomDTO, room);
+        classRoomMapper.updateEntityFromDto(roomRequestDTO, room);
+        resolveRelations(roomRequestDTO, room);
 
         classRoomValidator.validateClassRoom(room);
         roomRepository.save(room);
@@ -83,7 +81,7 @@ public class RoomService {
         return roomRepository.findAll(pageable);
     }
 
-    void resolveRelations(RoomDTO dto, Room entity) {
+    void resolveRelations(RoomRequestDTO dto, Room entity) {
         if (dto.getClassRoomTypeId() != null) {
             entity.setRoomType(roomTypeRepository.getReferenceById(dto.getClassRoomTypeId()));
         }

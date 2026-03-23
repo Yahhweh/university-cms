@@ -1,4 +1,4 @@
-package placeholder.organisation.unicms.service.dto;
+package placeholder.organisation.unicms.service.dto.request;
 
 
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import javax.validation.constraints.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomTypeDTO {
+public class RoomTypeRequestDTO {
     @NotBlank
     @Size(min = 2, max = 35)
     @Pattern(regexp = "^[a-zA-Z ]+$", message = "Name must contain only letters")
@@ -21,11 +21,11 @@ public class RoomTypeDTO {
     @Max(value = 500)
     private Long capacity;
 
-    public RoomTypeDTO(String name) {
+    public RoomTypeRequestDTO(String name) {
         this.name = name;
     }
 
-    public RoomTypeDTO(Long capacity) {
+    public RoomTypeRequestDTO(Long capacity) {
         this.capacity = capacity;
     }
 

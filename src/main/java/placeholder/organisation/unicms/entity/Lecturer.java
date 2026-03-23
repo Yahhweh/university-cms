@@ -17,7 +17,8 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @PrimaryKeyJoinColumn(name = "id")
-public class Lecturer extends Person {
+@DiscriminatorValue("Lecturer")
+public class Lecturer extends User {
 
     @Column(name = "salary")
     @Pattern(regexp = "^[0-9]+$")

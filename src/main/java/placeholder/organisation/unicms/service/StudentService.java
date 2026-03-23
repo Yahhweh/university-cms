@@ -3,14 +3,15 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.RoomType;
+import placeholder.organisation.unicms.entity.Role;
 import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.repository.StudentRepository;
-import placeholder.organisation.unicms.service.dto.StudentDTO;
+import placeholder.organisation.unicms.service.dto.request.StudentRequestDTO;
+import placeholder.organisation.unicms.service.dto.response.StudentResponseDTO;
 import placeholder.organisation.unicms.service.mapper.StudentMapper;
 
 import java.util.List;
@@ -24,14 +25,17 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final StudentMapper studentMapper;
     private final GroupRepository groupRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public StudentService(StudentRepository studentRepository, StudentMapper studentMapper,
-                          GroupRepository groupRepository) {
+                          GroupRepository groupRepository, PasswordEncoder passwordEncoder) {
         this.studentRepository = studentRepository;
         this.studentMapper = studentMapper;
         this.groupRepository = groupRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional(readOnly = true)
     public List<Student> findAllStudents() {
         List<Student> students = studentRepository.findAll();
         log.debug("Found {} students", students.size());
@@ -49,6 +53,16 @@ public class StudentService {
     }
 
     @Transactional
+    public void createStudent(StudentRequestDTO studentRequestDTO) {
+        Student student= studentMapper.toEntity(studentRequestDTO);
+        student.setPassword(passwordEncoder.encode(studentRequestDTO.getPassword()));
+        student.setRole(Role.STUDENT);
+
+        studentRepository.save(student);
+        log.info("Student saved: {} {}", student.getName(), student.getSureName());
+    }
+
+    @Transactional
     public void removeStudent(long studentId) {
         if (!studentRepository.existsById(studentId)) {
             throw new EntityNotFoundException(Student.class, String.valueOf(studentId));
@@ -57,9 +71,9 @@ public class StudentService {
     }
 
     @Transactional
-    public void updateStudent(long studentId, StudentDTO studentDTO) {
+    public void updateStudent(long studentId, StudentRequestDTO studentDTO) {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new EntityNotFoundException(Student.class, String.valueOf(studentId)));
+            .orElseThrow(() -> new EntityNotFoundException(Student.class, String.valueOf(studentId)));
 
         studentMapper.updateEntityFromDto(studentDTO, student);
         resolveRelations(studentDTO, student);
@@ -68,12 +82,24 @@ public class StudentService {
         log.debug("Student updated successfully. ID: {}", studentId);
     }
 
+    public Student findByEmail(String email) {
+        Student student = studentRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException(Student.class, email));
+        log.debug("Found Student with email {}", email);
+        return student;
+    }
+
     public Page<Student> findAll(Pageable pageable) {
         log.debug("Trying to get paginated Students: {}", pageable);
         return studentRepository.findAll(pageable);
     }
 
-    private void resolveRelations(StudentDTO dto, Student student) {
+    private void resolveRelations(StudentResponseDTO dto, Student student) {
+        if (dto.getGroupId() != null) {
+            student.setGroup(groupRepository.getReferenceById(dto.getGroupId()));
+        }
+    }
+
+    private void resolveRelations(StudentRequestDTO dto, Student student) {
         if (dto.getGroupId() != null) {
             student.setGroup(groupRepository.getReferenceById(dto.getGroupId()));
         }

@@ -9,7 +9,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.repository.*;
-import placeholder.organisation.unicms.service.dto.LessonDTO;
+import placeholder.organisation.unicms.service.dto.request.LessonRequestDTO;
 import placeholder.organisation.unicms.service.mapper.LessonMapper;
 import placeholder.organisation.unicms.service.validation.LessonValidator;
 
@@ -155,16 +155,16 @@ class LessonServiceTest {
     @Test
     void updateLesson_changesObject_whenCorrectDtoIsGiven() {
         Lesson initial = getLesson();
-        LessonDTO lessonDTO = getLessonDto();
+        LessonRequestDTO lessonRequestDTO = getLessonDto();
         long id = initial.getId();
-        long studySubjectId = lessonDTO.getStudySubjectId();
+        long studySubjectId = lessonRequestDTO.getStudySubjectId();
 
         when(lessonRepositoryMock.findById(id)).thenReturn(Optional.of(initial));
         when(subjectRepository.getReferenceById(studySubjectId)).thenReturn(new Subject("Physics"));
 
-        lessonService.updateLesson(id, lessonDTO);
+        lessonService.updateLesson(id, lessonRequestDTO);
 
-        verify(lessonMapper).updateEntityFromDto(lessonDTO, initial);
+        verify(lessonMapper).updateEntityFromDto(lessonRequestDTO, initial);
         verify(lessonRepositoryMock).save(initial);
         verify(lessonValidator).validateLesson(initial, id);
 
@@ -185,7 +185,7 @@ class LessonServiceTest {
     void updateLesson_shouldThrowEntityValidationException_whenWrongLessonGiven() {
         Lesson lesson = getLesson();
         lesson.getRoom().getRoomType().setCapacity(0L);
-        LessonDTO lessonDto = getLessonDto();
+        LessonRequestDTO lessonRequestDto = getLessonDto();
 
         when(lessonRepositoryMock.findById(lesson.getId())).thenReturn(Optional.of(lesson));
 
@@ -194,7 +194,7 @@ class LessonServiceTest {
                 .validateLesson(any(Lesson.class), anyLong());
 
         assertThrows(EntityValidationException.class, () ->
-                lessonService.updateLesson(lesson.getId(), lessonDto)
+                lessonService.updateLesson(lesson.getId(), lessonRequestDto)
         );
 
         verify(lessonValidator, times(1)).validateLesson(any(Lesson.class), anyLong());
@@ -235,8 +235,8 @@ class LessonServiceTest {
         return new Lesson(1L, getDuration(), new Subject(1L, "Math"), getGroup(), getLecturer(), getClassRoom(), LocalDate.now());
     }
 
-    LessonDTO getLessonDto() {
-        return LessonDTO.builder()
+    LessonRequestDTO getLessonDto() {
+        return LessonRequestDTO.builder()
                 .studySubjectId(10L)
                 .build();
     }

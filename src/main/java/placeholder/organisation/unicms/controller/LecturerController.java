@@ -4,37 +4,47 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.service.LecturerService;
 
-import java.util.List;
-
 @Controller
+@RequestMapping("/lecturers")
+@PreAuthorize("hasAnyRole('ADMIN', 'LECTURER')")
 public class LecturerController {
 
-    private final LecturerService service;
+    private final LecturerService lecturerService;
 
     public LecturerController(LecturerService lecturerService) {
-        this.service = lecturerService;
+        this.lecturerService = lecturerService;
     }
 
-    @GetMapping(value = "/lecturers")
+    @GetMapping()
     public String getLecturers(Model model,
                                @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
-        Page<Lecturer> page = service.findAll(pageable);
+        Page<Lecturer> page = lecturerService.findAll(pageable);
 
         model.addAttribute("lecturers", page.getContent());
         model.addAttribute("page", page);
         model.addAttribute("url", "lecturers");
 
         return "lecturers";
+    }
+
+    @GetMapping(value = "/profile")
+    public String getProfile(
+        Model model,
+        Authentication authentication
+    ){
+        Lecturer lecturer = lecturerService.findByEmail(authentication.getName());
+
+        model.addAttribute("lecturer", lecturer);
+        return "lecturer-profile";
     }
 }
