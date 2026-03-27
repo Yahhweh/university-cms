@@ -6,7 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import placeholder.organisation.unicms.entity.Course;
 import placeholder.organisation.unicms.entity.Group;
+import placeholder.organisation.unicms.repository.CourseRepository;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.service.dto.request.GroupRequestDTO;
 import placeholder.organisation.unicms.service.mapper.GroupMapper;
@@ -21,10 +23,12 @@ public class GroupService {
 
     private final GroupRepository groupRepository;
     private final GroupMapper groupMapper;
+    private final CourseRepository courseRepository;
 
-    public GroupService(GroupRepository groupRepository, GroupMapper groupMapper) {
+    public GroupService(GroupRepository groupRepository, GroupMapper groupMapper, CourseRepository courseRepository) {
         this.groupRepository = groupRepository;
         this.groupMapper = groupMapper;
+        this.courseRepository = courseRepository;
     }
 
     public List<Group> findAllGroups() {
@@ -67,5 +71,33 @@ public class GroupService {
     public Page<Group> findAll(Pageable pageable) {
         log.debug("Fetching paginated Groups: {}", pageable);
         return groupRepository.findAll(pageable);
+    }
+
+    public List<Group> findGroupsByCourse(Long courseId) {
+        return groupRepository.findAll().stream()
+                .filter(g -> g.getCourse() != null && g.getCourse().getId().equals(courseId))
+                .toList();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    public void assignGroupsToCourse(Long courseId, List<Long> groupIds) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new EntityNotFoundException(Course.class, String.valueOf(courseId)));
+        groupRepository.findAllById(groupIds).forEach(group -> {
+            group.setCourse(course);
+            groupRepository.save(group);
+        });
+        log.debug("Assigned {} groups to course {}", groupIds.size(), courseId);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    public void removeGroupFromCourse(Long groupId) {
+        Group group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new EntityNotFoundException(Group.class, String.valueOf(groupId)));
+        group.setCourse(null);
+        groupRepository.save(group);
+        log.debug("Removed group {} from course", groupId);
     }
 }

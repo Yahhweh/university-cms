@@ -58,9 +58,9 @@ Given User `A` logged in with Admin role
 
 * User 'A' should be able to create/read/update/delete lessons.
 * User 'A' should be able to assign/reassign anything for lectures  
-    (duration, studySubject, classroom, date). 
+    (duration, studySubject, classroom, date).
 * User 'A' should be able to list all Users.
-* User 'A' should be able to do anything that Staff can do.  
+* User 'A' should be able to do anything that Staff can do.     
 ---
 
 Student/Lecturer rights

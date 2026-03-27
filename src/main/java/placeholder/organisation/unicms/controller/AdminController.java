@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.service.*;
 import placeholder.organisation.unicms.service.dto.request.filter.UserFilterRequestDTO;
+import placeholder.organisation.unicms.service.CourseService;
 import placeholder.organisation.unicms.service.dto.request.LecturerRequestDTO;
 import placeholder.organisation.unicms.service.dto.request.StudentRequestDTO;
 import placeholder.organisation.unicms.service.dto.request.UserRequestDTO;
@@ -34,24 +35,27 @@ public class AdminController {
     private final StudentService studentService;
     private final LecturerService lecturerService;
     private final LessonService lessonService;
+    private final CourseService courseService;
 
     private final static String deleteMessage = "User has been successfully deleted";
     private final static String changeMessage = "User has been successfully changed";
     private final static String addUserMessage = "User has been successfully created";
     private final static String addStudentMessage = "Student has been successfully created";
     private final static String addLecturerMessage = "Lecturer has been successfully created";
-    private final static String assignSubjectMessage = "You have successfully added subjects";
-    private final static String removeSubjectMessage = "You have successfully removed subject";
+    private final static String assignGroupMessage = "Groups have been successfully assigned";
+    private final static String removeGroupMessage = "Group has been successfully removed from course";
 
     public AdminController(UserService userService, GroupService groupService,
                            SubjectService subjectService, StudentService studentService,
-                           LecturerService lecturerService, LessonService lessonService) {
+                           LecturerService lecturerService, LessonService lessonService,
+                           CourseService courseService) {
         this.groupService = groupService;
         this.subjectService = subjectService;
         this.userService = userService;
         this.studentService = studentService;
         this.lecturerService = lecturerService;
         this.lessonService = lessonService;
+        this.courseService = courseService;
     }
 
     @GetMapping
@@ -111,6 +115,7 @@ public class AdminController {
         model.addAttribute("url", "admin/users");
         model.addAttribute("filters", requestDTO);
         model.addAttribute("roles", Role.values());
+        model.addAttribute("canManage", true);
         return "users";
     }
 
@@ -123,46 +128,45 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
-    @GetMapping("/assign-subject")
-    public String getAssignSubjectForm(Model model) {
-        model.addAttribute("lecturers", lecturerService.findAllLecturers());
-        model.addAttribute("subjects", subjectService.findAllSubjects());
-        return "assign-subject";
+    @GetMapping("/assign-group")
+    public String getAssignGroupForm(Model model) {
+        model.addAttribute("courses", courseService.findAllCourses());
+        model.addAttribute("groups", groupService.findAllGroups());
+        return "assign-group";
     }
 
-    @PostMapping("/assign-subject")
-    public String assignSubject(@RequestParam Long lecturerId,
-                                @RequestParam List<Long> subjectsId,
-                                RedirectAttributes redirectAttributes) {
-        for (long subjectId : subjectsId) {
-            lecturerService.assignSubjectToLecturer(subjectId, lecturerId);
-        }
-        redirectAttributes.addFlashAttribute("successMessage", assignSubjectMessage);
-        return "redirect:/admin/assign-subject";
+    @PostMapping("/assign-group")
+    public String assignGroup(@RequestParam Long courseId,
+                              @RequestParam List<Long> groupIds,
+                              RedirectAttributes redirectAttributes) {
+        groupService.assignGroupsToCourse(courseId, groupIds);
+        redirectAttributes.addFlashAttribute("successMessage", assignGroupMessage);
+        return "redirect:/admin/assign-group";
     }
 
-    @GetMapping("/remove-subject")
-    public String getRemoveSubjectForm(@RequestParam(required = false) Long lecturerId,
-                                       Model model) {
-        model.addAttribute("lecturers", lecturerService.findAllLecturers());
-        if (lecturerId != null) {
-            lecturerService.findLecturer(lecturerId).ifPresent(lecturer -> {
-                model.addAttribute("selectedLecturer", lecturer);
-                model.addAttribute("subjects", lecturer.getSubjects());
-            });
+    @GetMapping("/remove-group")
+    public String getRemoveGroupForm(@RequestParam(required = false) Long courseId, Model model) {
+        model.addAttribute("courses", courseService.findAllCourses());
+        if (courseId != null) {
+            courseService.findAllCourses().stream()
+                    .filter(c -> c.getId().equals(courseId))
+                    .findFirst()
+                    .ifPresent(course -> {
+                        model.addAttribute("selectedCourse", course);
+                        model.addAttribute("groups", groupService.findGroupsByCourse(courseId));
+                    });
         }
-        return "remove-subject";
+        return "remove-group";
     }
 
-    @PostMapping("/remove-subject")
-    public String removeSubject(@RequestParam Long lecturerId,
-                                @RequestParam List<Long> subjectsId,
-                                RedirectAttributes redirectAttributes) {
-        for (Long subjectId : subjectsId){
-            lecturerService.removeSubjectFromLecturer(subjectId, lecturerId);
+    @PostMapping("/remove-group")
+    public String removeGroup(@RequestParam List<Long> groupIds,
+                              RedirectAttributes redirectAttributes) {
+        for (Long groupId : groupIds) {
+            groupService.removeGroupFromCourse(groupId);
         }
-        redirectAttributes.addFlashAttribute("successMessage", removeSubjectMessage);
-        return "redirect:/admin/remove-subject";
+        redirectAttributes.addFlashAttribute("successMessage", removeGroupMessage);
+        return "redirect:/admin/remove-group";
     }
 
     private void addRedirectAttributes(String message, Pageable pageable, UserFilterRequestDTO requestDTO, RedirectAttributes redirectAttributes) {

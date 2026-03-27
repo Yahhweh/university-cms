@@ -8,8 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
-import placeholder.organisation.unicms.entity.User;
 import placeholder.organisation.unicms.entity.Role;
+import placeholder.organisation.unicms.entity.User;
 import placeholder.organisation.unicms.repository.UserRepository;
 import placeholder.organisation.unicms.repository.specifications.UserSpecification;
 import placeholder.organisation.unicms.service.dto.request.filter.UserFilterRequestDTO;
@@ -65,6 +65,10 @@ public class UserService {
     public Page<User> findAllFiltered(UserFilterRequestDTO userFilterRequestDTO, Pageable pageable) {
         log.debug("Trying to get filtered User: name={}, sureName={}, email={}, role={}", userFilterRequestDTO.getEmail(), userFilterRequestDTO.getSureName(), userFilterRequestDTO.getEmail(), userFilterRequestDTO.getRole());
         return userRepository.findAll(UserSpecification.filter(userFilterRequestDTO), pageable);
+    }
+
+    public Page<User> findAllFilteredByRoles(UserFilterRequestDTO dto, Pageable pageable, List<Role> allowedRoles) {
+        return userRepository.findAll(UserSpecification.filter(dto).and(UserSpecification.hasRoleIn(allowedRoles)), pageable);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

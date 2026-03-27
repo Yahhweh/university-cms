@@ -260,26 +260,50 @@ INSERT INTO public.duration (id, start, "end") VALUES (6, '17:15:00', '18:45:00'
 -- Data for Name: group; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-INSERT INTO public."group" (id, name) VALUES (1, 'HN-85');
-INSERT INTO public."group" (id, name) VALUES (2, 'PS-58');
-INSERT INTO public."group" (id, name) VALUES (3, 'UB-01');
-INSERT INTO public."group" (id, name) VALUES (4, 'RA-83');
-INSERT INTO public."group" (id, name) VALUES (5, 'WU-29');
-INSERT INTO public."group" (id, name) VALUES (6, 'GT-09');
-INSERT INTO public."group" (id, name) VALUES (7, 'PA-74');
-INSERT INTO public."group" (id, name) VALUES (8, 'MA-28');
-INSERT INTO public."group" (id, name) VALUES (9, 'RE-70');
-INSERT INTO public."group" (id, name) VALUES (10, 'OV-50');
-INSERT INTO public."group" (id, name) VALUES (11, 'DA-13');
-INSERT INTO public."group" (id, name) VALUES (12, 'PR-59');
-INSERT INTO public."group" (id, name) VALUES (13, 'YB-12');
-INSERT INTO public."group" (id, name) VALUES (14, 'FK-48');
-INSERT INTO public."group" (id, name) VALUES (15, 'FG-93');
-INSERT INTO public."group" (id, name) VALUES (16, 'CD-15');
-INSERT INTO public."group" (id, name) VALUES (17, 'KF-17');
-INSERT INTO public."group" (id, name) VALUES (18, 'GR-94');
-INSERT INTO public."group" (id, name) VALUES (19, 'XQ-36');
-INSERT INTO public."group" (id, name) VALUES (20, 'SD-95');
+INSERT INTO public.study_subject (id, name) VALUES (1, 'Mathematics');
+INSERT INTO public.study_subject (id, name) VALUES (2, 'Physics');
+INSERT INTO public.study_subject (id, name) VALUES (3, 'Software Engineering');
+INSERT INTO public.study_subject (id, name) VALUES (4, 'Procedural Programming');
+INSERT INTO public.study_subject (id, name) VALUES (5, 'Discrete Math');
+INSERT INTO public.study_subject (id, name) VALUES (6, 'Introduction To Speciality');
+INSERT INTO public.study_subject (id, name) VALUES (7, 'Information Technologies');
+INSERT INTO public.study_subject (id, name) VALUES (8, 'Philosophy');
+INSERT INTO public.study_subject (id, name) VALUES (9, 'English Language');
+INSERT INTO public.study_subject (id, name) VALUES (10, 'Computer Graphics');
+
+INSERT INTO public.course (id, name) VALUES (1, 'Software Engineering');
+INSERT INTO public.course (id, name) VALUES (2, 'Mechanical Engineering');
+INSERT INTO public.course (id, name) VALUES (3, 'AI Systems');
+
+INSERT INTO public.course_study_subject(course_id, study_subject_id) VALUES (1, 1);
+INSERT INTO public.course_study_subject(course_id, study_subject_id) VALUES (1, 3);
+INSERT INTO public.course_study_subject(course_id, study_subject_id) VALUES (1, 4);
+INSERT INTO public.course_study_subject(course_id, study_subject_id) VALUES (1, 5);
+INSERT INTO public.course_study_subject(course_id, study_subject_id) VALUES (1, 9);
+INSERT INTO public.course_study_subject(course_id, study_subject_id) VALUES (1, 10);
+
+
+
+INSERT INTO public."group" (id, name, course) VALUES (1, 'HN-85', 1);
+INSERT INTO public."group" (id, name, course) VALUES (2, 'PS-58', 1);
+INSERT INTO public."group" (id, name, course) VALUES (3, 'UB-01', 1);
+INSERT INTO public."group" (id, name, course) VALUES (4, 'RA-83', 1);
+INSERT INTO public."group" (id, name, course) VALUES (5, 'WU-29', 1);
+INSERT INTO public."group" (id, name, course) VALUES (6, 'GT-09', 1);
+INSERT INTO public."group" (id, name, course) VALUES (7, 'PA-74', 1);
+INSERT INTO public."group" (id, name, course) VALUES (8, 'MA-28',1 );
+INSERT INTO public."group" (id, name, course) VALUES (9, 'RE-70',1 );
+INSERT INTO public."group" (id, name, course) VALUES (10, 'OV-50', 1);
+INSERT INTO public."group" (id, name, course) VALUES (11, 'DA-13', 1);
+INSERT INTO public."group" (id, name, course) VALUES (12, 'PR-59', 1);
+INSERT INTO public."group" (id, name, course) VALUES (13, 'YB-12', 2);
+INSERT INTO public."group" (id, name, course) VALUES (14, 'FK-48', 1);
+INSERT INTO public."group" (id, name, course) VALUES (15, 'FG-93', 1);
+INSERT INTO public."group" (id, name, course) VALUES (16, 'CD-15', 3);
+INSERT INTO public."group" (id, name, course) VALUES (17, 'KF-17', 2);
+INSERT INTO public."group" (id, name, course) VALUES (18, 'GR-94', 1);
+INSERT INTO public."group" (id, name, course) VALUES (19, 'XQ-36', 1);
+INSERT INTO public."group" (id, name, course) VALUES (20, 'SD-95', 1);
 
 
 --
@@ -470,20 +494,6 @@ INSERT INTO public.lecturer (id, salary) VALUES (12, 6294);
 INSERT INTO public.lecturer (id, salary) VALUES (13, 3882);
 
 
---
--- Data for Name: study_subject; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-INSERT INTO public.study_subject (id, name) VALUES (1, 'Mathematics');
-INSERT INTO public.study_subject (id, name) VALUES (2, 'Physics');
-INSERT INTO public.study_subject (id, name) VALUES (3, 'Software Engineering');
-INSERT INTO public.study_subject (id, name) VALUES (4, 'Procedural Programming');
-INSERT INTO public.study_subject (id, name) VALUES (5, 'Discrete Math');
-INSERT INTO public.study_subject (id, name) VALUES (6, 'Introduction To Speciality');
-INSERT INTO public.study_subject (id, name) VALUES (7, 'Information Technologies');
-INSERT INTO public.study_subject (id, name) VALUES (8, 'Philosophy');
-INSERT INTO public.study_subject (id, name) VALUES (9, 'English Language');
-INSERT INTO public.study_subject (id, name) VALUES (10, 'Computer Graphics');
 
 
 --

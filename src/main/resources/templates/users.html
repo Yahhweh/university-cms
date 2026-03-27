@@ -9,7 +9,7 @@
 <div class="container">
     <h1 class="h2 text-white mb-4">Users</h1>
 
-    <form th:action="@{/admin/users}" method="get" class="row g-2 mb-4">
+    <form th:action="@{/{url}(url=${url})}" method="get" class="row g-2 mb-4">
         <div class="col-auto">
             <input type="text" name="name" placeholder="First name"
                    th:value="${filters.name}" class="form-control">
@@ -33,7 +33,7 @@
             <button type="submit" class="btn btn-primary">Filter</button>
         </div>
         <div class="col-auto">
-            <a th:href="@{/admin/users}" class="btn btn-outline-light">Reset</a>
+            <a th:href="@{/{url}(url=${url})}" class="btn btn-outline-light">Reset</a>
         </div>
     </form>
 
@@ -74,9 +74,10 @@
                 <td th:text="${user.sureName}"></td>
                 <td th:text="${user.email}"></td>
                 <td th:text="${user.role}"></td>
-                <td class="d-flex gap-2">
+                <td th:if="${canManage}" class="d-flex gap-2">
                     <form th:action="@{/admin/change-role}" method="post" class="d-flex gap-2">
                         <div th:replace="~{hidden-inputs/hidden-inputs :: inputs}">Hidden Inputs</div>
+                        <input type="hidden" name="id" th:value="${user.id}"/>
                         <select name="newRole" class="form-select form-select-sm">
                             <option value="ADMIN">ADMIN</option>
                             <option value="STUDENT">STUDENT</option>
@@ -89,11 +90,13 @@
                     </form>
                     <form th:action="@{/admin/delete-user}" method="post">
                         <div th:replace="~{hidden-inputs/hidden-inputs :: inputs}">Hidden Inputs</div>
+                        <input type="hidden" name="id" th:value="${user.id}"/>
                         <button type="submit" class="btn btn-link p-0 text-danger" title="Delete user">
                             <i class="bi bi-trash fs-5"></i>
                         </button>
                     </form>
                 </td>
+                <td th:unless="${canManage}"></td>
             </tr>
             </tbody>
         </table>

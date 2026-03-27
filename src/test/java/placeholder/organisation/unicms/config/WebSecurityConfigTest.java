@@ -20,6 +20,7 @@ import placeholder.organisation.unicms.service.*;
 import placeholder.organisation.unicms.service.mapper.AddressMapper;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
@@ -56,6 +57,9 @@ class WebSecurityConfigTest {
 
     @MockitoBean
     private AddressMapper addressMapper;
+
+    @MockitoBean
+    private CourseService courseService;
 
     @Test
     @WithMockUser(username = "user", roles = {"STUDENT", "LECTURER", "ADMIN", "STAFF"})
@@ -135,8 +139,12 @@ class WebSecurityConfigTest {
         student.setDateOfBirth(LocalDate.of(2000, 10, 20));
         student.setEmail("kirill.kovalenko@student.university.com");
         student.setGender(GenderType.Male);
-        student.setGroup(new Group(1L, "AB-11"));
+        student.setGroup(new Group(1L, "AB-11", getCourse()));
         student.setAddress(new Address(1L, "kyiv", "tarasa shevchenka", "Ukraine", "1111", "1012", "1212"));
         return student;
+    }
+
+    private Course getCourse(){
+        return new Course(1L, "SE", List.of(new Subject()));
     }
 }

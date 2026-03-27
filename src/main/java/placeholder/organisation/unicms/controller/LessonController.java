@@ -20,8 +20,8 @@ import placeholder.organisation.unicms.service.dto.request.LessonRequestDTO;
 
 @Slf4j
 @Controller
-@PreAuthorize("hasRole('ADMIN')")
-@RequestMapping("admin/")
+@PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+@RequestMapping("/lessons")
 @Validated
 public class LessonController {
 
@@ -50,7 +50,7 @@ public class LessonController {
     public String lessonSetup(Model model, @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
                               @ModelAttribute("filters") LessonFilterRequestDTO requestDTO) {
         Page<Lesson> lessons = lessonService.findAll(pageable, requestDTO);
-        model.addAttribute("url", "admin/lesson-setup");
+        model.addAttribute("url", "lessons/lesson-setup");
         model.addAttribute("page", lessons);
         model.addAttribute("lessons", lessons.getContent());
         model.addAttribute("durations", durationService.findAllDurations());
@@ -78,11 +78,11 @@ public class LessonController {
                             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage", validationAddLessonMessage);
-            return "redirect:add-lesson";
+            return "redirect:/lessons/add-lesson";
         }
         lessonService.createLesson(lessonRequestDTO);
         redirectAttributes.addFlashAttribute("successMessage", successAddLessonMessage);
-        return "redirect:add-lesson";
+        return "redirect:/lessons/add-lesson";
     }
 
     @PostMapping(value = "/delete-lesson")
@@ -91,7 +91,7 @@ public class LessonController {
                                @ModelAttribute("filters") LessonFilterRequestDTO requestDTO) {
         lessonService.removeLesson(lessonId);
         addRedirectAttributes(pageable, requestDTO, redirectAttributes);
-        return "redirect:lesson-setup";
+        return "redirect:/lessons/lesson-setup";
     }
 
 

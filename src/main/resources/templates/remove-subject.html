@@ -14,7 +14,7 @@
         <div class="card-body">
 
             <div th:unless="${selectedLecturer}">
-                <form th:action="@{/admin/remove-subject}" method="get">
+                <form th:action="@{/users/remove-subject}" method="get">
                     <div class="mb-3">
                         <label class="form-label">Lecturer</label>
                         <select name="lecturerId" required class="form-select">
@@ -36,7 +36,7 @@
                 <p class="mb-3">
                     Lecturer: <strong th:text="${selectedLecturer.name + ' ' + selectedLecturer.sureName}"></strong>
                 </p>
-                <form th:action="@{/admin/remove-subject}" method="post">
+                <form th:action="@{/users/remove-subject}" method="post">
                     <input type="hidden" name="lecturerId" th:value="${selectedLecturer.id}"/>
                     <div class="mb-3">
                         <label class="form-label">Subject</label>
@@ -50,7 +50,7 @@
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary">Remove</button>
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                        <a th:href="@{/admin/remove-subject}" class="btn btn-secondary">Back</a>
+                        <a th:href="@{/users/remove-subject}" class="btn btn-secondary">Back</a>
                     </div>
                 </form>
             </div>

@@ -7,13 +7,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import placeholder.organisation.unicms.entity.Course;
 import placeholder.organisation.unicms.entity.Group;
+import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.service.dto.request.GroupRequestDTO;
 import placeholder.organisation.unicms.service.mapper.GroupMapper;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -75,7 +78,11 @@ class GroupServiceTest {
         verify(groupRepository).existsById(id);
     }
     Group getGroup() {
-        return new Group(1L, "A-122");
+        return new Group(1L, "A-122", getCourse());
+    }
+
+    private Course getCourse(){
+        return new Course(1L, "SE", List.of(new Subject()));
     }
 
     GroupRequestDTO getGroupDTO() {

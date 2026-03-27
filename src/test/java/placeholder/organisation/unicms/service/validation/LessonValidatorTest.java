@@ -143,7 +143,11 @@ class LessonValidatorTest {
     }
 
     private Group getGroup() {
-        return new Group(1L, "A-122");
+        return new Group(1L, "A-122", getCourse());
+    }
+
+    private Course getCourse(){
+        return new Course(1L, "SE", List.of(new Subject()));
     }
 
     private Room getClassRoom() {

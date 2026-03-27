@@ -6,7 +6,7 @@
 </head>
 <body class="py-4">
 <div class="container" th:fragment="lessons">
-    <form th:action="@{/admin/lesson-setup}" method="get" class="row g-2 mb-4">
+    <form th:action="@{/{url}(url=${url})}" method="get" class="row g-2 mb-4">
         <div class="col-auto">
             <select name="durationId" class="form-select">
                 <option value="">All durations</option>
@@ -38,7 +38,7 @@
             <button type="submit" class="btn btn-primary">Filter</button>
         </div>
         <div class="col-auto">
-            <a th:href="@{/admin/lesson-setup}" class="btn btn-outline-light">Reset</a>
+            <a th:href="@{/{url}(url=${url})}" class="btn btn-outline-light">Reset</a>
         </div>
     </form>
     <div class="table-responsive">
@@ -89,7 +89,7 @@
                 <td th:text="${lesson.lecturer}">Lecturer Name</td>
                 <td th:text="${lesson.room}">Room</td>
                 <td class="d-flex gap-2">
-                    <form th:action="@{/admin/delete-lesson}" method="post">
+                    <form th:action="@{/lessons/delete-lesson}" method="post">
                         <input type="hidden" name="lessonId" th:value="${lesson.id}"/>
                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
                         <div th:replace="~{hidden-inputs/lesson-hidden-inputs :: inputs}"></div>

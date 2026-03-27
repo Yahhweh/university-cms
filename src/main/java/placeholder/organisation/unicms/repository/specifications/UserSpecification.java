@@ -2,6 +2,7 @@ package placeholder.organisation.unicms.repository.specifications;
 
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
+import placeholder.organisation.unicms.entity.Role;
 import placeholder.organisation.unicms.entity.User;
 import placeholder.organisation.unicms.service.dto.request.filter.UserFilterRequestDTO;
 
@@ -29,5 +30,9 @@ public class UserSpecification {
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };
+    }
+
+    public static Specification<User> hasRoleIn(List<Role> roles) {
+        return (root, query, cb) -> root.get("role").in(roles);
     }
 }

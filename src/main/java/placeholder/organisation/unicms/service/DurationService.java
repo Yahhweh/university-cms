@@ -35,6 +35,7 @@ public class DurationService {
         log.debug("Found {} durations", durations.size());
         return durations;
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void createDuration(Duration duration) {
@@ -51,8 +52,6 @@ public class DurationService {
         durationRepository.save(duration);
         log.info("Duration saved successfully. Start: {}, End: {}", duration.getStart(), duration.getEnd());
     }
-
-
 
     @Transactional
     public void removeDuration(long durationId) {

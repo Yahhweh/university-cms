@@ -40,6 +40,8 @@ class AdminControllerTest {
     @MockitoBean
     private LecturerService lecturerService;
     @MockitoBean
+    private CourseService courseService;
+    @MockitoBean
     private LessonService lessonService;
     @MockitoBean
     private UserService userService;
@@ -98,7 +100,7 @@ class AdminControllerTest {
 
     @Test
     void showAddUserForm_shouldReturnAddUserView_withGroupsAndSubjects() throws Exception {
-        List<Group> groups = List.of(new Group(1L, "AB-11"));
+        List<Group> groups = List.of(new Group(1L, "AB-11", getCourse()));
         List<Subject> subjects = List.of(new Subject(1L, "Math"));
         when(groupService.findAllGroups()).thenReturn(groups);
         when(subjectService.findAllSubjects()).thenReturn(subjects);
@@ -190,54 +192,6 @@ class AdminControllerTest {
     }
 
     @Test
-    void getAssignSubjectForm_shouldReturnAssignSubjectView_withLecturersAndSubjects() throws Exception {
-        mockMvc.perform(get("/admin/assign-subject"))
-            .andExpect(view().name("assign-subject"))
-            .andExpect(status().isOk());
-    }
-
-    @Test
-    void assignSubjectForm_shouldReturnSuccess_whenSubjectAssigned() throws Exception {
-        Long subjectId = 1L;
-        Long lecturerId = 1L;
-        mockMvc.perform(post("/admin/assign-subject")
-                .param("lecturerId", "1")
-                .param("subjectsId", "1")
-                .with(csrf()))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/admin/assign-subject"));
-
-        verify(lecturerService).assignSubjectToLecturer(subjectId, lecturerId);
-    }
-
-    @Test
-    void removeSubject_shouldReturnSuccess_whenSubjectRemoved() throws Exception {
-        Long subjectId = 1L;
-        Long lecturerId = 1L;
-        mockMvc.perform(post("/admin/remove-subject")
-                .param("lecturerId", "1")
-                .param("subjectsId", "1")
-                .with(csrf()))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/admin/remove-subject"));
-
-        verify(lecturerService).removeSubjectFromLecturer(subjectId, lecturerId);
-    }
-
-    @Test
-    void getRemoveSubjectForm_shouldReturnSelectedLecturer_whenLecturerIdProvided() throws Exception {
-        Lecturer lecturer = getLecturer();
-        when(lecturerService.findAllLecturers()).thenReturn(List.of(lecturer));
-        when(lecturerService.findLecturer(2L)).thenReturn(Optional.of(lecturer));
-
-        mockMvc.perform(get("/admin/remove-subject").param("lecturerId", "2"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("remove-subject"))
-            .andExpect(model().attributeExists("selectedLecturer"))
-            .andExpect(model().attributeExists("subjects"));
-    }
-
-    @Test
     void addUser_shouldRedirect_whenUserCreated() throws Exception {
         mockMvc.perform(post("/admin/add-user")
                 .param("name", "Ab")
@@ -272,5 +226,9 @@ class AdminControllerTest {
         lecturer.setId(2L);
         lecturer.setRole(Role.LECTURER);
         return lecturer;
+    }
+
+    private Course getCourse(){
+        return new Course(1L, "SE", List.of(new Subject()));
     }
 }

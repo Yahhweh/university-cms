@@ -52,7 +52,7 @@ class LessonControllerTest {
         when(lessonService.findAll(any(Pageable.class), any(LessonFilterRequestDTO.class)))
             .thenReturn(lessonPage);
 
-        mockMvc.perform(get("/admin/lesson-setup")
+        mockMvc.perform(get("/lessons/lesson-setup")
                 .param("sort", "id,asc")
                 .param("size", "9")
                 .param("page", "0"))
@@ -60,7 +60,7 @@ class LessonControllerTest {
             .andExpect(view().name("lesson-setup"))
             .andExpect(model().attribute("lessons", lessons))
             .andExpect(model().attribute("page", lessonPage))
-            .andExpect(model().attribute("url", "admin/lesson-setup"));
+            .andExpect(model().attribute("url", "lessons/lesson-setup"));
     }
 
     @Test
@@ -71,7 +71,7 @@ class LessonControllerTest {
         when(roomService.findAllRooms()).thenReturn(List.of());
         when(durationService.findAllDurations()).thenReturn(List.of());
 
-        mockMvc.perform(get("/admin/add-lesson"))
+        mockMvc.perform(get("/lessons/add-lesson"))
             .andExpect(status().isOk())
             .andExpect(view().name("add-lesson"))
             .andExpect(model().attributeExists("subjects", "groups", "rooms", "durations", "lecturers"));
@@ -82,7 +82,7 @@ class LessonControllerTest {
         Lecturer lecturer = getLecturer();
         when(lecturerService.findLecturersBySubject(1L)).thenReturn(List.of(lecturer));
 
-        mockMvc.perform(get("/admin/add-lesson").param("subjectId", "1"))
+        mockMvc.perform(get("/lessons/add-lesson").param("subjectId", "1"))
             .andExpect(status().isOk())
             .andExpect(view().name("add-lesson"))
             .andExpect(model().attribute("lecturers", List.of(lecturer)))
@@ -93,7 +93,7 @@ class LessonControllerTest {
 
     @Test
     void addLesson_shouldRedirectWithSuccess_whenDtoIsValid() throws Exception {
-        mockMvc.perform(post("/admin/add-lesson")
+        mockMvc.perform(post("/lessons/add-lesson")
                 .param("durationId", "1")
                 .param("studySubjectId", "1")
                 .param("groupId", "1")
@@ -102,7 +102,7 @@ class LessonControllerTest {
                 .param("date", "2025-10-06")
                 .with(csrf()))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("add-lesson"))
+            .andExpect(redirectedUrl("/lessons/add-lesson"))
             .andExpect(flash().attribute("successMessage", "Lesson has been successfully created"));
 
         verify(lessonService).createLesson(any(placeholder.organisation.unicms.service.dto.request.LessonRequestDTO.class));
@@ -110,11 +110,11 @@ class LessonControllerTest {
 
     @Test
     void deleteLesson_shouldRedirectToLessonSetup_whenLessonDeleted() throws Exception {
-        mockMvc.perform(post("/admin/delete-lesson")
+        mockMvc.perform(post("/lessons/delete-lesson")
                 .param("lessonId", "1")
                 .with(csrf()))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrlPattern("lesson-setup*"));
+            .andExpect(redirectedUrlPattern("/lessons/lesson-setup*"));
 
         verify(lessonService).removeLesson(1L);
     }
@@ -133,7 +133,11 @@ class LessonControllerTest {
     }
 
     private Group getGroup() {
-        return new Group(1L, "A-122");
+        return new Group(1L, "A-122", getCourse());
+    }
+
+    private Course getCourse(){
+        return new Course(1L, "SE", List.of(new Subject()));
     }
 
     private Duration getDuration() {
