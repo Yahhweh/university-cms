@@ -7,9 +7,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.repository.*;
 import placeholder.organisation.unicms.service.dto.request.LessonRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.LessonFilterRequestDTO;
 import placeholder.organisation.unicms.service.mapper.LessonMapper;
 import placeholder.organisation.unicms.service.validation.LessonValidator;
 
@@ -38,6 +44,12 @@ class LessonServiceTest {
     LecturerRepository lecturerRepository;
     @Mock
     SubjectRepository subjectRepository;
+    @Mock
+    DurationRepository durationRepository;
+    @Mock
+    GroupRepository groupRepository;
+    @Mock
+    RoomRepository roomRepository;
     @InjectMocks
     LessonService lessonService;
 
@@ -229,6 +241,51 @@ class LessonServiceTest {
 
         assertThrows(EntityNotFoundException.class, () -> lessonService.removeLesson(id));
         verify(lessonRepositoryMock).existsById(id);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void findAll_shouldReturnPage_whenFilterDtoGiven() {
+        List<Lesson> lessons = List.of(getLesson());
+        Pageable pageable = PageRequest.of(0, 9);
+        Page<Lesson> expectedPage = new PageImpl<>(lessons, pageable, lessons.size());
+        LessonFilterRequestDTO filterDTO = new LessonFilterRequestDTO();
+
+        when(lessonRepositoryMock.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
+
+        Page<Lesson> result = lessonService.findAll(pageable, filterDTO);
+
+        assertThat(result).isEqualTo(expectedPage);
+        verify(lessonRepositoryMock).findAll(any(Specification.class), eq(pageable));
+    }
+
+    @Test
+    void createLesson_fromDto_shouldResolveRelationsAndSave() {
+        LessonRequestDTO dto = LessonRequestDTO.builder()
+            .durationId(1L)
+            .studySubjectId(1L)
+            .groupId(1L)
+            .lecturerId(1L)
+            .classRoomId(1L)
+            .date(LocalDate.of(2025, 10, 6))
+            .build();
+
+        Duration duration = getDuration();
+        Subject subject = new Subject(1L, "Math");
+        Group group = getGroup();
+        Lecturer lecturer = getLecturer();
+        Room room = getClassRoom();
+
+        when(durationRepository.findById(1L)).thenReturn(Optional.of(duration));
+        when(subjectRepository.getReferenceById(1L)).thenReturn(subject);
+        when(groupRepository.getReferenceById(1L)).thenReturn(group);
+        when(lecturerRepository.getReferenceById(1L)).thenReturn(lecturer);
+        when(roomRepository.getReferenceById(1L)).thenReturn(room);
+
+        lessonService.createLesson(dto);
+
+        verify(lessonValidator).validateLesson(any(Lesson.class), eq(-1L));
+        verify(lessonRepositoryMock).save(any(Lesson.class));
     }
 
     Lesson getLesson() {

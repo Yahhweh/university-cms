@@ -10,6 +10,8 @@ import placeholder.organisation.unicms.service.dto.request.DurationRequestDTO;
 public interface DurationMapper {
     DurationRequestDTO toDto(Duration duration);
 
+    Duration toEntity(DurationRequestDTO requestDTO);
+
     @Mapping(target = "id", ignore = true)
     void updateEntityFromDto(DurationRequestDTO dto, @MappingTarget Duration entity);
 }

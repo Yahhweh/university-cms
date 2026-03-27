@@ -3,6 +3,7 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,12 +43,14 @@ public class LecturerService {
         return lecturers;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void createLecturer(Lecturer lecturer) {
         lecturerRepository.save(lecturer);
         log.debug("Lecturer saved successfully. Name: {}}", lecturer.getName());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void createLecturer(LecturerRequestDTO lecturerRequestDTO){
         Lecturer lecturer = lecturerMapper.toEntity(lecturerRequestDTO);
@@ -68,6 +71,7 @@ public class LecturerService {
         return lecturer;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @Transactional
     public void assignSubjectToLecturer(long subjectId, long lecturerId) {
         Subject subject = subjectRepository.findById(subjectId).orElseThrow(
@@ -80,6 +84,7 @@ public class LecturerService {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @Transactional
     public void removeSubjectFromLecturer(long subjectId, long lecturerId) {
         Subject subject = subjectRepository.findById(subjectId)
@@ -123,6 +128,11 @@ public class LecturerService {
         Lecturer lecturer = lecturerRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException(Lecturer.class, email));
         log.debug("Found lecturer with email {}", email);
         return lecturer;
+    }
+
+    public List<Lecturer> findLecturersBySubject(Long subjectId){
+        log.debug("Trying to get Lecturers by subject id: {}", subjectId);
+        return lecturerRepository.findLecturerBySubjectId(subjectId).orElseThrow(() -> new EntityNotFoundException(Lecturer.class, String.valueOf(subjectId)));
     }
 
     private void resolveRelations(LecturerRequestDTO dto, Lecturer lecturer) {

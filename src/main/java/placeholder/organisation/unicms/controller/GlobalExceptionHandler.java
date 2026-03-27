@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import placeholder.organisation.unicms.service.EntityNotFoundException;
 
+import java.net.BindException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -16,6 +18,14 @@ public class GlobalExceptionHandler {
         model.addAttribute("message", ex.getMessage());
         model.addAttribute("error", 401);
         model.addAttribute("title", "User not Found");
+        return "error";
+    }
+
+    @ExceptionHandler(BindException.class)
+    public String handleBindException(BindException exception, Model model){
+        model.addAttribute("message", exception.getMessage());
+        model.addAttribute("error", 400);
+        model.addAttribute("title", "Wrong Validation");
         return "error";
     }
 

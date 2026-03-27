@@ -3,14 +3,16 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import placeholder.organisation.unicms.entity.User;
 import placeholder.organisation.unicms.entity.Role;
 import placeholder.organisation.unicms.repository.UserRepository;
-import placeholder.organisation.unicms.repository.UserSpecification;
-import placeholder.organisation.unicms.service.dto.request.FilterRequestDTO;
+import placeholder.organisation.unicms.repository.specifications.UserSpecification;
+import placeholder.organisation.unicms.service.dto.request.filter.UserFilterRequestDTO;
 import placeholder.organisation.unicms.service.dto.request.UserRequestDTO;
 import placeholder.organisation.unicms.service.mapper.UserMapper;
 
@@ -19,6 +21,7 @@ import java.util.Optional;
 
 @Log4j2
 @Service
+@Validated
 public class UserService {
 
     private final UserRepository userRepository;
@@ -45,6 +48,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void changeRole(Long id, Role role) {
         User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(User.class, String.valueOf(id)));
@@ -58,11 +62,12 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-    public Page<User> findAllFiltered(FilterRequestDTO filterRequestDTO, Pageable pageable) {
-        log.debug("Trying to get filtered User: name={}, sureName={}, email={}, role={}", filterRequestDTO.getEmail(), filterRequestDTO.getSureName(), filterRequestDTO.getEmail(), filterRequestDTO.getRole());
-        return userRepository.findAll(UserSpecification.filter(filterRequestDTO), pageable);
+    public Page<User> findAllFiltered(UserFilterRequestDTO userFilterRequestDTO, Pageable pageable) {
+        log.debug("Trying to get filtered User: name={}, sureName={}, email={}, role={}", userFilterRequestDTO.getEmail(), userFilterRequestDTO.getSureName(), userFilterRequestDTO.getEmail(), userFilterRequestDTO.getRole());
+        return userRepository.findAll(UserSpecification.filter(userFilterRequestDTO), pageable);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void deleteUser(Long id){
         if(!userRepository.existsById(id)){
@@ -76,11 +81,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public User createUser(UserRequestDTO dto) {
         User user = userMapper.toEntity(dto);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setRole(Role.STUFF);
+        user.setRole(Role.STAFF);
         return userRepository.save(user);
     }
 }

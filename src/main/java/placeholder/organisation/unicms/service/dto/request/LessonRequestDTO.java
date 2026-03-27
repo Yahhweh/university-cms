@@ -5,8 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+
 import java.time.LocalDate;
 
 @Data
@@ -36,9 +37,5 @@ public class LessonRequestDTO {
 
     @NotNull
     private LocalDate date;
-
-    public LessonRequestDTO(LocalDate date) {
-        this.date = date;
-    }
 
 }

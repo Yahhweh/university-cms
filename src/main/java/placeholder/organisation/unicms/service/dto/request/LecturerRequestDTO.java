@@ -3,10 +3,8 @@ package placeholder.organisation.unicms.service.dto.request;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)

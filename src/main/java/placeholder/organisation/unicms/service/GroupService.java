@@ -3,6 +3,7 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.Group;
@@ -32,6 +33,7 @@ public class GroupService {
         return groups;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void createGroup(Group group) {
         groupRepository.save(group);
@@ -42,6 +44,7 @@ public class GroupService {
         return groupRepository.findById(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void removeGroup(long groupId) {
         if (!groupRepository.existsById(groupId)) {

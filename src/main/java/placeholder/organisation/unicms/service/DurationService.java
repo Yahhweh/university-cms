@@ -3,6 +3,7 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.Duration;
@@ -34,13 +35,24 @@ public class DurationService {
         log.debug("Found {} durations", durations.size());
         return durations;
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void createDuration(Duration duration) {
         durationValidator.validateDuration(duration);
         durationRepository.save(duration);
         log.info("Duration saved successfully. Start: {}, End: {}", duration.getStart(), duration.getEnd());
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    public void createDuration(DurationRequestDTO requestDTO) {
+        Duration duration = durationMapper.toEntity(requestDTO);
+        durationValidator.validateDuration(duration);
+        durationRepository.save(duration);
+        log.info("Duration saved successfully. Start: {}, End: {}", duration.getStart(), duration.getEnd());
+    }
+
+
 
     @Transactional
     public void removeDuration(long durationId) {
@@ -50,6 +62,7 @@ public class DurationService {
         durationRepository.deleteById(durationId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void updateDuration(long durationId, DurationRequestDTO durationRequestDTO) {
         Duration duration = durationRepository.findById(durationId)

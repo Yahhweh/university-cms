@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 
-import javax.validation.constraints.Pattern;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 
 @Log4j2
@@ -29,7 +30,7 @@ public class User {
     private String password;
 
     @Column(name = "name")
-    @Pattern(regexp = "[A-Z][a-z]+$", message = "{person.name.pattern}")
+    @Pattern(regexp = "^[A-Za-z]+(?:'[A-Za-z]+)*$", message = "{person.name.pattern}")
     private String name;
 
     @Column(name = "role")
@@ -37,7 +38,7 @@ public class User {
     private Role role;
 
     @Column(name = "sure_name")
-    @Pattern(regexp = "[A-Z][a-z]+$", message = "{person.surname.pattern}")
+    @Pattern(regexp = "^[A-Za-z]+(?:'[A-Za-z]+)*$", message = "{person.surname.pattern}")
     private String sureName;
 
     @Enumerated(EnumType.STRING)
@@ -45,7 +46,7 @@ public class User {
     private GenderType gender;
 
     @Column(name = "email")
-    @Pattern(regexp = "^[a-z]+\\.[a-z]+\\d*@[a-z]+\\.com$", message = "{person.email.pattern}")
+    @Pattern(regexp = "^[a-z0-9.']+@([a-z]+\\.)+[a-z]+$", message = "{person.email.pattern}")
     private String email;
 
     @ToString.Exclude

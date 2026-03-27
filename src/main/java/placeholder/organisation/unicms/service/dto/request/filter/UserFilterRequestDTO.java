@@ -1,18 +1,17 @@
-package placeholder.organisation.unicms.service.dto.request;
+package placeholder.organisation.unicms.service.dto.request.filter;
 
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import placeholder.organisation.unicms.entity.Role;
 
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FilterRequestDTO {
+public class UserFilterRequestDTO {
     String name;
     String sureName;
     String email;

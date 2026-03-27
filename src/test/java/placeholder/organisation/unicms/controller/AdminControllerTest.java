@@ -13,10 +13,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.service.*;
-import placeholder.organisation.unicms.service.dto.request.AddressRequestDTO;
-import placeholder.organisation.unicms.service.dto.request.FilterRequestDTO;
-import placeholder.organisation.unicms.service.dto.request.LecturerRequestDTO;
-import placeholder.organisation.unicms.service.dto.request.StudentRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.*;
+import placeholder.organisation.unicms.service.dto.request.filter.UserFilterRequestDTO;
 import placeholder.organisation.unicms.service.dto.response.AddressResponseDTO;
 import placeholder.organisation.unicms.service.mapper.AddressMapper;
 
@@ -31,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(AdminController.class)
+@WebMvcTest({AdminController.class, GlobalExceptionHandler.class})
 @WithMockUser(username = "user", roles = {"ADMIN"})
 class AdminControllerTest {
 
@@ -41,6 +39,8 @@ class AdminControllerTest {
     private StudentService studentService;
     @MockitoBean
     private LecturerService lecturerService;
+    @MockitoBean
+    private LessonService lessonService;
     @MockitoBean
     private UserService userService;
     @MockitoBean
@@ -55,8 +55,8 @@ class AdminControllerTest {
     @Test
     void showAdminPanel_shouldReturnAdminView_whenAdmin() throws Exception {
         mockMvc.perform(get("/admin"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("admin"));
+            .andExpect(status().isOk())
+            .andExpect(view().name("admin"));
     }
 
 
@@ -72,14 +72,14 @@ class AdminControllerTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<User> page = new PageImpl<>(people, pageable, 2);
 
-        when(userService.findAllFiltered(any(FilterRequestDTO.class), any(Pageable.class))).thenReturn(page);
+        when(userService.findAllFiltered(any(UserFilterRequestDTO.class), any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/admin/users")
                 .param("page", "0")
                 .param("size", "10"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("users"))
-                .andExpect(model().attributeExists("users"));
+            .andExpect(status().isOk())
+            .andExpect(view().name("users"))
+            .andExpect(model().attributeExists("users"));
     }
 
 
@@ -104,34 +104,32 @@ class AdminControllerTest {
         when(subjectService.findAllSubjects()).thenReturn(subjects);
 
         mockMvc.perform(get("/admin/add-user"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("add-user"))
-                .andExpect(model().attribute("groups", groups))
-                .andExpect(model().attribute("subjects", subjects));
+            .andExpect(status().isOk())
+            .andExpect(view().name("add-user"))
+            .andExpect(model().attribute("groups", groups))
+            .andExpect(model().attribute("subjects", subjects));
     }
 
 
     @Test
     void addStudent_shouldRedirectToAddStudent_whenStudentCreated() throws Exception {
-        when(passwordEncoder.encode("secret")).thenReturn("encoded");
-        when(addressMapper.toEntity((AddressRequestDTO) any())).thenReturn(new Address());
-
         mockMvc.perform(post("/admin/add-student")
-                        .param("name", "Ivan")
-                        .param("sureName", "Petrov")
-                        .param("password", "secret")
-                        .param("gender", "Male")
-                        .param("dateOfBirth", "2000-05-15")
-                        .param("degree", "Bachelor")
-                        .param("city", "Kyiv")
-                        .param("street", "Khreshchatyk")
-                        .param("phoneNumber", "0991234567")
-                        .param("houseNumber", "10")
-                        .param("postalCode", "01001")
-                        .param("country", "Ukraine")
-                        .with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/add-user"));
+                .param("name", "Ivan")
+                .param("sureName", "Petrov")
+                .param("password", "secret")
+                .param("gender", "Male")
+                .param("dateOfBirth", "2000-05-15")
+                .param("email", "ivan.petrov@university.com")
+                .param("degree", "Bachelor")
+                .param("address.city", "Kyiv")
+                .param("address.street", "Khreshchatyk")
+                .param("address.phoneNumber", "0991234567")
+                .param("address.houseNumber", "10")
+                .param("address.postalCode", "01001")
+                .param("address.country", "Ukraine")
+                .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/admin/add-user"));
 
         verify(studentService).createStudent((any(StudentRequestDTO.class)));
     }
@@ -139,25 +137,24 @@ class AdminControllerTest {
 
     @Test
     void addLecturer_shouldRedirectToAddLecturer_whenLecturerCreated() throws Exception {
-        when(passwordEncoder.encode("secret")).thenReturn("encoded");
-        when(addressMapper.toEntity((AddressResponseDTO) any())).thenReturn(new Address());
-
         mockMvc.perform(post("/admin/add-lecturer")
-                        .param("name", "Anna")
-                        .param("sureName", "Kovalenko")
-                        .param("password", "secret")
-                        .param("gender", "Female")
-                        .param("dateOfBirth", "1985-03-20")
-                        .param("city", "Lviv")
-                        .param("street", "Svobody")
-                        .param("phoneNumber", "0671234567")
-                        .param("houseNumber", "5")
-                        .param("postalCode", "79000")
-                        .param("country", "Ukraine")
-                        .param("salary", "55000")
-                        .with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/add-user"));
+                .param("name", "Anna")
+                .param("sureName", "Kovalenko")
+                .param("password", "secret")
+                .param("gender", "Female")
+                .param("dateOfBirth", "1985-03-20")
+                .param("email", "anna.kovalenko@university.com")
+                .param("address.city", "Lviv")
+                .param("address.street", "Svobody")
+                .param("address.phoneNumber", "0671234567")
+                .param("address.houseNumber", "5")
+                .param("address.postalCode", "79000")
+                .param("address.country", "Ukraine")
+                .param("salary", "55000")
+                .param("studySubjectIds", "1")
+                .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/admin/add-user"));
 
         verify(lecturerService).createLecturer((any(LecturerRequestDTO.class)));
     }
@@ -168,20 +165,20 @@ class AdminControllerTest {
         student.setName("John");
         Pageable pageable = PageRequest.of(0, 10);
         Page<User> people = new PageImpl<>(List.of(student), pageable, 1);
-        FilterRequestDTO filterRequestDTO = new FilterRequestDTO();
-        filterRequestDTO.setRole(Role.STUDENT);
-        filterRequestDTO.setName("oh");
+        UserFilterRequestDTO userFilterRequestDTO = new UserFilterRequestDTO();
+        userFilterRequestDTO.setRole(Role.STUDENT);
+        userFilterRequestDTO.setName("oh");
 
-        when(userService.findAllFiltered(any(FilterRequestDTO.class), any(Pageable.class))).thenReturn(people);
+        when(userService.findAllFiltered(any(UserFilterRequestDTO.class), any(Pageable.class))).thenReturn(people);
         mockMvc.perform(get("/admin/users")
-            .param("name","oh")
-            .param("role", "STUDENT"))
+                .param("name", "oh")
+                .param("role", "STUDENT"))
             .andExpect(status().isOk())
             .andExpect(view().name("users"))
-            .andExpect(model().attribute( "page", people))
+            .andExpect(model().attribute("page", people))
             .andExpect(model().attribute("users", people.getContent()))
             .andExpect(model().attribute("url", "admin/users"))
-            .andExpect(model().attribute("filters", filterRequestDTO));
+            .andExpect(model().attribute("filters", userFilterRequestDTO));
     }
 
     @Test
@@ -201,7 +198,7 @@ class AdminControllerTest {
 
     @Test
     void assignSubjectForm_shouldReturnSuccess_whenSubjectAssigned() throws Exception {
-        Long subjectId =1L;
+        Long subjectId = 1L;
         Long lecturerId = 1L;
         mockMvc.perform(post("/admin/assign-subject")
                 .param("lecturerId", "1")
@@ -215,7 +212,7 @@ class AdminControllerTest {
 
     @Test
     void removeSubject_shouldReturnSuccess_whenSubjectRemoved() throws Exception {
-        Long subjectId =1L;
+        Long subjectId = 1L;
         Long lecturerId = 1L;
         mockMvc.perform(post("/admin/remove-subject")
                 .param("lecturerId", "1")
@@ -238,6 +235,29 @@ class AdminControllerTest {
             .andExpect(view().name("remove-subject"))
             .andExpect(model().attributeExists("selectedLecturer"))
             .andExpect(model().attributeExists("subjects"));
+    }
+
+    @Test
+    void addUser_shouldRedirect_whenUserCreated() throws Exception {
+        mockMvc.perform(post("/admin/add-user")
+                .param("name", "Ab")
+                .param("sureName", "Fkjdkfjdkjfdf")
+                .param("gender", "Male")
+                .param("password", "secret")
+
+                .param("dateOfBirth", "2000-05-15")
+                .param("email", "fdfkdkfj.dfd@gmail.com")
+                .param("address.city", "Kyiv")
+                .param("address.street", "Obolon")
+                .param("address.phoneNumber", "+380454545454")
+                .param("address.country", "Ukraine")
+                .param("address.houseNumber", "4AA")
+                .param("address.postalCode", "01001")
+                .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(flash().attribute("successMessage", "User has been successfully created"));
+
+        verify(userService).createUser(any(UserRequestDTO.class));
     }
 
     private Student getStudent() {

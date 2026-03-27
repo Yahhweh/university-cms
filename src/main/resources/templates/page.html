@@ -2,19 +2,41 @@
     <nav th:if="${page.totalPages > 1}">
         <ul class="pagination">
             <li class="page-item" th:classappend="${page.first} ? 'disabled'">
-                <a class="page-link"
-                   th:href="@{'/'+${url}(page=${page.number - 1}, size=${page.size}, sort=${#strings.replace(page.sort.toString(), ': ', ',')})}">
-                    &laquo; Back
-                </a>
+                <form method="get" th:action="@{'/'+${url}}">
+                    <input type="hidden" name="page" th:value="${page.number - 1}">
+                    <input type="hidden" name="size" th:value="${page.size}">
+                    <th:block th:each="order : ${page.sort}">
+                        <input type="hidden" name="sort"
+                               th:value="${order.property + ',' + order.direction.name().toLowerCase()}">
+                    </th:block>
+                    <th:block th:each="entry : ${param}"
+                              th:if="${entry.key != 'page' and entry.key != 'sort' and entry.key != 'size'}">
+                        <th:block th:each="val : ${entry.value}">
+                            <input type="hidden" th:name="${entry.key}" th:value="${val}">
+                        </th:block>
+                    </th:block>
+                    <button type="submit" class="page-link">Back</button>
+                </form>
             </li>
             <li class="page-item disabled">
                 <span class="page-link">[[${page.number + 1}]] / [[${page.totalPages}]]</span>
             </li>
             <li class="page-item" th:classappend="${page.last} ? 'disabled'">
-                <a class="page-link"
-                   th:href="@{'/'+${url}(page=${page.number + 1}, size=${page.size}, sort=${#strings.replace(page.sort.toString(), ': ', ',')})}">
-                    Next &raquo;
-                </a>
+                <form method="get" th:action="@{'/'+${url}}">
+                    <input type="hidden" name="page" th:value="${page.number + 1}">
+                    <input type="hidden" name="size" th:value="${page.size}">
+                    <th:block th:each="order : ${page.sort}">
+                        <input type="hidden" name="sort"
+                               th:value="${order.property + ',' + order.direction.name().toLowerCase()}">
+                    </th:block>
+                    <th:block th:each="entry : ${param}"
+                              th:if="${entry.key != 'page' and entry.key != 'sort' and entry.key != 'size'}">
+                        <th:block th:each="val : ${entry.value}">
+                            <input type="hidden" th:name="${entry.key}" th:value="${val}">
+                        </th:block>
+                    </th:block>
+                    <button type="submit" class="page-link">Next</button>
+                </form>
             </li>
         </ul>
     </nav>

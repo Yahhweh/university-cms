@@ -3,11 +3,16 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import placeholder.organisation.unicms.entity.Duration;
+import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.repository.*;
+import placeholder.organisation.unicms.repository.specifications.LessonSpecification;
 import placeholder.organisation.unicms.service.dto.request.LessonRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.LessonFilterRequestDTO;
 import placeholder.organisation.unicms.service.mapper.LessonMapper;
 import placeholder.organisation.unicms.service.validation.LessonValidator;
 
@@ -58,6 +63,7 @@ public class LessonService {
         return lesson;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void createLesson(Lesson lesson) {
         lessonValidator.validateLesson(lesson, -1L);
@@ -83,6 +89,7 @@ public class LessonService {
         throw new IllegalArgumentException("User with id " + personId + " is neither student nor lecturer");
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void removeLesson(long lessonId) {
         if (!lessonRepository.existsById(lessonId)) {
@@ -91,6 +98,7 @@ public class LessonService {
         lessonRepository.deleteById(lessonId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void updateLesson(long lessonId, LessonRequestDTO lessonRequestDTO) {
         Lesson lesson = lessonRepository.findById(lessonId)
@@ -107,10 +115,24 @@ public class LessonService {
         log.debug("Lesson updated successfully. ID: {}", lessonId);
     }
 
-    public Page<Lesson> findAll(Pageable pageable) {
-        log.debug("Trying to get paginated Lessons: {}", pageable);
-        return lessonRepository.findAll(pageable);
+    public Page<Lesson> findAll(Pageable pageable, LessonFilterRequestDTO requestDTO) {
+        log.debug("Trying to get filtered lesson: group={}, room={}, subject={}, lecturer name={}, lecturer surename={}, durationId={},", requestDTO.getGroup(),
+            requestDTO.getRoom(), requestDTO.getSubject(), requestDTO.getLecturer().getName(), requestDTO.getLecturer().getSureName(), requestDTO.getDurationId() );
+
+        return lessonRepository.findAll(LessonSpecification.filter(requestDTO), pageable);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    public void createLesson(LessonRequestDTO requestDTO){
+        Lesson lesson = new Lesson();
+        lesson.setDate(requestDTO.getDate());
+        resolveRelations(requestDTO, lesson);
+        lessonValidator.validateLesson(lesson, -1L);
+        lessonRepository.save(lesson);
+        log.info("Lesson saved successfully: {}", lesson.getSubject());
+    }
+
 
     private void resolveRelations(LessonRequestDTO dto, Lesson lesson) {
         if (dto.getDurationId() != null) {

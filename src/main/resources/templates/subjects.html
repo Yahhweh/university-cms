@@ -5,23 +5,55 @@
     <title>Subjects List</title>
 </head>
 <body class="py-4">
+<div th:if="${successMessage}"
+     th:replace="~{toasts/success-toast :: success-toast(${successMessage})}"></div>
 <div class="container">
+    <form th:action="@{/admin/subjects}" method="get" class="row g-2 mb-4">
+        <div class="col-auto">
+            <input name="name" type="text" placeholder="Subject name"
+                   th:value="${name}">
+        </div>
+
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+        <div class="col-auto">
+            <a th:href="@{/admin/subjects}"
+               class="btn btn-outline-light">Reset</a>
+        </div>
+    </form>
     <h2 class="text-white mb-3">Subjects</h2>
     <div class="table-responsive">
-        <table class="table table-bordered table-striped table-hover bg-white">
+        <table
+            class="table table-bordered table-striped table-hover bg-white">
             <thead class="table-dark">
             <tr>
                 <th>
-                    <a class="text-white" th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
+                    <a class="text-white"
+                       th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
                         Subject Name
                     </a>
+                </th>
+                <th>
+                    <a>Actions</a>
                 </th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="subject : ${subjects}">
                 <td th:text="${subject.name}">Math</td>
+                <td class="d-flex gap-2">
+                    <form th:action="@{/admin/delete-subject}" method="post">
+                        <input type="hidden" name="subjectId" th:value="${subject.id}"/>
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <div th:replace="~{hidden-inputs/subject-hidden-inputs :: inputs}"></div>
+                        <button type="submit" class="btn btn-link p-0 text-danger" title="Delete subject">
+                            <i class="bi bi-trash fs-5"></i>
+                        </button>
+                    </form>
+                </td>
             </tr>
+
             </tbody>
         </table>
     </div>

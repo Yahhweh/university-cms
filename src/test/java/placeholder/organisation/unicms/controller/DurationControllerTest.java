@@ -42,7 +42,7 @@ class DurationControllerTest {
 
         when(durationService.findAll(pageable)).thenReturn(durationPage);
 
-        mockMvc.perform(get("/durations")
+        mockMvc.perform(get("/admin/durations")
                         .param("page", "0")
                         .param("size", "9")
                         .param("sort", "id,asc"))

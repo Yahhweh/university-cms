@@ -3,12 +3,15 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.Room;
 import placeholder.organisation.unicms.repository.RoomRepository;
 import placeholder.organisation.unicms.repository.RoomTypeRepository;
+import placeholder.organisation.unicms.repository.specifications.RoomSpecification;
 import placeholder.organisation.unicms.service.dto.request.RoomRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.RoomFilterRequestDTO;
 import placeholder.organisation.unicms.service.mapper.ClassRoomMapper;
 import placeholder.organisation.unicms.service.validation.ClassRoomValidator;
 
@@ -39,10 +42,22 @@ public class RoomService {
         return rooms;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void createClassRoom(Room room) {
         classRoomValidator.validateClassRoom(room);
 
+        roomRepository.save(room);
+        log.debug("Classroom saved successfully: {}", room.getRoom());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    public void createRoom(RoomRequestDTO dto) {
+        Room room = new Room();
+        classRoomMapper.updateEntityFromDto(dto, room);
+        resolveRelations(dto, room);
+        classRoomValidator.validateClassRoom(room);
         roomRepository.save(room);
         log.debug("Classroom saved successfully: {}", room.getRoom());
     }
@@ -55,6 +70,7 @@ public class RoomService {
         return roomRepository.findById(classRoomId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void removeClassRoom(long classRoomId) {
         if (!roomRepository.existsById(classRoomId)) {
@@ -63,6 +79,7 @@ public class RoomService {
         roomRepository.deleteById(classRoomId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void updateClassRoom(long classRoomId, RoomRequestDTO roomRequestDTO) {
         Room room = roomRepository.findById(classRoomId)
@@ -76,9 +93,9 @@ public class RoomService {
         log.debug("Classroom updated successfully. ID: {}", classRoomId);
     }
 
-    public Page<Room> findAll(Pageable pageable) {
+    public Page<Room> findAll(RoomFilterRequestDTO requestDTO, Pageable pageable) {
         log.debug("Trying to get paginated Rooms: {}", pageable);
-        return roomRepository.findAll(pageable);
+        return roomRepository.findAll(RoomSpecification.filter(requestDTO), pageable);
     }
 
     void resolveRelations(RoomRequestDTO dto, Room entity) {

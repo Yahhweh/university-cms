@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="styles/css.html :: my-css">
+    <meta charset="UTF-8">
+    <title>Add Duration</title>
+</head>
+<body class="py-5">
+<div th:if="${successMessage}"
+     th:insert="~{toasts/success-toast :: success-toast(${successMessage})}"
+     class="py-4"></div>
+<div class="container">
+    <div class="card shadow mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-primary text-white">
+            <h1 class="h3 mb-0" id="formTitle">Add Duration</h1>
+        </div>
+        <div class="card-body">
+            <form id="addDurationForm" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Start</label>
+                    <input type="text" name="start" placeholder="10:00" required
+                           class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">End</label>
+                    <input type="text" name="end" placeholder="12:00" required
+                           class="form-control">
+                </div>
+
+                <input type="hidden" th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}"/>
+                <div class="d-flex gap-2">
+                    <button type="submit" id="submitBtn"
+                            class="btn btn-primary">Add Duration
+                    </button>
+                    <a th:href="@{/admin}" class="btn btn-secondary">Back to
+                        Admin Panel</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

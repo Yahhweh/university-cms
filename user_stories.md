@@ -20,15 +20,18 @@ Student teacher-specific subject list (Monthly):
 
 * Given: User is logged in as a Student
 * Action: User opens My Schedule and selects a Teacher's Name
-* Then: The system displays a list of subjects scheduled for that teacher during the current month
+* Then: The system displays a list of subjects scheduled for that teacher during
+  the current month
 
 ---
 
 Student teacher-specific subject list (Range):
 
 * Given: User is logged in as a Student
-* Action: User opens My Schedule, selects a Teacher's Name, and sets a two-week range
-* Then: The system displays a list of subjects scheduled for that teacher during those two weeks
+* Action: User opens My Schedule, selects a Teacher's Name, and sets a two-week
+  range
+* Then: The system displays a list of subjects scheduled for that teacher during
+  those two weeks
 
 ---
 
@@ -44,6 +47,41 @@ Student full monthly lesson view:
 
 * Given: User is logged in as a Student
 * Action: User navigates to My Schedule and selects the Get by Month option
-* Then: The system displays all lessons for the group filtered by the selected month
+* Then: The system displays all lessons for the group filtered by the selected
+  month
+
+---
+
+Admin rights
+
+Given User `A` logged in with Admin role
+
+* User 'A' should be able to create/read/update/delete lessons.
+* User 'A' should be able to assign/reassign anything for lectures  
+    (duration, studySubject, classroom, date). 
+* User 'A' should be able to list all Users.
+* User 'A' should be able to do anything that Staff can do.  
+---
+
+Student/Lecturer rights
+
+Given User `B` logged in with Student or Lecturer role
+
+* User 'B' should be able to list courses that he is enrolled in / assigned to (
+  read access).
+* User 'B' (Lecturer) should be able to list all groups and their students
+  within courses assigned to him.
+* User 'B' (Student) should be able to view only his own group and
+  its members within his enrolled courses.
+
+---
+
+Staff rights
+
+Given User `C` logged in with Staff role.
+
+* User 'C' should be able to create/read/update/delete all lessons. 
+* User 'C' should be able to assign/reassign teacher to a lessons. 
+* User 'C' should be able to list Students and Lecturers (not staff and admins).
 
 ---

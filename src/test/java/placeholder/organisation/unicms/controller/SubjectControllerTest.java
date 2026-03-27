@@ -15,7 +15,9 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(SubjectController.class)
@@ -29,26 +31,74 @@ class SubjectControllerTest {
     private SubjectService subjectService;
 
     @Test
-    void getRoomTypes_ShouldReturnTableViewWithAttributes_WhenAllDataIsGiven() throws Exception {
-        List<Subject> subjects = List.of(getStudySubject());
+    void getSubjects_shouldReturnSubjectsView_withPagedData() throws Exception {
+        List<Subject> subjects = List.of(getSubject());
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Subject> subjectPage = new PageImpl<>(subjects, pageable, subjects.size());
 
-        when(subjectService.findAll(pageable))
-                .thenReturn(subjectPage);
+        when(subjectService.findAll(any(Pageable.class), isNull())).thenReturn(subjectPage);
 
-        mockMvc.perform(get("/subjects")
-                        .param("sort", "id,asc")
-                        .param("page", "0")
-                        .param("size", "9"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("subjects"))
-                .andExpect(model().attribute("subjects", subjectPage.getContent()))
-                .andExpect(model().attribute("url", "subjects"))
-                .andExpect(model().attribute("page", subjectPage));
+        mockMvc.perform(get("/admin/subjects")
+                .param("sort", "id,asc")
+                .param("page", "0")
+                .param("size", "9"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("subjects"))
+            .andExpect(model().attribute("subjects", subjectPage.getContent()))
+            .andExpect(model().attribute("url", "admin/subjects"))
+            .andExpect(model().attribute("page", subjectPage));
     }
 
-    private Subject getStudySubject() {
+    @Test
+    void getSubjects_shouldFilterByName_whenNameParamProvided() throws Exception {
+        List<Subject> subjects = List.of(getSubject());
+        Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
+        Page<Subject> subjectPage = new PageImpl<>(subjects, pageable, subjects.size());
+
+        when(subjectService.findAll(any(Pageable.class), eq("Physics"))).thenReturn(subjectPage);
+
+        mockMvc.perform(get("/admin/subjects")
+                .param("name", "Physics"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("subjects"))
+            .andExpect(model().attribute("subjects", subjectPage.getContent()));
+
+        verify(subjectService).findAll(any(Pageable.class), eq("Physics"));
+    }
+
+    @Test
+    void showAddSubjectForm_shouldReturnAddSubjectView() throws Exception {
+        mockMvc.perform(get("/admin/add-subject"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("add-subject"));
+    }
+
+    @Test
+    void addSubject_shouldRedirectWithSuccess_whenSubjectCreated() throws Exception {
+        mockMvc.perform(post("/admin/add-subject")
+                .param("name", "Physics")
+                .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("add-subject"))
+            .andExpect(flash().attribute("successMessage", "Subject has been successfully added"));
+
+        verify(subjectService).createSubject(any(placeholder.organisation.unicms.service.dto.request.SubjectRequestDTO.class));
+    }
+
+    @Test
+    void deleteSubject_shouldRedirectToSubjects_whenSubjectDeleted() throws Exception {
+        mockMvc.perform(post("/admin/delete-subject")
+                .param("subjectId", "1")
+                .param("name", "")
+                .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern("subjects*"))
+            .andExpect(flash().attribute("successMessage", "Subject has been successfully deleted"));
+
+        verify(subjectService).removeStudySubject(1L);
+    }
+
+    private Subject getSubject() {
         Subject subject = new Subject();
         subject.setId(1L);
         subject.setName("Physics");

@@ -6,7 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Pattern;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +22,8 @@ import java.util.Set;
 public class Lecturer extends User {
 
     @Column(name = "salary")
-    @Pattern(regexp = "^[0-9]+$")
+    @Min(value = 0, message = "{salary.min}")
+    @Max(value = 999999, message = "{salary.max}")
     private Integer salary;
 
     @ManyToMany(fetch = FetchType.LAZY)

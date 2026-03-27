@@ -3,6 +3,7 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.RoomType;
@@ -33,6 +34,7 @@ public class RoomTypeService {
         return roomTypes;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void createClassroomType(RoomType roomTypeName) {
         roomTypeRepository.save(roomTypeName);
@@ -51,6 +53,7 @@ public class RoomTypeService {
         return classRoomType;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void removeClassRoomType(long classRoomId) {
         if (!roomTypeRepository.existsById(classRoomId)) {
@@ -59,6 +62,7 @@ public class RoomTypeService {
         roomTypeRepository.deleteById(classRoomId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void updateClassRoomType(long classRoomTypeId, RoomTypeRequestDTO roomTypeRequestDTO) {
         RoomType roomType = roomTypeRepository.findById(classRoomTypeId)

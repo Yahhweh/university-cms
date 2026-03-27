@@ -11,6 +11,7 @@ import placeholder.organisation.unicms.entity.GenderType;
 import placeholder.organisation.unicms.entity.User;
 import placeholder.organisation.unicms.entity.Role;
 import placeholder.organisation.unicms.repository.UserRepository;
+import placeholder.organisation.unicms.service.dto.request.UserRequestDTO;
 import placeholder.organisation.unicms.service.mapper.UserMapper;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -69,6 +70,28 @@ class UserServiceTest {
             () -> userService.deleteUser(99L));
 
         verify(mockPersonRepository, never()).deleteById(any());
+    }
+
+    @Test
+    void createUser_shouldSaveUserWithEncodedPasswordAndStaffRole() {
+        UserRequestDTO dto = new UserRequestDTO();
+        dto.setName("John");
+        dto.setSureName("Doe");
+        dto.setPassword("plaintext");
+        dto.setGender(GenderType.Male);
+        dto.setDateOfBirth(LocalDate.of(1990, 1, 1));
+        dto.setEmail("john.doe@example.com");
+
+        User mappedUser = new User();
+        when(mockUserMapper.toEntity(dto)).thenReturn(mappedUser);
+        when(passwordEncoder.encode("plaintext")).thenReturn("encoded");
+        when(mockPersonRepository.save(mappedUser)).thenReturn(mappedUser);
+
+        userService.createUser(dto);
+
+        assertThat(mappedUser.getPassword()).isEqualTo("encoded");
+        assertThat(mappedUser.getRole()).isEqualTo(Role.STAFF);
+        verify(mockPersonRepository).save(mappedUser);
     }
 
     private User getPerson(){

@@ -3,12 +3,14 @@ package placeholder.organisation.unicms.service;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.repository.SubjectRepository;
+import placeholder.organisation.unicms.repository.specifications.SubjectSpecification;
 import placeholder.organisation.unicms.service.dto.request.SubjectRequestDTO;
-import placeholder.organisation.unicms.service.mapper.StudySubjectMapper;
+import placeholder.organisation.unicms.service.mapper.SubjectMapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,11 +21,11 @@ import java.util.Optional;
 public class SubjectService {
 
     private final SubjectRepository subjectRepository;
-    private final StudySubjectMapper studySubjectMapper;
+    private final SubjectMapper subjectMapper;
 
-    public SubjectService(SubjectRepository subjectRepository, StudySubjectMapper studySubjectMapper) {
+    public SubjectService(SubjectRepository subjectRepository, SubjectMapper subjectMapper) {
         this.subjectRepository = subjectRepository;
-        this.studySubjectMapper = studySubjectMapper;
+        this.subjectMapper = subjectMapper;
     }
 
     public List<Subject> findAllSubjects() {
@@ -32,8 +34,17 @@ public class SubjectService {
         return subjects;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public void createStudySubject(Subject subject) {
+    public void createSubject(Subject subject) {
+        subjectRepository.save(subject);
+        log.debug("Subject saved successfully: {}", subject.getName());
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    public void createSubject(SubjectRequestDTO requestDTO) {
+        Subject subject = subjectMapper.toEntity(requestDTO);
         subjectRepository.save(subject);
         log.debug("Subject saved successfully: {}", subject.getName());
     }
@@ -46,6 +57,7 @@ public class SubjectService {
         return subjectRepository.findById(studySubjectId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void removeStudySubject(long studySubjectId) {
         if (!subjectRepository.existsById(studySubjectId)) {
@@ -54,19 +66,20 @@ public class SubjectService {
         subjectRepository.deleteById(studySubjectId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void updateStudySubject(long studySubjectId, SubjectRequestDTO subjectRequestDTO) {
         Subject subject = subjectRepository.findById(studySubjectId)
             .orElseThrow(() -> new EntityNotFoundException(Subject.class, String.valueOf(studySubjectId)));
 
-        studySubjectMapper.updateEntityFromDto(subjectRequestDTO, subject);
+        subjectMapper.updateEntityFromDto(subjectRequestDTO, subject);
         subjectRepository.save(subject);
 
         log.debug("Study subject updated successfully. ID: {}", studySubjectId);
     }
 
-    public Page<Subject> findAll(Pageable pageable) {
+    public Page<Subject> findAll(Pageable pageable, String name) {
         log.debug("Trying to get paginated Subjects: {}", pageable);
-        return subjectRepository.findAll(pageable);
+        return subjectRepository.findAll(SubjectSpecification.filter(name), pageable);
     }
 }

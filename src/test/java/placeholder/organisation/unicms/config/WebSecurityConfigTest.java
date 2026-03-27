@@ -40,6 +40,8 @@ class WebSecurityConfigTest {
     @MockitoBean
     private LecturerService lecturerService;
 
+    @MockitoBean LessonService lessonService;
+
     @MockitoBean
     private CustomUserDetailsService customUserDetailsService;
 
@@ -56,7 +58,7 @@ class WebSecurityConfigTest {
     private AddressMapper addressMapper;
 
     @Test
-    @WithMockUser(username = "user", roles = {"STUDENT", "LECTURER", "ADMIN"})
+    @WithMockUser(username = "user", roles = {"STUDENT", "LECTURER", "ADMIN", "STAFF"})
     void filterChain_shouldReturnOk_whenUserHasAllRoles() throws Exception {
         mockMvc.perform(get("/"))
             .andExpect(status().isOk());

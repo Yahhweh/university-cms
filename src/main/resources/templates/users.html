@@ -5,7 +5,7 @@
     <title>Users</title>
 </head>
 <body>
-<div th:if="${successMessage}" th:insert="~{success-toast :: success-toast(${successMessage})}" class="py-4"></div>
+<div th:if="${successMessage}" th:insert="~{toasts/success-toast :: success-toast(${successMessage})}" class="py-4"></div>
 <div class="container">
     <h1 class="h2 text-white mb-4">Users</h1>
 
@@ -76,19 +76,19 @@
                 <td th:text="${user.role}"></td>
                 <td class="d-flex gap-2">
                     <form th:action="@{/admin/change-role}" method="post" class="d-flex gap-2">
-                        <div th:replace="~{hidden-inputs :: inputs}">Hidden Inputs</div>
+                        <div th:replace="~{hidden-inputs/hidden-inputs :: inputs}">Hidden Inputs</div>
                         <select name="newRole" class="form-select form-select-sm">
                             <option value="ADMIN">ADMIN</option>
                             <option value="STUDENT">STUDENT</option>
                             <option value="LECTURER">LECTURER</option>
-                            <option value="STUFF">STUFF</option>
+                            <option value="STAFF">STAFF</option>
                         </select>
                         <button type="submit" class="btn btn-link p-0" title="Change role">
                             <i class="bi bi-arrow-repeat fs-5"></i>
                         </button>
                     </form>
                     <form th:action="@{/admin/delete-user}" method="post">
-                        <div th:replace="~{hidden-inputs :: inputs}">Hidden Inputs</div>
+                        <div th:replace="~{hidden-inputs/hidden-inputs :: inputs}">Hidden Inputs</div>
                         <button type="submit" class="btn btn-link p-0 text-danger" title="Delete user">
                             <i class="bi bi-trash fs-5"></i>
                         </button>
