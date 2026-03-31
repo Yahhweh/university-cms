@@ -8,7 +8,7 @@
 <div th:if="${successMessage}"
      th:replace="~{toasts/success-toast :: success-toast(${successMessage})}"></div>
 <div class="container">
-    <form th:action="@{/admin/courses}" method="get" class="row g-2 mb-4">
+    <form th:action="@{/{url}(url=${url})}" method="get" class="row g-2 mb-4">
         <div class="col-auto">
             <input name="name" type="text" placeholder="Course name"
                    th:value="${name}" class="form-control">
@@ -17,7 +17,7 @@
             <button type="submit" class="btn btn-primary">Filter</button>
         </div>
         <div class="col-auto">
-            <a th:href="@{/admin/courses}" class="btn btn-outline-light">Reset</a>
+            <a th:href="@{/{url}(url=${url})}" class="btn btn-outline-light">Reset</a>
         </div>
     </form>
     <h2 class="text-white mb-3">Courses</h2>

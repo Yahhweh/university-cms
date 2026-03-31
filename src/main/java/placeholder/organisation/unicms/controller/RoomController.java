@@ -11,20 +11,22 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import placeholder.organisation.unicms.entity.Room;
+import placeholder.organisation.unicms.service.EntityValidationException;
 import placeholder.organisation.unicms.service.RoomService;
 import placeholder.organisation.unicms.service.RoomTypeService;
 import placeholder.organisation.unicms.service.dto.request.RoomRequestDTO;
-import placeholder.organisation.unicms.service.dto.request.filter.RoomFilterRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.RoomFilter;
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("/admin")
 public class RoomController {
 
-    private final RoomService roomService;
     private final static String successAddRoomMessage = "Room has been successfully created";
     private final static String validationAddRoomMessage = "Some of your forms are not valid";
     private final static String successRemoveRoomMessage = "Room has been successfully deleted";
+
+    private final RoomService roomService;
     private final RoomTypeService roomTypeService;
 
     public RoomController(RoomService roomService, RoomTypeService roomTypeService) {
@@ -35,7 +37,7 @@ public class RoomController {
     @GetMapping(value = "/rooms")
     public String getRooms(Model model,
                            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
-                           @ModelAttribute("filters") RoomFilterRequestDTO requestDTO) {
+                           @ModelAttribute("filters") RoomFilter requestDTO) {
 
         Page<Room> page = roomService.findAll(requestDTO, pageable);
         model.addAttribute("rooms", page.getContent());
@@ -65,15 +67,15 @@ public class RoomController {
     }
 
     @PostMapping(value = "/delete-room")
-    public String deleteRooms(RedirectAttributes redirectAttributes, @ModelAttribute("filters") RoomFilterRequestDTO roomFilterRequestDTO,
+    public String deleteRooms(RedirectAttributes redirectAttributes, @ModelAttribute("filters") RoomFilter roomFilter,
                               @RequestParam Long roomId, @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable) {
 
         roomService.removeClassRoom(roomId);
-        addRedirectAttributes(pageable, roomFilterRequestDTO, redirectAttributes);
+        addRedirectAttributes(pageable, roomFilter, redirectAttributes);
         return "redirect:rooms";
     }
 
-    private void addRedirectAttributes(Pageable pageable, RoomFilterRequestDTO requestDTO, RedirectAttributes redirectAttributes) {
+    private void addRedirectAttributes(Pageable pageable, RoomFilter requestDTO, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("successMessage", successRemoveRoomMessage);
         redirectAttributes.addAttribute("page", pageable.getPageNumber());
         pageable.getSort().forEach(order ->

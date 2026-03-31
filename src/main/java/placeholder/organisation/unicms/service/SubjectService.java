@@ -10,6 +10,7 @@ import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.repository.SubjectRepository;
 import placeholder.organisation.unicms.repository.specifications.SubjectSpecification;
 import placeholder.organisation.unicms.service.dto.request.SubjectRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.SubjectFilter;
 import placeholder.organisation.unicms.service.mapper.SubjectMapper;
 
 import java.util.List;
@@ -78,8 +79,8 @@ public class SubjectService {
         log.debug("Study subject updated successfully. ID: {}", studySubjectId);
     }
 
-    public Page<Subject> findAll(Pageable pageable, String name) {
+    public Page<Subject> findAll(Pageable pageable, SubjectFilter filter) {
         log.debug("Trying to get paginated Subjects: {}", pageable);
-        return subjectRepository.findAll(SubjectSpecification.filter(name), pageable);
+        return subjectRepository.findAll(SubjectSpecification.filter(filter), pageable);
     }
 }

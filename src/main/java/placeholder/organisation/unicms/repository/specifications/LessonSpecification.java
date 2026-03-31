@@ -3,14 +3,14 @@
     import jakarta.persistence.criteria.Predicate;
     import org.springframework.data.jpa.domain.Specification;
     import placeholder.organisation.unicms.entity.Lesson;
-    import placeholder.organisation.unicms.service.dto.request.filter.LessonFilterRequestDTO;
+    import placeholder.organisation.unicms.service.dto.request.filter.LessonFilter;
 
     import java.util.ArrayList;
     import java.util.List;
 
     public class LessonSpecification {
 
-        public static Specification<Lesson> filter(LessonFilterRequestDTO requestDTO){
+        public static Specification<Lesson> filter(LessonFilter requestDTO){
             return ((root, query, cb) -> {
                 List<Predicate> predicates = new ArrayList<>();
 

@@ -15,6 +15,7 @@ import placeholder.organisation.unicms.service.dto.request.CourseRequestDTO;
 import placeholder.organisation.unicms.service.mapper.CourseMapper;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -56,5 +57,10 @@ public class CourseService {
         }
         courseRepository.save(course);
         log.info("Course saved successfully. Name: {}", course.getName());
+    }
+
+    public Optional<Course> findCourse(Long courseId){
+        log.debug("Trying to get course with id: {}", courseId);
+        return courseRepository.findById(courseId);
     }
 }

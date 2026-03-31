@@ -11,10 +11,12 @@ import jakarta.validation.constraints.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserFilterRequestDTO {
+public class UserFilter {
     String name;
     String sureName;
     String email;
     @Pattern(regexp = "^[A-zA-z]")
     Role role;
+    @Pattern(regexp = "^[A-zA-z]")
+    String dType;
 }

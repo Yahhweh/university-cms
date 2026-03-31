@@ -9,7 +9,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.service.*;
-import placeholder.organisation.unicms.service.dto.request.filter.LessonFilterRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.LessonFilter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -49,7 +49,7 @@ class LessonControllerTest {
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Lesson> lessonPage = new PageImpl<>(lessons, pageable, lessons.size());
 
-        when(lessonService.findAll(any(Pageable.class), any(LessonFilterRequestDTO.class)))
+        when(lessonService.findAll(any(Pageable.class), any(LessonFilter.class)))
             .thenReturn(lessonPage);
 
         mockMvc.perform(get("/lessons/lesson-setup")

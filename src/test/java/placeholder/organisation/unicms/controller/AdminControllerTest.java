@@ -14,13 +14,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.service.*;
 import placeholder.organisation.unicms.service.dto.request.*;
-import placeholder.organisation.unicms.service.dto.request.filter.UserFilterRequestDTO;
-import placeholder.organisation.unicms.service.dto.response.AddressResponseDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.UserFilter;
 import placeholder.organisation.unicms.service.mapper.AddressMapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -74,7 +72,7 @@ class AdminControllerTest {
         Pageable pageable = PageRequest.of(0, 10);
         Page<User> page = new PageImpl<>(people, pageable, 2);
 
-        when(userService.findAllFiltered(any(UserFilterRequestDTO.class), any(Pageable.class))).thenReturn(page);
+        when(userService.findAllFiltered(any(UserFilter.class), any(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/admin/users")
                 .param("page", "0")
@@ -167,11 +165,11 @@ class AdminControllerTest {
         student.setName("John");
         Pageable pageable = PageRequest.of(0, 10);
         Page<User> people = new PageImpl<>(List.of(student), pageable, 1);
-        UserFilterRequestDTO userFilterRequestDTO = new UserFilterRequestDTO();
-        userFilterRequestDTO.setRole(Role.STUDENT);
-        userFilterRequestDTO.setName("oh");
+        UserFilter userFilter = new UserFilter();
+        userFilter.setRole(Role.STUDENT);
+        userFilter.setName("oh");
 
-        when(userService.findAllFiltered(any(UserFilterRequestDTO.class), any(Pageable.class))).thenReturn(people);
+        when(userService.findAllFiltered(any(UserFilter.class), any(Pageable.class))).thenReturn(people);
         mockMvc.perform(get("/admin/users")
                 .param("name", "oh")
                 .param("role", "STUDENT"))
@@ -180,7 +178,7 @@ class AdminControllerTest {
             .andExpect(model().attribute("page", people))
             .andExpect(model().attribute("users", people.getContent()))
             .andExpect(model().attribute("url", "admin/users"))
-            .andExpect(model().attribute("filters", userFilterRequestDTO));
+            .andExpect(model().attribute("filters", userFilter));
     }
 
     @Test

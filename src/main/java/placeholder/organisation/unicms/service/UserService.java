@@ -12,10 +12,11 @@ import placeholder.organisation.unicms.entity.Role;
 import placeholder.organisation.unicms.entity.User;
 import placeholder.organisation.unicms.repository.UserRepository;
 import placeholder.organisation.unicms.repository.specifications.UserSpecification;
-import placeholder.organisation.unicms.service.dto.request.filter.UserFilterRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.UserFilter;
 import placeholder.organisation.unicms.service.dto.request.UserRequestDTO;
 import placeholder.organisation.unicms.service.mapper.UserMapper;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +24,8 @@ import java.util.Optional;
 @Service
 @Validated
 public class UserService {
+
+    private static final List<String> STAFF_VISIBLE_TYPES = List.of("Student", "Lecturer");
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -62,13 +65,22 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-    public Page<User> findAllFiltered(UserFilterRequestDTO userFilterRequestDTO, Pageable pageable) {
-        log.debug("Trying to get filtered User: name={}, sureName={}, email={}, role={}", userFilterRequestDTO.getEmail(), userFilterRequestDTO.getSureName(), userFilterRequestDTO.getEmail(), userFilterRequestDTO.getRole());
-        return userRepository.findAll(UserSpecification.filter(userFilterRequestDTO), pageable);
+    public Page<User> findUsersForAccess(UserFilter dto, Pageable pageable,
+                                         boolean isAdmin){
+        if(isAdmin){
+            return findAllFiltered(dto, pageable);
+        }else {
+            return (findAllFilteredByType(dto, pageable, STAFF_VISIBLE_TYPES));
+        }
     }
 
-    public Page<User> findAllFilteredByRoles(UserFilterRequestDTO dto, Pageable pageable, List<Role> allowedRoles) {
-        return userRepository.findAll(UserSpecification.filter(dto).and(UserSpecification.hasRoleIn(allowedRoles)), pageable);
+    public Page<User> findAllFiltered(UserFilter userFilter, Pageable pageable) {
+        log.debug("Trying to get filtered User: name={}, sureName={}, email={}, role={}", userFilter.getName(), userFilter.getSureName(), userFilter.getEmail(), userFilter.getRole());
+        return userRepository.findAll(UserSpecification.filter(userFilter), pageable);
+    }
+
+    public Page<User> findAllFilteredByType(UserFilter dto, Pageable pageable, List<String> types) {
+        return userRepository.findAll(UserSpecification.filter(dto).and(UserSpecification.hasTypeIn(types)), pageable);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

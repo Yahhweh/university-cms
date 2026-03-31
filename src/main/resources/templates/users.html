@@ -23,13 +23,6 @@
                    th:value="${filters.email}" class="form-control">
         </div>
         <div class="col-auto">
-            <select name="role" class="form-select">
-                <option value="">All roles</option>
-                <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"
-                        th:selected="${r == filterRole}"></option>
-            </select>
-        </div>
-        <div class="col-auto">
             <button type="submit" class="btn btn-primary">Filter</button>
         </div>
         <div class="col-auto">

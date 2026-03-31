@@ -11,7 +11,7 @@ import placeholder.organisation.unicms.repository.RoomRepository;
 import placeholder.organisation.unicms.repository.RoomTypeRepository;
 import placeholder.organisation.unicms.repository.specifications.RoomSpecification;
 import placeholder.organisation.unicms.service.dto.request.RoomRequestDTO;
-import placeholder.organisation.unicms.service.dto.request.filter.RoomFilterRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.RoomFilter;
 import placeholder.organisation.unicms.service.mapper.ClassRoomMapper;
 import placeholder.organisation.unicms.service.validation.ClassRoomValidator;
 
@@ -93,7 +93,7 @@ public class RoomService {
         log.debug("Classroom updated successfully. ID: {}", classRoomId);
     }
 
-    public Page<Room> findAll(RoomFilterRequestDTO requestDTO, Pageable pageable) {
+    public Page<Room> findAll(RoomFilter requestDTO, Pageable pageable) {
         log.debug("Trying to get paginated Rooms: {}", pageable);
         return roomRepository.findAll(RoomSpecification.filter(requestDTO), pageable);
     }

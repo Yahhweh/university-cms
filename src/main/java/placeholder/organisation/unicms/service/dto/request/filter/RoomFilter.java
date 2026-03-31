@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RoomFilterRequestDTO {
+public class RoomFilter {
     String number;
     String roomType;
 }

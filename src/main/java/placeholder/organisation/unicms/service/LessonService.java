@@ -6,13 +6,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.Duration;
-import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.repository.*;
 import placeholder.organisation.unicms.repository.specifications.LessonSpecification;
 import placeholder.organisation.unicms.service.dto.request.LessonRequestDTO;
-import placeholder.organisation.unicms.service.dto.request.filter.LessonFilterRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.LessonFilter;
 import placeholder.organisation.unicms.service.mapper.LessonMapper;
 import placeholder.organisation.unicms.service.validation.LessonValidator;
 
@@ -115,7 +113,7 @@ public class LessonService {
         log.debug("Lesson updated successfully. ID: {}", lessonId);
     }
 
-    public Page<Lesson> findAll(Pageable pageable, LessonFilterRequestDTO requestDTO) {
+    public Page<Lesson> findAll(Pageable pageable, LessonFilter requestDTO) {
         log.debug("Trying to get filtered lesson: group={}, room={}, subject={}, lecturer name={}, lecturer surename={}, durationId={},", requestDTO.getGroup(),
             requestDTO.getRoom(), requestDTO.getSubject(), requestDTO.getLecturer().getName(), requestDTO.getLecturer().getSureName(), requestDTO.getDurationId() );
 

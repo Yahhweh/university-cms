@@ -15,7 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.repository.*;
 import placeholder.organisation.unicms.service.dto.request.LessonRequestDTO;
-import placeholder.organisation.unicms.service.dto.request.filter.LessonFilterRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.LessonFilter;
 import placeholder.organisation.unicms.service.mapper.LessonMapper;
 import placeholder.organisation.unicms.service.validation.LessonValidator;
 
@@ -249,7 +249,7 @@ class LessonServiceTest {
         List<Lesson> lessons = List.of(getLesson());
         Pageable pageable = PageRequest.of(0, 9);
         Page<Lesson> expectedPage = new PageImpl<>(lessons, pageable, lessons.size());
-        LessonFilterRequestDTO filterDTO = new LessonFilterRequestDTO();
+        LessonFilter filterDTO = new LessonFilter();
 
         when(lessonRepositoryMock.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
 

@@ -17,6 +17,7 @@ import placeholder.organisation.unicms.service.dto.response.LecturerResponseDTO;
 import placeholder.organisation.unicms.service.mapper.LecturerMapper;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -51,7 +52,7 @@ class LecturerServiceTest {
         when(subjectRepository.findById(subjectId)).thenReturn(Optional.of(subject));
         when(lecturerRepository.findById(lecturerId)).thenReturn(Optional.of(lecturer));
 
-        lecturerService.assignSubjectToLecturer(subjectId, lecturerId);
+        lecturerService.updateLecturerSubjects(List.of(subjectId), lecturerId);
 
         assertTrue(lecturer.getSubjects().contains(subject));
         verify(subjectRepository).findById(subjectId);
@@ -63,43 +64,14 @@ class LecturerServiceTest {
         long subjectId = 1L;
         long lecturerId = 2L;
 
+        Lecturer lecturer = new Lecturer();
+        lecturer.setSubjects(new HashSet<>());
+
+        when(lecturerRepository.findById(lecturerId)).thenReturn(Optional.of(lecturer));
         when(subjectRepository.findById(subjectId)).thenThrow(new EntityNotFoundException(javax.security.auth.Subject.class, "1"));
 
         assertThrows(EntityNotFoundException.class, () ->
-                lecturerService.assignSubjectToLecturer(subjectId, lecturerId)
-        );
-    }
-
-    @Test
-    void removeSubjectToLecturer_removesSubjectFromSet_whenBothExist() {
-        long subjectId = 10L;
-        long lecturerId = 20L;
-
-        Subject subject = new Subject();
-        Lecturer lecturer = new Lecturer();
-        Set<Subject> subjects = new HashSet<>();
-        subjects.add(subject);
-        lecturer.setSubjects(subjects);
-
-        when(subjectRepository.findById(subjectId)).thenReturn(Optional.of(subject));
-        when(lecturerRepository.findById(lecturerId)).thenReturn(Optional.of(lecturer));
-
-        lecturerService.removeSubjectFromLecturer(subjectId, lecturerId);
-
-        assertTrue(lecturer.getSubjects().isEmpty());
-        verify(subjectRepository).findById(subjectId);
-        verify(lecturerRepository).findById(lecturerId);
-    }
-
-    @Test
-    void removeSubjectFromLecturer_throwsServiceException_whenDaoExceptionOccurs() {
-        long subjectId = 1L;
-        long lecturerId = 2L;
-
-        when(subjectRepository.findById(subjectId)).thenThrow(new ServiceException(""));
-
-        assertThrows(ServiceException.class, () ->
-                lecturerService.removeSubjectFromLecturer(subjectId, lecturerId)
+                lecturerService.updateLecturerSubjects(List.of(subjectId), lecturerId)
         );
     }
 

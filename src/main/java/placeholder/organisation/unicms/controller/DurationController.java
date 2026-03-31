@@ -22,12 +22,11 @@ import placeholder.organisation.unicms.service.dto.request.DurationRequestDTO;
 @Validated
 public class DurationController {
 
-    private final DurationService durationService;
-
     private final static String validationAddDurationMessage = "Some of your forms are not valid";
     private final static String successAddDurationMessage = "Duration has been successfully created";
     private final static String successRemoveDurationMessage = "Duration has been successfully deleted";
 
+    private final DurationService durationService;
 
     public DurationController(DurationService service) {
         this.durationService = service;

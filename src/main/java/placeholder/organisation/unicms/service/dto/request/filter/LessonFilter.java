@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LessonFilterRequestDTO {
+public class LessonFilter {
     Long durationId;
     String subject;
     String group;
-    LecturerFilterRequestDTO lecturer = new LecturerFilterRequestDTO();
+    LecturerFilter lecturer = new LecturerFilter();
     String room;
 }

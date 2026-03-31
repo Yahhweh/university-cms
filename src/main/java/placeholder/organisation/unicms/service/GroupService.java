@@ -13,8 +13,7 @@ import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.service.dto.request.GroupRequestDTO;
 import placeholder.organisation.unicms.service.mapper.GroupMapper;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Log4j2
@@ -75,29 +74,41 @@ public class GroupService {
 
     public List<Group> findGroupsByCourse(Long courseId) {
         return groupRepository.findAll().stream()
-                .filter(g -> g.getCourse() != null && g.getCourse().getId().equals(courseId))
-                .toList();
+            .filter(g -> g.getCourse() != null && g.getCourse().getId().equals(courseId))
+            .toList();
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public void assignGroupsToCourse(Long courseId, List<Long> groupIds) {
+    public void updateGroupsToCourse(Long courseId, List<Long> groupIds) {
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new EntityNotFoundException(Course.class, String.valueOf(courseId)));
-        groupRepository.findAllById(groupIds).forEach(group -> {
-            group.setCourse(course);
-            groupRepository.save(group);
-        });
-        log.debug("Assigned {} groups to course {}", groupIds.size(), courseId);
+            .orElseThrow(() -> new EntityNotFoundException(
+                Course.class, String.valueOf(courseId)));
+
+        groupRepository.clearCourseConnection(courseId);
+
+        if (groupIds != null && !groupIds.isEmpty()) {
+            groupRepository.assignCourse(courseId, groupIds);
+        }
+
+        log.debug("Updated groups for course {}", courseId);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void removeGroupFromCourse(Long groupId) {
         Group group = groupRepository.findById(groupId)
-                .orElseThrow(() -> new EntityNotFoundException(Group.class, String.valueOf(groupId)));
+            .orElseThrow(() -> new EntityNotFoundException(Group.class, String.valueOf(groupId)));
         group.setCourse(null);
         groupRepository.save(group);
         log.debug("Removed group {} from course", groupId);
     }
+
+    public List<Long> getGroupsByCourse(Long courseId){
+        return groupRepository.findAll().stream()
+            .filter(g -> g.getCourse() != null && g.getCourse().getId().equals(courseId))
+            .map(Group::getId)
+            .toList();
+    }
+
 }

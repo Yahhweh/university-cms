@@ -1,9 +1,4 @@
 <div th:fragment="inputs">
-    <input type="hidden" name="page" th:value="${page.number}">
-    <input type="hidden" name="size" th:value="${page.size}">
-    <th:block th:each="order : ${page.sort}">
-        <input type="hidden" name="sort"
-               th:value="${order.property + ',' + order.direction.name().toLowerCase()}">
-    </th:block>
+    <th:block th:replace="~{hidden-inputs/preserve-pagination :: preserve-pagination}"></th:block>
     <input type="hidden" name="name" th:value="${name}">
 </div>

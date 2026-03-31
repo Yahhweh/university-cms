@@ -15,6 +15,7 @@ import org.springframework.data.jpa.domain.Specification;
 import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.repository.SubjectRepository;
 import placeholder.organisation.unicms.service.dto.request.SubjectRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.SubjectFilter;
 import placeholder.organisation.unicms.service.mapper.SubjectMapper;
 
 import java.util.List;
@@ -90,7 +91,7 @@ class SubjectServiceTest {
 
         when(subjectRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expectedPage);
 
-        Page<Subject> result = subjectService.findAll(pageable, "Physics");
+        Page<Subject> result = subjectService.findAll(pageable, new SubjectFilter("Physics"));
 
         assertThat(result).isEqualTo(expectedPage);
         verify(subjectRepository).findAll(any(Specification.class), eq(pageable));

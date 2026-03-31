@@ -9,6 +9,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.service.SubjectService;
+import placeholder.organisation.unicms.service.dto.request.filter.SubjectFilter;
 
 import java.util.List;
 
@@ -36,9 +37,9 @@ class SubjectControllerTest {
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Subject> subjectPage = new PageImpl<>(subjects, pageable, subjects.size());
 
-        when(subjectService.findAll(any(Pageable.class), isNull())).thenReturn(subjectPage);
+        when(subjectService.findAll(any(Pageable.class), any(SubjectFilter.class))).thenReturn(subjectPage);
 
-        mockMvc.perform(get("/admin/subjects")
+        mockMvc.perform(get("/subjects")
                 .param("sort", "id,asc")
                 .param("page", "0")
                 .param("size", "9"))
@@ -55,27 +56,27 @@ class SubjectControllerTest {
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Subject> subjectPage = new PageImpl<>(subjects, pageable, subjects.size());
 
-        when(subjectService.findAll(any(Pageable.class), eq("Physics"))).thenReturn(subjectPage);
+        when(subjectService.findAll(any(Pageable.class), any(SubjectFilter.class))).thenReturn(subjectPage);
 
-        mockMvc.perform(get("/admin/subjects")
+        mockMvc.perform(get("/subjects")
                 .param("name", "Physics"))
             .andExpect(status().isOk())
             .andExpect(view().name("subjects"))
             .andExpect(model().attribute("subjects", subjectPage.getContent()));
 
-        verify(subjectService).findAll(any(Pageable.class), eq("Physics"));
+        verify(subjectService).findAll(any(Pageable.class), any(SubjectFilter.class));
     }
 
     @Test
     void showAddSubjectForm_shouldReturnAddSubjectView() throws Exception {
-        mockMvc.perform(get("/admin/add-subject"))
+        mockMvc.perform(get("/add-subject"))
             .andExpect(status().isOk())
             .andExpect(view().name("add-subject"));
     }
 
     @Test
     void addSubject_shouldRedirectWithSuccess_whenSubjectCreated() throws Exception {
-        mockMvc.perform(post("/admin/add-subject")
+        mockMvc.perform(post("/add-subject")
                 .param("name", "Physics")
                 .with(csrf()))
             .andExpect(status().is3xxRedirection())
@@ -87,7 +88,7 @@ class SubjectControllerTest {
 
     @Test
     void deleteSubject_shouldRedirectToSubjects_whenSubjectDeleted() throws Exception {
-        mockMvc.perform(post("/admin/delete-subject")
+        mockMvc.perform(post("/delete-subject")
                 .param("subjectId", "1")
                 .param("name", "")
                 .with(csrf()))

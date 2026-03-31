@@ -3,14 +3,13 @@ package placeholder.organisation.unicms.repository.specifications;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import placeholder.organisation.unicms.entity.Room;
-import placeholder.organisation.unicms.service.dto.request.RoomRequestDTO;
-import placeholder.organisation.unicms.service.dto.request.filter.RoomFilterRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.RoomFilter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RoomSpecification {
-    public static Specification<Room> filter(RoomFilterRequestDTO requestDTO){
+    public static Specification<Room> filter(RoomFilter requestDTO){
         return ((root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 

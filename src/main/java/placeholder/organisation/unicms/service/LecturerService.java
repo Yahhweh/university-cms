@@ -13,12 +13,10 @@ import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.repository.LecturerRepository;
 import placeholder.organisation.unicms.repository.SubjectRepository;
 import placeholder.organisation.unicms.service.dto.request.LecturerRequestDTO;
-import placeholder.organisation.unicms.service.dto.response.LecturerResponseDTO;
 import placeholder.organisation.unicms.service.mapper.LecturerMapper;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -73,31 +71,15 @@ public class LecturerService {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @Transactional
-    public void assignSubjectToLecturer(long subjectId, long lecturerId) {
-        Subject subject = subjectRepository.findById(subjectId).orElseThrow(
-            () -> new EntityNotFoundException(Subject.class, String.valueOf(subjectId)));
-        Lecturer lecturer = lecturerRepository.findById(lecturerId).orElseThrow(
-            () -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId))
-        );
-        if (lecturer.getSubjects().add(subject)) {
-            log.info("Lecturer assigned to keep this subject. lecturerId: {}, subjectId: {}", lecturerId, subjectId);
-        }
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
-    @Transactional
-    public void removeSubjectFromLecturer(long subjectId, long lecturerId) {
-        Subject subject = subjectRepository.findById(subjectId)
-            .orElseThrow(() -> new EntityNotFoundException(Subject.class, String.valueOf(subjectId)));
-
+    public void updateLecturerSubjects(List<Long> subjectIds, long lecturerId) {
         Lecturer lecturer = lecturerRepository.findById(lecturerId)
-            .orElseThrow(() -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId)));
+            .orElseThrow(() -> new EntityNotFoundException(
+                Lecturer.class, String.valueOf(lecturerId)));
 
-        boolean isRemoved = lecturer.getSubjects().remove(subject);
-        if (!isRemoved) {
-            throw new ServiceException("Subject " + subjectId + " is not related to lecturer " + lecturerId);
-        }
-        log.info("Subject {} removed from lecturer {}", subjectId, lecturerId);
+        Set<Subject> newSubjects = findSubjectsByIds(subjectIds);
+
+        lecturer.getSubjects().clear();
+        lecturer.getSubjects().addAll(newSubjects);
     }
 
     @Transactional
@@ -132,7 +114,7 @@ public class LecturerService {
 
     public List<Lecturer> findLecturersBySubject(Long subjectId){
         log.debug("Trying to get Lecturers by subject id: {}", subjectId);
-        return lecturerRepository.findLecturerBySubjectId(subjectId).orElseThrow(() -> new EntityNotFoundException(Lecturer.class, String.valueOf(subjectId)));
+        return lecturerRepository.findDistinctBySubjectsId(subjectId);
     }
 
     private void resolveRelations(LecturerRequestDTO dto, Lecturer lecturer) {
@@ -145,5 +127,16 @@ public class LecturerService {
 
             lecturer.setSubjects(new HashSet<>(subjects));
         }
+    }
+
+    private Set<Subject> findSubjectsByIds(List<Long> subjectIds) {
+        Set<Subject> subjects = new HashSet<>();
+        for (Long subjectId : subjectIds) {
+            Subject subject = subjectRepository.findById(subjectId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                    Subject.class, String.valueOf(subjectId)));
+            subjects.add(subject);
+        }
+        return subjects;
     }
 }

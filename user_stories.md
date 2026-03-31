@@ -83,5 +83,6 @@ Given User `C` logged in with Staff role.
 * User 'C' should be able to create/read/update/delete all lessons. 
 * User 'C' should be able to assign/reassign teacher to a lessons. 
 * User 'C' should be able to list Students and Lecturers (not staff and admins).
+* User 'C' should be able to view the list of courses and see the details of each course.
 
 ---

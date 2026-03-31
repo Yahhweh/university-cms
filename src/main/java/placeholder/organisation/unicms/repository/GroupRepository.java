@@ -2,6 +2,7 @@ package placeholder.organisation.unicms.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -15,4 +16,12 @@ import java.util.function.Consumer;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long>, JpaSpecificationExecutor<Group> {
+
+    @Modifying
+    @Query("UPDATE Group g SET g.course = null WHERE g.course.id = :courseId")
+    void clearCourseConnection(@Param("courseId") Long courseId);
+
+    @Modifying
+    @Query("UPDATE Group g SET g.course.id = :courseId WHERE g.id IN :groupIds")
+    void assignCourse(@Param("courseId") Long courseId, @Param("groupIds") List<Long> groupIds);
 }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.service.*;
-import placeholder.organisation.unicms.service.dto.request.filter.LessonFilterRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.LessonFilter;
 import placeholder.organisation.unicms.service.dto.request.LessonRequestDTO;
 
 @Slf4j
@@ -25,17 +25,16 @@ import placeholder.organisation.unicms.service.dto.request.LessonRequestDTO;
 @Validated
 public class LessonController {
 
+    private final static String successAddLessonMessage = "Lesson has been successfully created";
+    private final static String validationAddLessonMessage = "Some of your forms are not valid";
+    private final static String successRemoveLessonMessage = "Lesson has been successfully deleted";
+
     private final LessonService lessonService;
     private final SubjectService subjectService;
     private final LecturerService lecturerService;
     private final RoomService roomService;
     private final DurationService durationService;
     private final GroupService groupService;
-
-    private final static String successAddLessonMessage = "Lesson has been successfully created";
-    private final static String validationAddLessonMessage = "Some of your forms are not valid";
-    private final static String successRemoveLessonMessage = "Lesson has been successfully deleted";
-
 
     public LessonController(LessonService lessonService, SubjectService subjectService, LecturerService lecturerService, RoomService roomService, DurationService durationService, GroupService groupService) {
         this.lessonService = lessonService;
@@ -48,7 +47,7 @@ public class LessonController {
 
     @GetMapping("/lesson-setup")
     public String lessonSetup(Model model, @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
-                              @ModelAttribute("filters") LessonFilterRequestDTO requestDTO) {
+                              @ModelAttribute("filters") LessonFilter requestDTO) {
         Page<Lesson> lessons = lessonService.findAll(pageable, requestDTO);
         model.addAttribute("url", "lessons/lesson-setup");
         model.addAttribute("page", lessons);
@@ -88,14 +87,14 @@ public class LessonController {
     @PostMapping(value = "/delete-lesson")
     public String deleteLesson(RedirectAttributes redirectAttributes, @RequestParam Long lessonId,
                                @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
-                               @ModelAttribute("filters") LessonFilterRequestDTO requestDTO) {
+                               @ModelAttribute("filters") LessonFilter requestDTO) {
         lessonService.removeLesson(lessonId);
         addRedirectAttributes(pageable, requestDTO, redirectAttributes);
         return "redirect:/lessons/lesson-setup";
     }
 
 
-    private void addRedirectAttributes(Pageable pageable, LessonFilterRequestDTO requestDTO, RedirectAttributes redirectAttributes) {
+    private void addRedirectAttributes(Pageable pageable, LessonFilter requestDTO, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("successMessage", successRemoveLessonMessage);
         redirectAttributes.addAttribute("page", pageable.getPageNumber());
         pageable.getSort().forEach(order ->

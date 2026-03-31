@@ -1,8 +1,6 @@
 package placeholder.organisation.unicms.controller;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,15 +12,11 @@ import placeholder.organisation.unicms.service.*;
 import placeholder.organisation.unicms.service.mapper.AddressMapper;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @WithMockUser(username = "user", roles = {"ADMIN", "STAFF"})
 @WebMvcTest
@@ -56,51 +50,17 @@ public class SharedControllerTest {
     private RoomTypeService roomTypeService;
 
     @Test
-    void getRemoveSubjectForm_shouldReturnSelectedLecturer_whenLecturerIdProvided() throws Exception {
-        Lecturer lecturer = getLecturer();
-        when(lecturerService.findAllLecturers()).thenReturn(List.of(lecturer));
-        when(lecturerService.findLecturer(2L)).thenReturn(Optional.of(lecturer));
-
-        mockMvc.perform(get("/users/remove-subject").param("lecturerId", "2"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("remove-subject"))
-            .andExpect(model().attributeExists("selectedLecturer"))
-            .andExpect(model().attributeExists("subjects"));
-    }
-
-    @Test
-    void removeSubject_shouldReturnSuccess_whenSubjectRemoved() throws Exception {
+    void updateLecturerSubject_shouldRedirect_whenSubjectsUpdated() throws Exception {
         Long subjectId = 1L;
         Long lecturerId = 1L;
-        mockMvc.perform(post("/users/remove-subject")
+        mockMvc.perform(post("/users/update-lecturer-subject")
                 .param("lecturerId", "1")
-                .param("subjectsId", "1")
+                .param("subjectIds", "1")
                 .with(csrf()))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/users/remove-subject"));
+            .andExpect(redirectedUrl("/users/update-lecturer-subject"));
 
-        verify(lecturerService).removeSubjectFromLecturer(subjectId, lecturerId);
-    }
-
-    @Test
-    void getAssignSubjectForm_shouldReturnAssignSubjectView_withLecturersAndSubjects() throws Exception {
-        mockMvc.perform(get("/users/assign-subject"))
-            .andExpect(view().name("assign-subject"))
-            .andExpect(status().isOk());
-    }
-
-    @Test
-    void assignSubjectForm_shouldReturnSuccess_whenSubjectAssigned() throws Exception {
-        Long subjectId = 1L;
-        Long lecturerId = 1L;
-        mockMvc.perform(post("/users/assign-subject")
-                .param("lecturerId", "1")
-                .param("subjectsId", "1")
-                .with(csrf()))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/users/assign-subject"));
-
-        verify(lecturerService).assignSubjectToLecturer(subjectId, lecturerId);
+        verify(lecturerService).updateLecturerSubjects(List.of(subjectId), lecturerId);
     }
 
 

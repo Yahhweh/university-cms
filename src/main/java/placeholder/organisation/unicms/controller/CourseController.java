@@ -22,24 +22,12 @@ import placeholder.organisation.unicms.service.dto.request.CourseRequestDTO;
 @AllArgsConstructor
 public class CourseController {
 
-    private final CourseService courseService;
-    private final SubjectService subjectService;
-
     private static final String successAddMessage = "Course has been successfully created";
     private static final String errorAddMessage = "Error in course validation";
     private static final String successDeleteMessage = "Course has been successfully deleted";
 
-    @GetMapping("/courses")
-    public String getCourses(Model model,
-                             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
-                             @RequestParam(required = false) String name) {
-        Page<Course> page = courseService.findAll(pageable, name);
-        model.addAttribute("courses", page.getContent());
-        model.addAttribute("page", page);
-        model.addAttribute("url", "admin/courses");
-        model.addAttribute("name", name);
-        return "courses";
-    }
+    private final CourseService courseService;
+    private final SubjectService subjectService;
 
     @GetMapping("/add-course")
     public String getAddCourseForm(Model model) {

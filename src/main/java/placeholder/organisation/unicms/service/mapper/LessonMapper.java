@@ -2,15 +2,11 @@ package placeholder.organisation.unicms.service.mapper;
 
 import org.mapstruct.*;
 import placeholder.organisation.unicms.entity.Lesson;
-import placeholder.organisation.unicms.repository.*;
-import placeholder.organisation.unicms.service.EntityNotFoundException;
 import placeholder.organisation.unicms.service.dto.request.LessonRequestDTO;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
         componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-uses = {DurationRepository.class, SubjectRepository.class, RoomRepository.class,
-    GroupRepository.class, LecturerRepository.class, })
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface LessonMapper {
 
     @Mapping(target = "duration.id", source = "durationId")
@@ -34,9 +30,4 @@ public interface LessonMapper {
     @Mapping(source = "lecturer.id", target = "lecturerId")
     @Mapping(source = "room.id", target = "classRoomId")
     LessonRequestDTO toDto(Lesson lesson);
-
-    default Lesson LessonFromId(Long id, @Context LessonRepository lessonRepository){
-        return lessonRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(Lesson.class, String.valueOf(id)));
-    }
 }

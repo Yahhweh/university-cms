@@ -42,6 +42,6 @@ public class GlobalExceptionHandler {
         model.addAttribute("message", ex.getMessage());
         model.addAttribute("error", 404);
         model.addAttribute("title", "Entity not found");
-        return "error";
+        return "redirect:error";
     }
 }

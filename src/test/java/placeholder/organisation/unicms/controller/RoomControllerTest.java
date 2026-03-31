@@ -11,7 +11,7 @@ import placeholder.organisation.unicms.entity.Room;
 import placeholder.organisation.unicms.entity.RoomType;
 import placeholder.organisation.unicms.service.RoomService;
 import placeholder.organisation.unicms.service.RoomTypeService;
-import placeholder.organisation.unicms.service.dto.request.filter.RoomFilterRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.RoomFilter;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ class RoomControllerTest {
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Room> roomPage = new PageImpl<>(rooms, pageable, rooms.size());
 
-        when(roomService.findAll(any(RoomFilterRequestDTO.class), any(Pageable.class))).thenReturn(roomPage);
+        when(roomService.findAll(any(RoomFilter.class), any(Pageable.class))).thenReturn(roomPage);
 
         mockMvc.perform(get("/admin/rooms")
                 .param("sort", "id,asc")

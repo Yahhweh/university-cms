@@ -5,6 +5,7 @@ spring:
                 max-page-size: 9
                 default-page-size: 9
 
+
     application:
         name: uni-cms
     messages:
@@ -35,6 +36,13 @@ spring:
         enabled: true
         prefix: classpath:/templates/
         suffix: .html
+
+    jpa:
+        show-sql: true
+        properties:
+            hibernate:
+                format_sql: true
+
 server:
     port: 8081
 
@@ -50,11 +58,6 @@ logging:
                 orm:
                     jdbc:
                         bind: TRACE
-    jpa:
-        show-sql: true
-        properties:
-            hibernate:
-                format_sql: true
 
 
 subject:
