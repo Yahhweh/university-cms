@@ -53,12 +53,12 @@ public class SharedControllerTest {
     void updateLecturerSubject_shouldRedirect_whenSubjectsUpdated() throws Exception {
         Long subjectId = 1L;
         Long lecturerId = 1L;
-        mockMvc.perform(post("/users/update-lecturer-subject")
+        mockMvc.perform(post("/users/update-lecturer-subjects")
                 .param("lecturerId", "1")
                 .param("subjectIds", "1")
                 .with(csrf()))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/users/update-lecturer-subject"));
+            .andExpect(redirectedUrl("/users/update-lecturer-subjects?lecturerId=1"));
 
         verify(lecturerService).updateLecturerSubjects(List.of(subjectId), lecturerId);
     }

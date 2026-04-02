@@ -80,7 +80,7 @@ public class GroupService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public void updateGroupsToCourse(Long courseId, List<Long> groupIds) {
+    public void updateCourseGroups(Long courseId, List<Long> groupIds) {
         Course course = courseRepository.findById(courseId)
             .orElseThrow(() -> new EntityNotFoundException(
                 Course.class, String.valueOf(courseId)));

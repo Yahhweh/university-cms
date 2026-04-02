@@ -37,7 +37,7 @@ public class LecturerController {
         return "lecturers";
     }
 
-    @GetMapping(value = "/profile")
+    @GetMapping("/profile")
     public String getProfile(
         Model model,
         Authentication authentication

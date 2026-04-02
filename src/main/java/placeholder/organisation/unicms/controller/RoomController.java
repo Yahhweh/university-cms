@@ -18,13 +18,13 @@ import placeholder.organisation.unicms.service.dto.request.RoomRequestDTO;
 import placeholder.organisation.unicms.service.dto.request.filter.RoomFilter;
 
 @Controller
-@PreAuthorize("hasRole('ADMIN')")
-@RequestMapping("/admin")
+@PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+@RequestMapping("/users")
 public class RoomController {
 
-    private final static String successAddRoomMessage = "Room has been successfully created";
-    private final static String validationAddRoomMessage = "Some of your forms are not valid";
-    private final static String successRemoveRoomMessage = "Room has been successfully deleted";
+    private static final String ADD_ROOM_MESSAGE = "Room has been successfully created";
+    private static final String VALIDATION_ADD_ROOM_MESSAGE = "Some of your forms are not valid";
+    private static final String REMOVE_ROOM_MESSAGE = "Room has been successfully deleted";
 
     private final RoomService roomService;
     private final RoomTypeService roomTypeService;
@@ -34,12 +34,12 @@ public class RoomController {
         this.roomTypeService = roomTypeService;
     }
 
-    @GetMapping(value = "/rooms")
+    @GetMapping( "/rooms")
     public String getRooms(Model model,
                            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
-                           @ModelAttribute("filters") RoomFilter requestDTO) {
+                           @ModelAttribute("filters") RoomFilter filter) {
 
-        Page<Room> page = roomService.findAll(requestDTO, pageable);
+        Page<Room> page = roomService.findAll(filter, pageable);
         model.addAttribute("rooms", page.getContent());
         model.addAttribute("page", page);
         model.addAttribute("roomTypes", roomTypeService.findAllRoomTypes());
@@ -48,41 +48,30 @@ public class RoomController {
     }
 
 
-    @GetMapping(value = "/add-room")
-    public String getAddRoom(Model model) {
+    @GetMapping("/create-room")
+    public String getCreateRoom(Model model) {
         model.addAttribute("roomTypes", roomTypeService.findAllRoomTypes());
-        return "add-room";
+        return "create-room";
     }
 
-    @PostMapping(value = "/add-room")
+    @PostMapping( "/create-room")
     public String addRoom(RedirectAttributes redirectAttributes, @ModelAttribute RoomRequestDTO roomRequestDTO,
                           BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errorMessage", validationAddRoomMessage);
-            return "redirect:add-room";
+            redirectAttributes.addFlashAttribute("errorMessage", VALIDATION_ADD_ROOM_MESSAGE);
+            return "redirect:create-room";
         }
         roomService.createRoom(roomRequestDTO);
-        redirectAttributes.addFlashAttribute("successMessage", successAddRoomMessage);
-        return "redirect:add-room";
+        redirectAttributes.addFlashAttribute("successMessage", ADD_ROOM_MESSAGE);
+        return "redirect:create-room";
     }
 
-    @PostMapping(value = "/delete-room")
+    @PostMapping("/delete-room")
     public String deleteRooms(RedirectAttributes redirectAttributes, @ModelAttribute("filters") RoomFilter roomFilter,
                               @RequestParam Long roomId, @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable) {
 
         roomService.removeClassRoom(roomId);
-        addRedirectAttributes(pageable, roomFilter, redirectAttributes);
+        PageProvider.providePages(REMOVE_ROOM_MESSAGE, pageable, redirectAttributes, roomFilter);
         return "redirect:rooms";
-    }
-
-    private void addRedirectAttributes(Pageable pageable, RoomFilter requestDTO, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("successMessage", successRemoveRoomMessage);
-        redirectAttributes.addAttribute("page", pageable.getPageNumber());
-        pageable.getSort().forEach(order ->
-            redirectAttributes.addAttribute("sort",
-                order.getProperty() + "," + order.getDirection().name().toLowerCase())
-        );
-        redirectAttributes.addAttribute("roomNumber", requestDTO.getNumber() != null? requestDTO.getNumber() : "");
-        redirectAttributes.addAttribute("roomType", requestDTO.getRoomType() != null ? requestDTO.getRoomType().toLowerCase() : "");
     }
 }

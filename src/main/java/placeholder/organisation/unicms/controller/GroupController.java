@@ -27,7 +27,7 @@ import java.util.List;
         this.groupService = groupService;
     }
 
-    @GetMapping(value = "/groups")
+    @GetMapping( "/groups")
     public String getGroups(Model model,
                             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 

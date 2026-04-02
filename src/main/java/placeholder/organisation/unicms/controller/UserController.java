@@ -26,6 +26,8 @@ import java.util.stream.Collectors;
 @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
 public class UserController {
 
+    private static final String UPDATE_LECTURER_SUBJECTS = "You have successfully updated subjects";
+
     private final UserService userService;
     private final LecturerService lecturerService;
     private final SubjectService subjectService;
@@ -42,47 +44,45 @@ public class UserController {
     @GetMapping()
     public String getUsers(Model model,
                            @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
-                           @ModelAttribute UserFilter requestDTO,
+                           @ModelAttribute UserFilter filter,
                            Authentication auth) {
 
         boolean isAdmin = auth.getAuthorities().stream()
             .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-        Page<User> users = userService.findUsersForAccess(requestDTO, pageable, isAdmin);
+        Page<User> users = userService.findUsersForAccess(filter, pageable, isAdmin);
 
         model.addAttribute("users", users.getContent());
         model.addAttribute("page", users);
-        model.addAttribute("url", "users/list");
-        model.addAttribute("filters", requestDTO);
-        model.addAttribute("canManage", false);
+        model.addAttribute("url", "users");
+        model.addAttribute("filters", filter);
+        model.addAttribute("roles", Role.values());
         return "users";
     }
 
-    @GetMapping("/update-lecturer-subject")
-    public String getAssignSubjectForm(Model model,
-                                       @RequestParam(required = false) Long lecturerId) {
-        model.addAttribute("lecturers", lecturerService.findAllLecturers());
+    @GetMapping("/update-lecturer-subjects")
+    public String getAssignSubjectsForm(Model model,
+                                       @RequestParam Long lecturerId) {
         model.addAttribute("subjects", subjectService.findAllSubjects());
         model.addAttribute("lecturerSubjects", new HashSet<>());
-        if(lecturerId != null){
-            lecturerService.findLecturer(lecturerId).ifPresent(lecturer ->  {
-                model.addAttribute("selectedLecturer", lecturerId);
-                model.addAttribute("lecturerSubjects",
-                    lecturer.getSubjects().stream()
-                        .map(Subject::getId)
-                        .collect(Collectors.toSet()));
-            });
-        }
-        return "update-course-group";
+        lecturerService.findLecturer(lecturerId).ifPresent(lecturer -> {
+            model.addAttribute("selectedLecturer", lecturerId);
+            model.addAttribute("lecturerName", lecturer.getName() + " " + lecturer.getSureName());
+            model.addAttribute("lecturerSubjects",
+                lecturer.getSubjects().stream()
+                    .map(Subject::getId)
+                    .collect(Collectors.toSet()));
+        });
+        return "update-lecturer-subject";
     }
 
-    @PostMapping("/update-lecturer-subject")
-    public String updateLecturerSubject(@RequestParam Long lecturerId,
+    @PostMapping("/update-lecturer-subjects")
+    public String updateLecturerSubjects(@RequestParam Long lecturerId,
                                 @RequestParam List<Long> subjectIds,
                                 RedirectAttributes redirectAttributes) {
         lecturerService.updateLecturerSubjects(subjectIds, lecturerId);
-        redirectAttributes.addFlashAttribute("successMessage", "You have successfully updated subjects");
-        return "redirect:/users/update-lecturer-subject";
+        redirectAttributes.addFlashAttribute("successMessage", UPDATE_LECTURER_SUBJECTS);
+        return "redirect:/users/update-lecturer-subjects?lecturerId=" + lecturerId;
     }
 
 

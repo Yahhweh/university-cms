@@ -17,7 +17,7 @@
             <h1 class="h3 mb-0">Add Lesson</h1>
         </div>
         <div class="card-body">
-            <form method="post" th:action="@{/admin/add-lesson}">
+            <form method="post" th:action="@{/admin/create-lesson}">
                 <div class="mb-3">
                     <label class="form-label">Duration</label>
                     <select name="durationId" required class="form-select">
@@ -30,7 +30,7 @@
                 <div class="mb-3">
                     <label class="form-label">Subject</label>
                     <select name="studySubjectId" required class="form-select"
-                            onchange="window.location.href='/admin/add-lesson?subjectId=' + this.value">
+                            onchange="window.location.href='/admin/create-lesson?subjectId=' + this.value">
                         <option value="" disabled th:selected="${subjectId == null}">Select subject</option>
                         <option th:each="subject : ${subjects}"
                                 th:value="${subject.id}"

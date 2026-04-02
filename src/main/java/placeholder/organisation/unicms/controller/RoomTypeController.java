@@ -27,7 +27,7 @@ public class RoomTypeController {
         this.roomTypeService = roomTypeService;
     }
 
-    @GetMapping(value = "/room-types")
+    @GetMapping("/room-types")
     public String getRoomTypes(Model model,
                                @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 

@@ -14,7 +14,7 @@
             <h1 class="h3 mb-0">Assign Group to Course</h1>
         </div>
         <div class="card-body">
-            <form th:action="@{/admin/update-course-group}" method="get">
+            <form th:action="@{/admin/update-course-groups}" method="get">
                 <div class="mb-3">
                     <label class="form-label">Course</label>
                     <select name="courseId" required class="form-select">
@@ -28,7 +28,7 @@
             </form>
 
             <div th:if="${selectedCourse}">
-                <form th:action="@{/admin/update-course-group}" method="post">
+                <form th:action="@{/admin/update-course-groups}" method="post">
                     <input type="hidden" name="courseId"
                            th:value="${selectedCourse.id}"/>
                     <input type="hidden" th:name="${_csrf.parameterName}"

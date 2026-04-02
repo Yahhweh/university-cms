@@ -9,7 +9,10 @@ import lombok.extern.log4j.Log4j2;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @Log4j2
 @Entity
@@ -52,14 +55,14 @@ public class User {
     @ToString.Exclude
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id",
-            foreignKey = @ForeignKey(name = "fk_person_address"),
-            referencedColumnName = "id")
+        foreignKey = @ForeignKey(name = "fk_person_address"),
+        referencedColumnName = "id")
     private Address address;
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    @Column(insertable=false, updatable=false)
+    @Column(insertable = false, updatable = false)
     private String dtype;
 
     @Override

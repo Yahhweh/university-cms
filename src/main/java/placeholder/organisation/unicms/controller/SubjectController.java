@@ -19,9 +19,9 @@ import placeholder.organisation.unicms.service.dto.request.filter.SubjectFilter;
 @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
 public class SubjectController {
 
-    private final static String removeSubjectMessage = "Subject has been successfully deleted";
-    private final static String errorAddSubjectMessage = "Error in validation subject";
-    private final static String successAddSubjectMessage = "Subject has been successfully added";
+    private static final String REMOVE_SUBJECT_MESSAGE = "Subject has been successfully deleted";
+    private static final String ERROR_ADD_SUBJECT_MESSAGE = "Error in validation subject";
+    private static final String CREATE_SUBJECT_MESSAGE = "Subject has been successfully added";
 
     private final  SubjectService subjectService;
 
@@ -29,7 +29,7 @@ public class SubjectController {
         this.subjectService = subjectService;
     }
 
-    @GetMapping(value = "/subjects")
+    @GetMapping( "/subjects")
     public String getRoomTypes(Model model,
                                @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
                                @ModelAttribute SubjectFilter filter ) {
@@ -42,13 +42,13 @@ public class SubjectController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(value = "/delete-subject")
+    @PostMapping("/delete-subject")
     public String deleteSubject(RedirectAttributes redirectAttributes, @RequestParam Long subjectId,
                                 @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
                                 @RequestParam String name){
 
         subjectService.removeStudySubject(subjectId);
-        redirectAttributes.addFlashAttribute("successMessage", removeSubjectMessage);
+        redirectAttributes.addFlashAttribute("successMessage", REMOVE_SUBJECT_MESSAGE);
         redirectAttributes.addAttribute("page", pageable.getPageNumber());
         pageable.getSort().forEach(order ->
             redirectAttributes.addAttribute("sort",
@@ -59,21 +59,21 @@ public class SubjectController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping(value = "/add-subject")
+    @GetMapping("/create-subject")
     public String showAddLessonForm(){
-        return "add-subject";
+        return "create-subject";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping(value = "/add-subject")
-    public String addLesson(@ModelAttribute SubjectRequestDTO subjectRequestDTO, BindingResult bindingResult,
+    @PostMapping("/create-subject")
+    public String createLesson(@ModelAttribute SubjectRequestDTO subjectRequestDTO, BindingResult bindingResult,
                             RedirectAttributes redirectAttributes){
         if(bindingResult.hasErrors()){
-            redirectAttributes.addFlashAttribute("errorMessage", errorAddSubjectMessage);
+            redirectAttributes.addFlashAttribute("errorMessage", ERROR_ADD_SUBJECT_MESSAGE);
         }
 
         subjectService.createSubject(subjectRequestDTO);
-        redirectAttributes.addFlashAttribute("successMessage", successAddSubjectMessage);
-        return "redirect:add-subject";
+        redirectAttributes.addFlashAttribute("successMessage", CREATE_SUBJECT_MESSAGE);
+        return "redirect:create-subject";
     }
 }

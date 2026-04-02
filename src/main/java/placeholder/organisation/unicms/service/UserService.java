@@ -93,7 +93,9 @@ public class UserService {
         log.debug("Deleted user with id: {}", id);
     }
 
-    public User saveUser(User user){
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    public User createUser(User user){
         return userRepository.save(user);
     }
 

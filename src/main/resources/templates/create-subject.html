@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head th:insert="styles/css.html :: my-css">
     <meta charset="UTF-8">
-    <title>Add Subject</title>
+    <title>Create Subject</title>
 </head>
 <body class="py-5">
 <div th:if="${successMessage}"
@@ -15,7 +15,7 @@
     <div class="card shadow mx-auto" style="max-width: 600px;">
         <div class="card-header bg-primary text-white">
             <h1 class="h3 mb-0" id="formTitle">Add Subject</h1>
-            <a th:href="@{add-subject}" class="btn btn-success btn-sm">Add Subject</a>
+            <a th:href="@{create-subject}" class="btn btn-success btn-sm">create Subject</a>
         </div>
         <div class="card-body">
             <form id="addSubjectForm" method="post">
@@ -29,7 +29,7 @@
                        th:value="${_csrf.token}"/>
                 <div class="d-flex gap-2">
                     <button type="submit" id="submitBtn"
-                            class="btn btn-primary">Add Subject
+                            class="btn btn-primary">Create Subject
                     </button>
                     <a th:href="@{/admin}" class="btn btn-secondary">Back to
                         Admin Panel</a>

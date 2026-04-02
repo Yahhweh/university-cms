@@ -69,18 +69,18 @@ class SubjectControllerTest {
 
     @Test
     void showAddSubjectForm_shouldReturnAddSubjectView() throws Exception {
-        mockMvc.perform(get("/add-subject"))
+        mockMvc.perform(get("/create-subject"))
             .andExpect(status().isOk())
-            .andExpect(view().name("add-subject"));
+            .andExpect(view().name("create-subject"));
     }
 
     @Test
     void addSubject_shouldRedirectWithSuccess_whenSubjectCreated() throws Exception {
-        mockMvc.perform(post("/add-subject")
+        mockMvc.perform(post("/create-subject")
                 .param("name", "Physics")
                 .with(csrf()))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("add-subject"))
+            .andExpect(redirectedUrl("create-subject"))
             .andExpect(flash().attribute("successMessage", "Subject has been successfully added"));
 
         verify(subjectService).createSubject(any(placeholder.organisation.unicms.service.dto.request.SubjectRequestDTO.class));

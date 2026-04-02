@@ -1,7 +1,6 @@
 package placeholder.organisation.unicms.controller;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -11,7 +10,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import placeholder.organisation.unicms.entity.Course;
 import placeholder.organisation.unicms.service.CourseService;
 import placeholder.organisation.unicms.service.SubjectService;
 import placeholder.organisation.unicms.service.dto.request.CourseRequestDTO;
@@ -22,30 +20,30 @@ import placeholder.organisation.unicms.service.dto.request.CourseRequestDTO;
 @AllArgsConstructor
 public class CourseController {
 
-    private static final String successAddMessage = "Course has been successfully created";
-    private static final String errorAddMessage = "Error in course validation";
-    private static final String successDeleteMessage = "Course has been successfully deleted";
+    private static final String CREATE_MESSAGE = "Course has been successfully created";
+    private static final String ERROR_CREATE_MESSAGE = "Error in course validation";
+    private static final String DELETE_MESSAGE = "Course has been successfully deleted";
 
     private final CourseService courseService;
     private final SubjectService subjectService;
 
-    @GetMapping("/add-course")
-    public String getAddCourseForm(Model model) {
+    @GetMapping("/create-course")
+    public String getCreateCourseForm(Model model) {
         model.addAttribute("subjects", subjectService.findAllSubjects());
-        return "add-course";
+        return "create-course";
     }
 
-    @PostMapping("/add-course")
-    public String addCourse(@ModelAttribute CourseRequestDTO courseRequestDTO,
+    @PostMapping("/create-course")
+    public String createCourse(@ModelAttribute CourseRequestDTO courseRequestDTO,
                             BindingResult bindingResult,
                             RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errorMessage", errorAddMessage);
-            return "redirect:add-course";
+            redirectAttributes.addFlashAttribute("errorMessage", ERROR_CREATE_MESSAGE);
+            return "redirect:create-course";
         }
         courseService.createCourse(courseRequestDTO);
-        redirectAttributes.addFlashAttribute("successMessage", successAddMessage);
-        return "redirect:add-course";
+        redirectAttributes.addFlashAttribute("successMessage", CREATE_MESSAGE);
+        return "redirect:create-course";
     }
 
     @PostMapping("/delete-course")
@@ -54,7 +52,7 @@ public class CourseController {
                                @RequestParam(required = false) String name,
                                RedirectAttributes redirectAttributes) {
         courseService.removeCourse(courseId);
-        redirectAttributes.addFlashAttribute("successMessage", successDeleteMessage);
+        redirectAttributes.addFlashAttribute("successMessage", DELETE_MESSAGE);
         redirectAttributes.addAttribute("page", pageable.getPageNumber());
         pageable.getSort().forEach(order ->
             redirectAttributes.addAttribute("sort",

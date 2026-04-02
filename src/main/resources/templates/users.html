@@ -67,7 +67,7 @@
                 <td th:text="${user.sureName}"></td>
                 <td th:text="${user.email}"></td>
                 <td th:text="${user.role}"></td>
-                <td th:if="${canManage}" class="d-flex gap-2">
+                <td th:if="${roles}" class="d-flex gap-2">
                     <form th:action="@{/admin/change-role}" method="post" class="d-flex gap-2">
                         <div th:replace="~{hidden-inputs/hidden-inputs :: inputs}">Hidden Inputs</div>
                         <input type="hidden" name="id" th:value="${user.id}"/>
@@ -81,6 +81,11 @@
                             <i class="bi bi-arrow-repeat fs-5"></i>
                         </button>
                     </form>
+                    <a th:if="${user.role.name() == 'LECTURER'}"
+                       th:href="@{/users/update-lecturer-subjects(lecturerId=${user.id})}"
+                       class="btn btn-link p-0" title="Assign subjects">
+                        <i class="bi bi-journal-bookmark fs-5"></i>
+                    </a>
                     <form th:action="@{/admin/delete-user}" method="post">
                         <div th:replace="~{hidden-inputs/hidden-inputs :: inputs}">Hidden Inputs</div>
                         <input type="hidden" name="id" th:value="${user.id}"/>
@@ -89,7 +94,7 @@
                         </button>
                     </form>
                 </td>
-                <td th:unless="${canManage}"></td>
+                <td th:unless="${roles}"></td>
             </tr>
             </tbody>
         </table>

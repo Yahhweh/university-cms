@@ -71,9 +71,9 @@ class LessonControllerTest {
         when(roomService.findAllRooms()).thenReturn(List.of());
         when(durationService.findAllDurations()).thenReturn(List.of());
 
-        mockMvc.perform(get("/lessons/add-lesson"))
+        mockMvc.perform(get("/lessons/create-lesson"))
             .andExpect(status().isOk())
-            .andExpect(view().name("add-lesson"))
+            .andExpect(view().name("create-lesson"))
             .andExpect(model().attributeExists("subjects", "groups", "rooms", "durations", "lecturers"));
     }
 
@@ -82,9 +82,9 @@ class LessonControllerTest {
         Lecturer lecturer = getLecturer();
         when(lecturerService.findLecturersBySubject(1L)).thenReturn(List.of(lecturer));
 
-        mockMvc.perform(get("/lessons/add-lesson").param("subjectId", "1"))
+        mockMvc.perform(get("/lessons/create-lesson").param("subjectId", "1"))
             .andExpect(status().isOk())
-            .andExpect(view().name("add-lesson"))
+            .andExpect(view().name("create-lesson"))
             .andExpect(model().attribute("lecturers", List.of(lecturer)))
             .andExpect(model().attribute("subjectId", 1L));
 
@@ -92,8 +92,8 @@ class LessonControllerTest {
     }
 
     @Test
-    void addLesson_shouldRedirectWithSuccess_whenDtoIsValid() throws Exception {
-        mockMvc.perform(post("/lessons/add-lesson")
+    void createLesson_shouldRedirectWithSuccess_whenDtoIsValid() throws Exception {
+        mockMvc.perform(post("/lessons/create-lesson")
                 .param("durationId", "1")
                 .param("studySubjectId", "1")
                 .param("groupId", "1")
@@ -102,7 +102,7 @@ class LessonControllerTest {
                 .param("date", "2025-10-06")
                 .with(csrf()))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/lessons/add-lesson"))
+            .andExpect(redirectedUrl("/lessons/create-lesson"))
             .andExpect(flash().attribute("successMessage", "Lesson has been successfully created"));
 
         verify(lessonService).createLesson(any(placeholder.organisation.unicms.service.dto.request.LessonRequestDTO.class));

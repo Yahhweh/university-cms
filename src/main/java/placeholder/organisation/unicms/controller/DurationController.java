@@ -1,6 +1,5 @@
 package placeholder.organisation.unicms.controller;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,9 +21,9 @@ import placeholder.organisation.unicms.service.dto.request.DurationRequestDTO;
 @Validated
 public class DurationController {
 
-    private final static String validationAddDurationMessage = "Some of your forms are not valid";
-    private final static String successAddDurationMessage = "Duration has been successfully created";
-    private final static String successRemoveDurationMessage = "Duration has been successfully deleted";
+    private static final String VALIDATION_CREATE_DURATION_MESSAGE = "Some of your forms are not valid";
+    private static final String CREATE_DURATION_MESSAGE = "Duration has been successfully created";
+    private static final String REMOVE_DURATION_MESSAGE = "Duration has been successfully deleted";
 
     private final DurationService durationService;
 
@@ -32,7 +31,7 @@ public class DurationController {
         this.durationService = service;
     }
 
-    @GetMapping(value = "/durations")
+    @GetMapping( "/durations")
     public String getDuration(Model model,
                               @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable
     ) {
@@ -45,20 +44,20 @@ public class DurationController {
         return "durations";
     }
 
-    @GetMapping("add-duration")
-    public String getAddDuration() {
-        return "add-duration";
+    @GetMapping("create-duration")
+    public String getCreateDuration() {
+        return "create-duration";
     }
 
-    @PostMapping("/add-duration")
-    public String addDuration(RedirectAttributes redirectAttributes,
+    @PostMapping("/create-duration")
+    public String createDuration(RedirectAttributes redirectAttributes,
                               @ModelAttribute() DurationRequestDTO dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errorMessage", validationAddDurationMessage);
+            redirectAttributes.addFlashAttribute("errorMessage", VALIDATION_CREATE_DURATION_MESSAGE);
         }
         durationService.createDuration(dto);
-        redirectAttributes.addFlashAttribute("successMessage", successAddDurationMessage);
-        return "redirect:add-duration";
+        redirectAttributes.addFlashAttribute("successMessage", CREATE_DURATION_MESSAGE);
+        return "redirect:create-duration";
     }
 
     @PostMapping("/delete-duration")
@@ -70,7 +69,7 @@ public class DurationController {
     }
 
     private void addRedirectAttributes(Pageable pageable, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("successMessage", successRemoveDurationMessage);
+        redirectAttributes.addFlashAttribute("successMessage", REMOVE_DURATION_MESSAGE);
         redirectAttributes.addAttribute("page", pageable.getPageNumber());
         pageable.getSort().forEach(order ->
             redirectAttributes.addAttribute("sort",

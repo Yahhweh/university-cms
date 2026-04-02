@@ -97,23 +97,23 @@ class AdminControllerTest {
 
 
     @Test
-    void showAddUserForm_shouldReturnAddUserView_withGroupsAndSubjects() throws Exception {
+    void showCreateUserForm_shouldReturnCreateUserView_withGroupsAndSubjects() throws Exception {
         List<Group> groups = List.of(new Group(1L, "AB-11", getCourse()));
         List<Subject> subjects = List.of(new Subject(1L, "Math"));
         when(groupService.findAllGroups()).thenReturn(groups);
         when(subjectService.findAllSubjects()).thenReturn(subjects);
 
-        mockMvc.perform(get("/admin/add-user"))
+        mockMvc.perform(get("/admin/create-user"))
             .andExpect(status().isOk())
-            .andExpect(view().name("add-user"))
+            .andExpect(view().name("create-user"))
             .andExpect(model().attribute("groups", groups))
             .andExpect(model().attribute("subjects", subjects));
     }
 
 
     @Test
-    void addStudent_shouldRedirectToAddStudent_whenStudentCreated() throws Exception {
-        mockMvc.perform(post("/admin/add-student")
+    void createStudent_shouldRedirectToCreateStudent_whenStudentCreated() throws Exception {
+        mockMvc.perform(post("/admin/create-student")
                 .param("name", "Ivan")
                 .param("sureName", "Petrov")
                 .param("password", "secret")
@@ -129,15 +129,15 @@ class AdminControllerTest {
                 .param("address.country", "Ukraine")
                 .with(csrf()))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/admin/add-user"));
+            .andExpect(redirectedUrl("/admin/create-user"));
 
         verify(studentService).createStudent((any(StudentRequestDTO.class)));
     }
 
 
     @Test
-    void addLecturer_shouldRedirectToAddLecturer_whenLecturerCreated() throws Exception {
-        mockMvc.perform(post("/admin/add-lecturer")
+    void createLecturer_shouldRedirectToCreateLecturer_whenLecturerCreated() throws Exception {
+        mockMvc.perform(post("/admin/create-lecturer")
                 .param("name", "Anna")
                 .param("sureName", "Kovalenko")
                 .param("password", "secret")
@@ -154,7 +154,7 @@ class AdminControllerTest {
                 .param("studySubjectIds", "1")
                 .with(csrf()))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/admin/add-user"));
+            .andExpect(redirectedUrl("/admin/create-user"));
 
         verify(lecturerService).createLecturer((any(LecturerRequestDTO.class)));
     }
@@ -190,8 +190,8 @@ class AdminControllerTest {
     }
 
     @Test
-    void addUser_shouldRedirect_whenUserCreated() throws Exception {
-        mockMvc.perform(post("/admin/add-user")
+    void createUser_shouldRedirect_whenUserCreated() throws Exception {
+        mockMvc.perform(post("/admin/create-user")
                 .param("name", "Ab")
                 .param("sureName", "Fkjdkfjdkjfdf")
                 .param("gender", "Male")

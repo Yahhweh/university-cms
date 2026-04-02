@@ -22,21 +22,20 @@ import placeholder.organisation.unicms.service.dto.request.UserRequestDTO;
 import jakarta.validation.Valid;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
 @PreAuthorize("hasRole('ADMIN')")
 @Validated
 public class AdminController {
-    private final static String deleteMessage = "User has been successfully deleted";
-    private final static String changeMessage = "User has been successfully changed";
-    private final static String addUserMessage = "User has been successfully created";
-    private final static String addStudentMessage = "Student has been successfully created";
-    private final static String addLecturerMessage = "Lecturer has been successfully created";
-    private final static String assignGroupMessage = "Groups have been successfully assigned";
-    private final static String removeGroupMessage = "Group has been successfully removed from course";
 
+    private static final String DELETE_MESSAGE = "User has been successfully deleted";
+    private static final String CHANGE_MESSAGE = "User has been successfully changed";
+    private static final String CREATE_USER_MESSAGE = "User has been successfully created";
+    private static final String CREATE_STUDENT_MESSAGE = "Student has been successfully created";
+    private static final String CREATE_LECTURER_MESSAGE = "Lecturer has been successfully created";
+    private static final String ASSIGN_GROUP_MESSAGE = "Groups have been successfully assigned";
+    private static final String REMOVE_GROUP_MESSAGE = "Group has been successfully removed from course";
 
     private final UserService userService;
     private final GroupService groupService;
@@ -68,69 +67,68 @@ public class AdminController {
     public String changeUserRole(@RequestParam Long id, @RequestParam String newRole,
                                  RedirectAttributes redirectAttributes,
                                  @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
-                                 @ModelAttribute UserFilter requestDTO) {
+                                 @ModelAttribute UserFilter filter) {
         Role enumRole = Role.valueOf(newRole.replace("ROLE_", ""));
         userService.changeRole(id, enumRole);
-        addRedirectAttributes(changeMessage, pageable, requestDTO, redirectAttributes);
+        PageProvider.providePages(CHANGE_MESSAGE, pageable, redirectAttributes, filter);
         return "redirect:/admin/users";
     }
 
-    @GetMapping("/add-user")
-    public String showAddUserForm(Model model) {
+    @GetMapping("/create-user")
+    public String showCreateUserForm(Model model) {
         model.addAttribute("groups", groupService.findAllGroups());
         model.addAttribute("subjects", subjectService.findAllSubjects());
-        return "add-user";
+        return "create-user";
     }
 
 
-    @PostMapping("/add-user")
+    @PostMapping("/create-user")
     public String addUser(@Valid @ModelAttribute UserRequestDTO userDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if(bindingResult.hasErrors()){
-            return "add-user";
+            return "create-user";
         }
         userService.createUser(userDTO);
-        redirectAttributes.addFlashAttribute("successMessage", addUserMessage);
-        return "redirect:/admin/add-user";
+        redirectAttributes.addFlashAttribute("successMessage", CREATE_USER_MESSAGE);
+        return "redirect:/admin/create-user";
     }
 
-    @PostMapping("/add-student")
+    @PostMapping("/create-student")
     public String addStudent(@Valid @ModelAttribute StudentRequestDTO studentDTO, RedirectAttributes redirectAttributes) {
         studentService.createStudent(studentDTO);
-        redirectAttributes.addFlashAttribute("successMessage", addStudentMessage);
-        return "redirect:/admin/add-user";
+        redirectAttributes.addFlashAttribute("successMessage", CREATE_STUDENT_MESSAGE);
+        return "redirect:/admin/create-user";
     }
 
-    @PostMapping("/add-lecturer")
+    @PostMapping("/create-lecturer")
     public String addLecturer(@Valid @ModelAttribute LecturerRequestDTO lecturerDTO, RedirectAttributes redirectAttributes) {
         lecturerService.createLecturer(lecturerDTO);
-        redirectAttributes.addFlashAttribute("successMessage", addLecturerMessage);
-        return "redirect:/admin/add-user";
+        redirectAttributes.addFlashAttribute("successMessage", CREATE_LECTURER_MESSAGE);
+        return "redirect:/admin/create-user";
     }
 
     @GetMapping("/users")
     public String getUsers(Model model, @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
-                           @ModelAttribute UserFilter requestDTO) {
-        Page<User> pages = userService.findAllFiltered(requestDTO, pageable);
+                           @ModelAttribute UserFilter filter) {
+        Page<User> pages = userService.findAllFiltered(filter, pageable);
         model.addAttribute("users", pages.getContent());
         model.addAttribute("page", pages);
         model.addAttribute("url", "admin/users");
-        model.addAttribute("filters", requestDTO);
+        model.addAttribute("filters", filter);
         model.addAttribute("roles", Role.values());
-        model.addAttribute("canManage", true);
         return "users";
     }
 
     @PostMapping("/delete-user")
     public String deleteUser(@RequestParam Long id, RedirectAttributes redirectAttributes,
                              @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
-                             @ModelAttribute UserFilter requestDTO) {
+                             @ModelAttribute UserFilter filter) {
         userService.deleteUser(id);
-        addRedirectAttributes(deleteMessage, pageable, requestDTO, redirectAttributes);
+        PageProvider.providePages(CHANGE_MESSAGE, pageable, redirectAttributes, filter);
         return "redirect:/admin/users";
     }
 
-    @GetMapping("/update-course-group")
-    public String getAssignGroupForm(Model model, @RequestParam(required = false) Long courseId) {
+    @GetMapping("/update-course-groups")
+    public String getUpdateCourseGroupsForm(Model model, @RequestParam(required = false) Long courseId) {
         model.addAttribute("courses", courseService.findAllCourses());
         model.addAttribute("groups", groupService.findAllGroups());
         if(courseId != null){
@@ -142,26 +140,13 @@ public class AdminController {
         return "update-course-group";
     }
 
-    @PostMapping("/update-course-group")
-    public String assignGroup(@RequestParam Long courseId,
+    @PostMapping("/update-course-groups")
+    public String updateCourseGroups(@RequestParam Long courseId,
                               @RequestParam List<Long> groupIds,
                               RedirectAttributes redirectAttributes) {
 
-        groupService.updateGroupsToCourse(courseId, groupIds);
-        redirectAttributes.addFlashAttribute("successMessage", assignGroupMessage);
+        groupService.updateCourseGroups(courseId, groupIds);
+        redirectAttributes.addFlashAttribute("successMessage", ASSIGN_GROUP_MESSAGE);
         return "redirect:/admin/update-course-group";
-    }
-
-    private void addRedirectAttributes(String message, Pageable pageable, UserFilter requestDTO, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("successMessage", message);
-        redirectAttributes.addAttribute("page", pageable.getPageNumber());
-        pageable.getSort().forEach(order ->
-            redirectAttributes.addAttribute("sort",
-                order.getProperty() + "," + order.getDirection().name().toLowerCase())
-        );
-        redirectAttributes.addAttribute("duration", requestDTO.getName() != null ? requestDTO.getName().toLowerCase() : "");
-        redirectAttributes.addAttribute("sureName", requestDTO.getSureName() != null ? requestDTO.getSureName().toLowerCase() : "");
-        redirectAttributes.addAttribute("email", requestDTO.getEmail() != null ? requestDTO.getEmail().toLowerCase() : "");
-        redirectAttributes.addAttribute("role", requestDTO.getRole() != null ? requestDTO.getRole().toString() : "");
     }
 }

@@ -36,7 +36,7 @@ public class StudentController {
         return "students";
     }
 
-    @GetMapping(value = "/profile")
+    @GetMapping( "/profile")
     public String getProfile(
         Model model,
         Authentication authentication

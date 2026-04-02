@@ -1,14 +1,17 @@
 package placeholder.organisation.unicms.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import placeholder.organisation.unicms.service.EntityNotFoundException;
 
 import java.net.BindException;
+import java.sql.SQLException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -43,5 +46,12 @@ public class GlobalExceptionHandler {
         model.addAttribute("error", 404);
         model.addAttribute("title", "Entity not found");
         return "redirect:error";
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public String handleSQLException(SQLException ex, RedirectAttributes redirectAttributes, HttpServletRequest request){
+        String url = request.getRequestURI();
+        redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        return "redirect:" + url;
     }
 }

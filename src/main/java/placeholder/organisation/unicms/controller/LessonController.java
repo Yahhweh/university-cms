@@ -25,9 +25,9 @@ import placeholder.organisation.unicms.service.dto.request.LessonRequestDTO;
 @Validated
 public class LessonController {
 
-    private final static String successAddLessonMessage = "Lesson has been successfully created";
-    private final static String validationAddLessonMessage = "Some of your forms are not valid";
-    private final static String successRemoveLessonMessage = "Lesson has been successfully deleted";
+    private static final String CREATE_LESSON_MESSAGE = "Lesson has been successfully created";
+    private static final String VALIDATION_ADD_LESSON_MESSAGE = "Some of your forms are not valid";
+    private static final String REMOVE_LESSON_MESSAGE = "Lesson has been successfully deleted";
 
     private final LessonService lessonService;
     private final SubjectService subjectService;
@@ -47,8 +47,8 @@ public class LessonController {
 
     @GetMapping("/lesson-setup")
     public String lessonSetup(Model model, @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
-                              @ModelAttribute("filters") LessonFilter requestDTO) {
-        Page<Lesson> lessons = lessonService.findAll(pageable, requestDTO);
+                              @ModelAttribute("filters") LessonFilter filter) {
+        Page<Lesson> lessons = lessonService.findAll(pageable, filter);
         model.addAttribute("url", "lessons/lesson-setup");
         model.addAttribute("page", lessons);
         model.addAttribute("lessons", lessons.getContent());
@@ -57,8 +57,8 @@ public class LessonController {
     }
 
 
-    @GetMapping("/add-lesson")
-    public String getAddLessonForm(Model model, @RequestParam(required = false) Long subjectId) {
+    @GetMapping("/create-lesson")
+    public String getCreateLessonForm(Model model, @RequestParam(required = false) Long subjectId) {
         if (subjectId != null) {
             model.addAttribute("lecturers", lecturerService.findLecturersBySubject(subjectId));
             model.addAttribute("subjectId", subjectId);
@@ -69,43 +69,27 @@ public class LessonController {
         model.addAttribute("groups", groupService.findAllGroups());
         model.addAttribute("rooms", roomService.findAllRooms());
         model.addAttribute("durations", durationService.findAllDurations());
-        return "add-lesson";
+        return "create-lesson";
     }
 
-    @PostMapping(value = "/add-lesson")
-    public String addLesson(RedirectAttributes redirectAttributes, @Valid @ModelAttribute LessonRequestDTO lessonRequestDTO,
+    @PostMapping ("/create-lesson")
+    public String createLesson(RedirectAttributes redirectAttributes, @Valid @ModelAttribute LessonRequestDTO lessonRequestDTO,
                             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errorMessage", validationAddLessonMessage);
-            return "redirect:/lessons/add-lesson";
+            redirectAttributes.addFlashAttribute("errorMessage", VALIDATION_ADD_LESSON_MESSAGE);
+            return "redirect:/lessons/create-lesson";
         }
         lessonService.createLesson(lessonRequestDTO);
-        redirectAttributes.addFlashAttribute("successMessage", successAddLessonMessage);
-        return "redirect:/lessons/add-lesson";
+        redirectAttributes.addFlashAttribute("successMessage", CREATE_LESSON_MESSAGE);
+        return "redirect:/lessons/create-lesson";
     }
 
-    @PostMapping(value = "/delete-lesson")
+    @PostMapping("/delete-lesson")
     public String deleteLesson(RedirectAttributes redirectAttributes, @RequestParam Long lessonId,
                                @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
-                               @ModelAttribute("filters") LessonFilter requestDTO) {
+                               @ModelAttribute("filters") LessonFilter filter) {
         lessonService.removeLesson(lessonId);
-        addRedirectAttributes(pageable, requestDTO, redirectAttributes);
+        PageProvider.providePages(REMOVE_LESSON_MESSAGE, pageable, redirectAttributes, filter);
         return "redirect:/lessons/lesson-setup";
-    }
-
-
-    private void addRedirectAttributes(Pageable pageable, LessonFilter requestDTO, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("successMessage", successRemoveLessonMessage);
-        redirectAttributes.addAttribute("page", pageable.getPageNumber());
-        pageable.getSort().forEach(order ->
-            redirectAttributes.addAttribute("sort",
-                order.getProperty() + "," + order.getDirection().name().toLowerCase())
-        );
-        redirectAttributes.addAttribute("durationId", requestDTO.getDurationId() != null? requestDTO.getDurationId() : "");
-        redirectAttributes.addAttribute("subject", requestDTO.getSubject() != null ? requestDTO.getSubject().toLowerCase() : "");
-        redirectAttributes.addAttribute("group", requestDTO.getGroup() != null ? requestDTO.getGroup().toLowerCase() : "");
-        redirectAttributes.addAttribute("lecturer.name", requestDTO.getLecturer().getName() != null ? requestDTO.getLecturer().getName() : "");
-        redirectAttributes.addAttribute("lecturer.sureName", requestDTO.getLecturer().getSureName() != null ? requestDTO.getLecturer().getSureName() : "");
-        redirectAttributes.addAttribute("room", requestDTO.getRoom() != null ? requestDTO.getRoom().toLowerCase(): "");
     }
 }
