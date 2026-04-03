@@ -60,7 +60,7 @@ public class SubjectController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/create-subject")
-    public String showAddLessonForm(){
+    public String showCreateLessonForm(){
         return "create-subject";
     }
 

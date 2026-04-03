@@ -26,10 +26,10 @@ public class UserFilter implements RedirectAttributesProvider {
     @Override
     public Map<String, String> toAttributes() {
         Map<String, String> attributes = new HashMap<>();
-        attributes.put("name", name != null ? name.toLowerCase() : "");
-        attributes.put("sureName", sureName != null ? sureName.toLowerCase() : "");
-        attributes.put("email", email != null ? email.toLowerCase() : "");
-        attributes.put("role", role != null ? role.toString() : "");
+        attributes.put("name", lowerOrEmpty(name));
+        attributes.put("sureName", lowerOrEmpty(sureName));
+        attributes.put("email", lowerOrEmpty(email));
+        attributes.put("role", emptyIfNull(role));
         return attributes;
     }
 }

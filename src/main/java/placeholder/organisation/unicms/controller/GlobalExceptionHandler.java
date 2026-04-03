@@ -1,6 +1,7 @@
 package placeholder.organisation.unicms.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,6 +13,7 @@ import placeholder.organisation.unicms.service.EntityNotFoundException;
 
 import java.net.BindException;
 import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -48,8 +50,8 @@ public class GlobalExceptionHandler {
         return "redirect:error";
     }
 
-    @ExceptionHandler(SQLException.class)
-    public String handleSQLException(SQLException ex, RedirectAttributes redirectAttributes, HttpServletRequest request){
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public String handleDataIntegrityViolationException(DataIntegrityViolationException ex, RedirectAttributes redirectAttributes, HttpServletRequest request){
         String url = request.getRequestURI();
         redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
         return "redirect:" + url;

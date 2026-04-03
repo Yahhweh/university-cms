@@ -1,6 +1,7 @@
 package placeholder.organisation.unicms.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -10,13 +11,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import placeholder.organisation.unicms.entity.Course;
 import placeholder.organisation.unicms.service.CourseService;
 import placeholder.organisation.unicms.service.SubjectService;
 import placeholder.organisation.unicms.service.dto.request.CourseRequestDTO;
 
 @Controller
-@RequestMapping("/admin")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN')")
 @AllArgsConstructor
 public class CourseController {
 
@@ -27,13 +28,13 @@ public class CourseController {
     private final CourseService courseService;
     private final SubjectService subjectService;
 
-    @GetMapping("/create-course")
+    @GetMapping("/admin/create-course")
     public String getCreateCourseForm(Model model) {
         model.addAttribute("subjects", subjectService.findAllSubjects());
         return "create-course";
     }
 
-    @PostMapping("/create-course")
+    @PostMapping("/admin/create-course")
     public String createCourse(@ModelAttribute CourseRequestDTO courseRequestDTO,
                             BindingResult bindingResult,
                             RedirectAttributes redirectAttributes) {
@@ -46,19 +47,27 @@ public class CourseController {
         return "redirect:create-course";
     }
 
-    @PostMapping("/delete-course")
+    @PostMapping("/admin/delete-course")
     public String deleteCourse(@RequestParam Long courseId,
                                @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
                                @RequestParam(required = false) String name,
                                RedirectAttributes redirectAttributes) {
         courseService.removeCourse(courseId);
-        redirectAttributes.addFlashAttribute("successMessage", DELETE_MESSAGE);
-        redirectAttributes.addAttribute("page", pageable.getPageNumber());
-        pageable.getSort().forEach(order ->
-            redirectAttributes.addAttribute("sort",
-                order.getProperty() + "," + order.getDirection().name().toLowerCase())
-        );
+        RedirectAttributesHelper.addPageAndFilterAttributes(DELETE_MESSAGE, pageable, redirectAttributes);
         redirectAttributes.addAttribute("name", name != null ? name : "");
         return "redirect:courses";
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN, STAFF')")
+    @GetMapping("/users/courses")
+    public String getCourses(Model model,
+                             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
+                             @RequestParam(required = false) String name) {
+        Page<Course> page = courseService.findAll(pageable, name);
+        model.addAttribute("courses", page.getContent());
+        model.addAttribute("page", page);
+        model.addAttribute("url", "users/courses");
+        model.addAttribute("name", name);
+        return "courses";
     }
 }

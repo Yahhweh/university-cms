@@ -19,7 +19,7 @@ import java.util.List;
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
-    public class GroupController {
+public class GroupController {
 
     private final GroupService groupService;
 

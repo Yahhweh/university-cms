@@ -64,16 +64,7 @@ public class DurationController {
     public String deleteDuration(RedirectAttributes redirectAttributes, @RequestParam Long durationId,
                                  @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         durationService.removeDuration(durationId);
-        addRedirectAttributes(pageable, redirectAttributes);
+        RedirectAttributesHelper.addPageAndFilterAttributes(REMOVE_DURATION_MESSAGE, pageable, redirectAttributes);
         return "redirect:durations";
-    }
-
-    private void addRedirectAttributes(Pageable pageable, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("successMessage", REMOVE_DURATION_MESSAGE);
-        redirectAttributes.addAttribute("page", pageable.getPageNumber());
-        pageable.getSort().forEach(order ->
-            redirectAttributes.addAttribute("sort",
-                order.getProperty() + "," + order.getDirection().name().toLowerCase())
-        );
     }
 }

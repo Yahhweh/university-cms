@@ -45,7 +45,7 @@ public class LessonController {
         this.groupService = groupService;
     }
 
-    @GetMapping("/lesson-setup")
+    @GetMapping("")
     public String lessonSetup(Model model, @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
                               @ModelAttribute("filters") LessonFilter filter) {
         Page<Lesson> lessons = lessonService.findAll(pageable, filter);
@@ -89,7 +89,7 @@ public class LessonController {
                                @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
                                @ModelAttribute("filters") LessonFilter filter) {
         lessonService.removeLesson(lessonId);
-        PageProvider.providePages(REMOVE_LESSON_MESSAGE, pageable, redirectAttributes, filter);
+        RedirectAttributesHelper.addPageAndFilterAttributes(REMOVE_LESSON_MESSAGE, pageable, redirectAttributes, filter);
         return "redirect:/lessons/lesson-setup";
     }
 }

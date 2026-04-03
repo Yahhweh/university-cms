@@ -19,8 +19,8 @@ public class RoomFilter implements RedirectAttributesProvider {
     @Override
     public Map<String, String> toAttributes() {
         Map<String, String> attributes = new HashMap<>();
-        attributes.put("number", number != null ? number.toLowerCase() : "");
-        attributes.put("roomType", roomType != null ? roomType.toLowerCase() : "");
+        attributes.put("number", lowerOrEmpty(number));
+        attributes.put("roomType", lowerOrEmpty(roomType));
         return attributes;
     }
 }

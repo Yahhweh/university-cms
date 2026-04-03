@@ -70,7 +70,7 @@ public class AdminController {
                                  @ModelAttribute UserFilter filter) {
         Role enumRole = Role.valueOf(newRole.replace("ROLE_", ""));
         userService.changeRole(id, enumRole);
-        PageProvider.providePages(CHANGE_MESSAGE, pageable, redirectAttributes, filter);
+        RedirectAttributesHelper.addPageAndFilterAttributes(CHANGE_MESSAGE, pageable, redirectAttributes, filter);
         return "redirect:/admin/users";
     }
 
@@ -83,7 +83,7 @@ public class AdminController {
 
 
     @PostMapping("/create-user")
-    public String addUser(@Valid @ModelAttribute UserRequestDTO userDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
+    public String createUser(@Valid @ModelAttribute UserRequestDTO userDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if(bindingResult.hasErrors()){
             return "create-user";
         }
@@ -93,14 +93,14 @@ public class AdminController {
     }
 
     @PostMapping("/create-student")
-    public String addStudent(@Valid @ModelAttribute StudentRequestDTO studentDTO, RedirectAttributes redirectAttributes) {
+    public String createStudent(@Valid @ModelAttribute StudentRequestDTO studentDTO, RedirectAttributes redirectAttributes) {
         studentService.createStudent(studentDTO);
         redirectAttributes.addFlashAttribute("successMessage", CREATE_STUDENT_MESSAGE);
         return "redirect:/admin/create-user";
     }
 
     @PostMapping("/create-lecturer")
-    public String addLecturer(@Valid @ModelAttribute LecturerRequestDTO lecturerDTO, RedirectAttributes redirectAttributes) {
+    public String createLecturer(@Valid @ModelAttribute LecturerRequestDTO lecturerDTO, RedirectAttributes redirectAttributes) {
         lecturerService.createLecturer(lecturerDTO);
         redirectAttributes.addFlashAttribute("successMessage", CREATE_LECTURER_MESSAGE);
         return "redirect:/admin/create-user";
@@ -123,7 +123,7 @@ public class AdminController {
                              @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
                              @ModelAttribute UserFilter filter) {
         userService.deleteUser(id);
-        PageProvider.providePages(CHANGE_MESSAGE, pageable, redirectAttributes, filter);
+        RedirectAttributesHelper.addPageAndFilterAttributes(CHANGE_MESSAGE, pageable, redirectAttributes, filter);
         return "redirect:/admin/users";
     }
 
@@ -137,7 +137,7 @@ public class AdminController {
                 model.addAttribute("courseGroups", groupService.getGroupsByCourse(courseId));
             });
         }
-        return "update-course-group";
+        return "update-course-groups";
     }
 
     @PostMapping("/update-course-groups")
@@ -147,6 +147,6 @@ public class AdminController {
 
         groupService.updateCourseGroups(courseId, groupIds);
         redirectAttributes.addFlashAttribute("successMessage", ASSIGN_GROUP_MESSAGE);
-        return "redirect:/admin/update-course-group";
+        return "redirect:/admin/update-course-groups";
     }
 }

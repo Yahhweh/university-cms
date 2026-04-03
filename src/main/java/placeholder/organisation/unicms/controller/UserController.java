@@ -84,17 +84,4 @@ public class UserController {
         redirectAttributes.addFlashAttribute("successMessage", UPDATE_LECTURER_SUBJECTS);
         return "redirect:/users/update-lecturer-subjects?lecturerId=" + lecturerId;
     }
-
-
-    @GetMapping("/courses")
-    public String getCourses(Model model,
-                             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
-                             @RequestParam(required = false) String name) {
-        Page<Course> page = courseService.findAll(pageable, name);
-        model.addAttribute("courses", page.getContent());
-        model.addAttribute("page", page);
-        model.addAttribute("url", "users/courses");
-        model.addAttribute("name", name);
-        return "courses";
-    }
 }

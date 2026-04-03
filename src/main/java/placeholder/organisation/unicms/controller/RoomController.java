@@ -11,7 +11,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import placeholder.organisation.unicms.entity.Room;
-import placeholder.organisation.unicms.service.EntityValidationException;
 import placeholder.organisation.unicms.service.RoomService;
 import placeholder.organisation.unicms.service.RoomTypeService;
 import placeholder.organisation.unicms.service.dto.request.RoomRequestDTO;
@@ -55,8 +54,8 @@ public class RoomController {
     }
 
     @PostMapping( "/create-room")
-    public String addRoom(RedirectAttributes redirectAttributes, @ModelAttribute RoomRequestDTO roomRequestDTO,
-                          BindingResult bindingResult) {
+    public String createRoom(RedirectAttributes redirectAttributes, @ModelAttribute RoomRequestDTO roomRequestDTO,
+                             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage", VALIDATION_ADD_ROOM_MESSAGE);
             return "redirect:create-room";
@@ -71,7 +70,7 @@ public class RoomController {
                               @RequestParam Long roomId, @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable) {
 
         roomService.removeClassRoom(roomId);
-        PageProvider.providePages(REMOVE_ROOM_MESSAGE, pageable, redirectAttributes, roomFilter);
+        RedirectAttributesHelper.addPageAndFilterAttributes(REMOVE_ROOM_MESSAGE, pageable, redirectAttributes, roomFilter);
         return "redirect:rooms";
     }
 }

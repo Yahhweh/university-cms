@@ -56,7 +56,7 @@ class RoomControllerTest {
     }
 
     @Test
-    void getAddRoom_shouldReturnAddRoomView_withRoomTypes() throws Exception {
+    void getAddRoom_shouldReturnCreateRoomView_withRoomTypes() throws Exception {
         when(roomTypeService.findAllRoomTypes()).thenReturn(List.of());
 
         mockMvc.perform(get("/users/create-room"))
@@ -67,7 +67,7 @@ class RoomControllerTest {
     }
 
     @Test
-    void addRoom_shouldRedirectWithSuccess_whenRoomCreated() throws Exception {
+    void createRoom_shouldRedirectWithSuccess_whenRoomCreated() throws Exception {
         mockMvc.perform(post("/users/create-room")
                 .param("number", "B-201")
                 .param("roomTypeId", "1")
