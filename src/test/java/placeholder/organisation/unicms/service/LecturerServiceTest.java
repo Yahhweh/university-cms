@@ -60,6 +60,31 @@ class LecturerServiceTest {
     }
 
     @Test
+    void updateLecturerSubjects_partialUpdate_keepsExistingAddsNewRemovesOld() {
+        long lecturerId = 1L;
+        Subject keepSubject = new Subject();
+        keepSubject.setId(1L);
+        Subject removeSubject = new Subject();
+        removeSubject.setId(2L);
+        Subject addSubject = new Subject();
+        addSubject.setId(3L);
+
+        Lecturer lecturer = new Lecturer();
+        lecturer.setSubjects(new HashSet<>(Set.of(keepSubject, removeSubject)));
+
+        when(lecturerRepository.findById(lecturerId)).thenReturn(Optional.of(lecturer));
+        when(subjectRepository.findById(1L)).thenReturn(Optional.of(keepSubject));
+        when(subjectRepository.findById(3L)).thenReturn(Optional.of(addSubject));
+
+        lecturerService.updateLecturerSubjects(List.of(1L, 3L), lecturerId);
+
+        assertTrue(lecturer.getSubjects().contains(keepSubject));
+        assertTrue(lecturer.getSubjects().contains(addSubject));
+        assertFalse(lecturer.getSubjects().contains(removeSubject));
+        assertEquals(2, lecturer.getSubjects().size());
+    }
+
+    @Test
     void assignSubjectToLecturer_throwsServiceException_whenDaoExceptionOccurs() {
         long subjectId = 1L;
         long lecturerId = 2L;

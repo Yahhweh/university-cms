@@ -84,7 +84,7 @@ public class AdminController {
 
     @PostMapping("/create-user")
     public String createUser(@Valid @ModelAttribute UserRequestDTO userDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             return "create-user";
         }
         userService.createUser(userDTO);
@@ -131,7 +131,7 @@ public class AdminController {
     public String getUpdateCourseGroupsForm(Model model, @RequestParam(required = false) Long courseId) {
         model.addAttribute("courses", courseService.findAllCourses());
         model.addAttribute("groups", groupService.findAllGroups());
-        if(courseId != null){
+        if (courseId != null) {
             courseService.findCourse(courseId).ifPresent(course -> {
                 model.addAttribute("selectedCourse", course);
                 model.addAttribute("courseGroups", groupService.getGroupsByCourse(courseId));
@@ -142,8 +142,8 @@ public class AdminController {
 
     @PostMapping("/update-course-groups")
     public String updateCourseGroups(@RequestParam Long courseId,
-                              @RequestParam List<Long> groupIds,
-                              RedirectAttributes redirectAttributes) {
+                                     @RequestParam List<Long> groupIds,
+                                     RedirectAttributes redirectAttributes) {
 
         groupService.updateCourseGroups(courseId, groupIds);
         redirectAttributes.addFlashAttribute("successMessage", ASSIGN_GROUP_MESSAGE);

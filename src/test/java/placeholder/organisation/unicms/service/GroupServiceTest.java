@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.Course;
 import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.entity.Subject;
+import placeholder.organisation.unicms.repository.CourseRepository;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.service.dto.request.GroupRequestDTO;
 import placeholder.organisation.unicms.service.mapper.GroupMapper;
@@ -20,8 +21,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class GroupServiceTest {
@@ -29,6 +29,8 @@ class GroupServiceTest {
     GroupMapper groupMapper = Mappers.getMapper(GroupMapper.class);
     @Mock
     GroupRepository groupRepository;
+    @Mock
+    CourseRepository courseRepository;
     @InjectMocks
     GroupService groupService;
 
@@ -77,6 +79,32 @@ class GroupServiceTest {
         assertThrows(EntityNotFoundException.class, () -> groupService.removeGroup(id));
         verify(groupRepository).existsById(id);
     }
+    @Test
+    void updateCourseGroups_addsAndRemovesGroups_differentially() {
+        Course course = getCourse();
+        Group groupA = new Group(1L, "A", course);
+        Group groupB = new Group(2L, "B", course);
+        Group groupC = new Group(3L, "C", null);
+
+        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+        when(groupRepository.findByCourseId(1L)).thenReturn(List.of(groupA, groupB));
+        when(groupRepository.findById(3L)).thenReturn(Optional.of(groupC));
+
+        groupService.updateCourseGroups(1L, List.of(1L, 3L));
+
+        assertThat(groupA.getCourse()).isEqualTo(course);
+        assertThat(groupB.getCourse()).isNull();
+        assertThat(groupC.getCourse()).isEqualTo(course);
+        verify(groupRepository, never()).findById(1L);
+    }
+
+    @Test
+    void updateCourseGroups_throwsEntityNotFound_whenCourseNotFound() {
+        when(courseRepository.findById(99L)).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> groupService.updateCourseGroups(99L, List.of(1L)));
+    }
+
     Group getGroup() {
         return new Group(1L, "A-122", getCourse());
     }

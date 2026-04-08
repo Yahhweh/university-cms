@@ -44,7 +44,7 @@ class LessonControllerTest {
     private GroupService groupService;
 
     @Test
-    void lessonSetup_shouldReturnLessonSetupView_withPagedLessons() throws Exception {
+    void lessonSetup_shouldReturnLessonsView_withPagedLessons() throws Exception {
         List<Lesson> lessons = List.of(getLesson());
         Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
         Page<Lesson> lessonPage = new PageImpl<>(lessons, pageable, lessons.size());

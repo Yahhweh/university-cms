@@ -14,6 +14,7 @@ import placeholder.organisation.unicms.service.dto.request.GroupRequestDTO;
 import placeholder.organisation.unicms.service.mapper.GroupMapper;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -73,22 +74,29 @@ public class GroupService {
     }
 
     public List<Group> findGroupsByCourse(Long courseId) {
-        return groupRepository.findAll().stream()
-            .filter(g -> g.getCourse() != null && g.getCourse().getId().equals(courseId))
-            .toList();
+        return groupRepository.findByCourseId(courseId);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public void updateCourseGroups(Long courseId, List<Long> groupIds) {
         Course course = courseRepository.findById(courseId)
-            .orElseThrow(() -> new EntityNotFoundException(
-                Course.class, String.valueOf(courseId)));
+            .orElseThrow(() -> new EntityNotFoundException(Course.class, String.valueOf(courseId)));
 
-        groupRepository.clearCourseConnection(courseId);
+        List<Long> newIds = groupIds != null ? groupIds : List.of();
+        List<Group> currentGroups = groupRepository.findByCourseId(courseId);
 
-        if (groupIds != null && !groupIds.isEmpty()) {
-            groupRepository.assignCourse(courseId, groupIds);
+        currentGroups.stream()
+            .filter(g -> !newIds.contains(g.getId()))
+            .forEach(g -> g.setCourse(null));
+
+        Set<Long> currentIds = currentGroups.stream().map(Group::getId).collect(Collectors.toSet());
+        for (Long id : newIds) {
+            if (!currentIds.contains(id)) {
+                Group group = groupRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException(Group.class, String.valueOf(id)));
+                group.setCourse(course);
+            }
         }
 
         log.debug("Updated groups for course {}", courseId);
@@ -104,11 +112,8 @@ public class GroupService {
         log.debug("Removed group {} from course", groupId);
     }
 
-    public List<Long> getGroupsByCourse(Long courseId){
-        return groupRepository.findAll().stream()
-            .filter(g -> g.getCourse() != null && g.getCourse().getId().equals(courseId))
-            .map(Group::getId)
-            .toList();
+    public List<Long> getGroupsByCourse(Long courseId) {
+        return findGroupsByCourse(courseId).stream().map(Group::getId).toList();
     }
 
 }

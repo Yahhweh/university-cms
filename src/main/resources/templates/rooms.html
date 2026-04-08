@@ -5,7 +5,7 @@
     <title>Room List</title>
 </head>
 <body class="py-4">
-<form th:action="@{/admin/rooms}" method="get" class="row g-2 mb-4">
+<form th:action="@{/rooms}" method="get" class="row g-2 mb-4">
     <div class="col-auto">
         <input type="text" name="roomType" placeholder="Hall"
                th:value="${filters.roomType}" class="form-control">
@@ -19,13 +19,13 @@
         <button type="submit" class="btn btn-primary">Filter</button>
     </div>
     <div class="col-auto">
-        <a th:href="@{/admin/rooms}" class="btn btn-outline-light">Reset</a>
+        <a th:href="@{/rooms}" class="btn btn-outline-light">Reset</a>
     </div>
 </form>
 <div class="container">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="text-white mb-0">Rooms</h2>
-        <a th:href="@{/admin/create-room}" class="btn btn-success">Add Room</a>
+        <a th:href="@{/rooms/create-room}" class="btn btn-success">Add Room</a>
     </div>
     <div class="table-responsive">
         <table class="table table-bordered table-striped table-hover bg-white">
@@ -53,7 +53,7 @@
                 <td th:text="${room.room}">B-102</td>
                 <td th:text="${room.roomType?.name ?: '-'}">LECTURE_HALL</td>
                 <td class="d-flex gap-2">
-                    <form th:action="@{/admin/delete-room}" method="post">
+                    <form th:action="@{/rooms/delete-room}" method="post">
                         <input type="hidden" name="roomId"
                                th:value="${room.id}"/>
                         <input type="hidden" th:name="${_csrf.parameterName}"

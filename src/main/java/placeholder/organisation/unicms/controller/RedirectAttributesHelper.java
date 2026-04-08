@@ -6,14 +6,9 @@ import placeholder.organisation.unicms.service.dto.request.filter.RedirectAttrib
 
 public class RedirectAttributesHelper {
 
-    public static void addPageAndFilterAttributes(String message, Pageable pageable, RedirectAttributes redirectAttributes, RedirectAttributesProvider filter){
-        redirectAttributes.addFlashAttribute("successMessage", message);
-        redirectAttributes.addAttribute("page", pageable.getPageNumber());
-        pageable.getSort().forEach(order ->
-            redirectAttributes.addAttribute("sort",
-                order.getProperty() + "," + order.getDirection().name().toLowerCase())
-        );
-
+    public static void addPageAndFilterAttributes(String message, Pageable pageable,
+            RedirectAttributes redirectAttributes, RedirectAttributesProvider filter) {
+        addPageAndFilterAttributes(message, pageable, redirectAttributes);
         filter.toAttributes().forEach(redirectAttributes::addAttribute);
     }
 

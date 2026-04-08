@@ -18,7 +18,7 @@ import placeholder.organisation.unicms.service.dto.request.filter.RoomFilter;
 
 @Controller
 @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
-@RequestMapping("/users")
+@RequestMapping("/rooms")
 public class RoomController {
 
     private static final String ADD_ROOM_MESSAGE = "Room has been successfully created";
@@ -33,7 +33,7 @@ public class RoomController {
         this.roomTypeService = roomTypeService;
     }
 
-    @GetMapping( "/rooms")
+    @GetMapping
     public String getRooms(Model model,
                            @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
                            @ModelAttribute("filters") RoomFilter filter) {
@@ -42,7 +42,7 @@ public class RoomController {
         model.addAttribute("rooms", page.getContent());
         model.addAttribute("page", page);
         model.addAttribute("roomTypes", roomTypeService.findAllRoomTypes());
-        model.addAttribute("url", "admin/rooms");
+        model.addAttribute("url", "rooms");
         return "rooms";
     }
 

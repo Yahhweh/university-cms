@@ -113,11 +113,11 @@ public class LessonService {
         log.debug("Lesson updated successfully. ID: {}", lessonId);
     }
 
-    public Page<Lesson> findAll(Pageable pageable, LessonFilter requestDTO) {
-        log.debug("Trying to get filtered lesson: group={}, room={}, subject={}, lecturer name={}, lecturer surename={}, durationId={},", requestDTO.getGroup(),
-            requestDTO.getRoom(), requestDTO.getSubject(), requestDTO.getLecturer().getName(), requestDTO.getLecturer().getSureName(), requestDTO.getDurationId() );
+    public Page<Lesson> findAll(Pageable pageable, LessonFilter filter) {
+        log.debug("Trying to get filtered lesson: group={}, room={}, subject={}, lecturer name={}, lecturer surename={}, durationId={},", filter.getGroup(),
+            filter.getRoom(), filter.getSubject(), filter.getLecturer().getName(), filter.getLecturer().getSureName(), filter.getDurationId() );
 
-        return lessonRepository.findAll(LessonSpecification.filter(requestDTO), pageable);
+        return lessonRepository.findAll(LessonSpecification.filter(filter), pageable);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

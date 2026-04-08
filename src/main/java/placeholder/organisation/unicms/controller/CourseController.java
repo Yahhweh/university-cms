@@ -55,18 +55,18 @@ public class CourseController {
         courseService.removeCourse(courseId);
         RedirectAttributesHelper.addPageAndFilterAttributes(DELETE_MESSAGE, pageable, redirectAttributes);
         redirectAttributes.addAttribute("name", name != null ? name : "");
-        return "redirect:courses";
+        return "redirect:/courses";
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN, STAFF')")
-    @GetMapping("/users/courses")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    @GetMapping("/courses")
     public String getCourses(Model model,
                              @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
                              @RequestParam(required = false) String name) {
         Page<Course> page = courseService.findAll(pageable, name);
         model.addAttribute("courses", page.getContent());
         model.addAttribute("page", page);
-        model.addAttribute("url", "users/courses");
+        model.addAttribute("url", "courses");
         model.addAttribute("name", name);
         return "courses";
     }

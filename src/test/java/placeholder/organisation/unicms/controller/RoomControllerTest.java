@@ -44,7 +44,7 @@ class RoomControllerTest {
 
         when(roomService.findAll(any(RoomFilter.class), any(Pageable.class))).thenReturn(roomPage);
 
-        mockMvc.perform(get("/users/rooms")
+        mockMvc.perform(get("/rooms")
                 .param("sort", "id,asc")
                 .param("size", "9")
                 .param("page", "0"))
@@ -52,14 +52,14 @@ class RoomControllerTest {
             .andExpect(view().name("rooms"))
             .andExpect(model().attribute("rooms", rooms))
             .andExpect(model().attribute("page", roomPage))
-            .andExpect(model().attribute("url", "admin/rooms"));
+            .andExpect(model().attribute("url", "rooms"));
     }
 
     @Test
     void getAddRoom_shouldReturnCreateRoomView_withRoomTypes() throws Exception {
         when(roomTypeService.findAllRoomTypes()).thenReturn(List.of());
 
-        mockMvc.perform(get("/users/create-room"))
+        mockMvc.perform(get("/rooms/create-room"))
 
             .andExpect(status().isOk())
             .andExpect(view().name("create-room"))
@@ -68,7 +68,7 @@ class RoomControllerTest {
 
     @Test
     void createRoom_shouldRedirectWithSuccess_whenRoomCreated() throws Exception {
-        mockMvc.perform(post("/users/create-room")
+        mockMvc.perform(post("/rooms/create-room")
                 .param("number", "B-201")
                 .param("roomTypeId", "1")
                 .with(csrf()))
@@ -81,7 +81,7 @@ class RoomControllerTest {
 
     @Test
     void deleteRoom_shouldRedirectToRooms_whenRoomDeleted() throws Exception {
-        mockMvc.perform(post("/users/delete-room")
+        mockMvc.perform(post("/rooms/delete-room")
                 .param("roomId", "1")
                 .with(csrf()))
             .andExpect(status().is3xxRedirection())

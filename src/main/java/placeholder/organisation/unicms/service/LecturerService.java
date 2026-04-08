@@ -78,8 +78,10 @@ public class LecturerService {
 
         Set<Subject> newSubjects = findSubjectsByIds(subjectIds);
 
-        lecturer.getSubjects().clear();
-        lecturer.getSubjects().addAll(newSubjects);
+        lecturer.getSubjects().removeIf(s -> !newSubjects.contains(s));
+        newSubjects.stream()
+            .filter(s -> !lecturer.getSubjects().contains(s))
+            .forEach(lecturer.getSubjects()::add);
     }
 
     @Transactional
