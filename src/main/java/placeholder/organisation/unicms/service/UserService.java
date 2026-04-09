@@ -65,12 +65,11 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-    public Page<User> findUsersForAccess(UserFilter dto, Pageable pageable,
-                                         boolean isAdmin){
-        if(isAdmin){
-            return findAllFiltered(dto, pageable);
-        }else {
-            return (findAllFilteredByType(dto, pageable, STAFF_VISIBLE_TYPES));
+    public Page<User> findUsersVisibleTo(Role role, UserFilter filter, Pageable pageable) {
+        if (role == Role.ADMIN) {
+            return findAllFiltered(filter, pageable);
+        } else {
+            return findAllFilteredByType(filter, pageable, STAFF_VISIBLE_TYPES);
         }
     }
 
@@ -79,8 +78,8 @@ public class UserService {
         return userRepository.findAll(UserSpecification.filter(userFilter), pageable);
     }
 
-    public Page<User> findAllFilteredByType(UserFilter dto, Pageable pageable, List<String> types) {
-        return userRepository.findAll(UserSpecification.filter(dto).and(UserSpecification.hasTypeIn(types)), pageable);
+    public Page<User> findAllFilteredByType(UserFilter filter, Pageable pageable, List<String> types) {
+        return userRepository.findAll(UserSpecification.filter(filter).and(UserSpecification.hasTypeIn(types)), pageable);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

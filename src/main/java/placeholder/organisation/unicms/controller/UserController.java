@@ -17,9 +17,7 @@ import placeholder.organisation.unicms.service.SubjectService;
 import placeholder.organisation.unicms.service.UserService;
 import placeholder.organisation.unicms.service.dto.request.filter.UserFilter;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/users")
@@ -47,10 +45,12 @@ public class UserController {
                            @ModelAttribute UserFilter filter,
                            Authentication auth) {
 
-        boolean isAdmin = auth.getAuthorities().stream()
-            .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+        Role role = auth.getAuthorities().stream()
+            .map(a -> Role.valueOf(a.getAuthority().replace("ROLE_", "")))
+            .findFirst()
+            .orElse(Role.STAFF);
 
-        Page<User> users = userService.findUsersForAccess(filter, pageable, isAdmin);
+        Page<User> users = userService.findUsersVisibleTo(role, filter, pageable);
 
         model.addAttribute("users", users.getContent());
         model.addAttribute("page", users);
@@ -64,15 +64,8 @@ public class UserController {
     public String getAssignSubjectsForm(Model model,
                                        @RequestParam Long lecturerId) {
         model.addAttribute("subjects", subjectService.findAllSubjects());
-        model.addAttribute("lecturerSubjects", new HashSet<>());
-        lecturerService.findLecturer(lecturerId).ifPresent(lecturer -> {
-            model.addAttribute("selectedLecturer", lecturerId);
-            model.addAttribute("lecturerName", lecturer.getName() + " " + lecturer.getSureName());
-            model.addAttribute("lecturerSubjects",
-                lecturer.getSubjects().stream()
-                    .map(Subject::getId)
-                    .collect(Collectors.toSet()));
-        });
+        lecturerService.findLecturerDto(lecturerId)
+            .ifPresent(dto -> model.addAttribute("lecturer", dto));
         return "update-lecturer-subject";
     }
 

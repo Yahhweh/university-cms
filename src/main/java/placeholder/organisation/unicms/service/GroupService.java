@@ -74,7 +74,9 @@ public class GroupService {
     }
 
     public List<Group> findGroupsByCourse(Long courseId) {
-        return groupRepository.findByCourseId(courseId);
+        Course course = courseRepository.findById(courseId)
+            .orElseThrow(() -> new EntityNotFoundException(Course.class, String.valueOf(courseId)));
+        return groupRepository.findByCourse(course);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -84,7 +86,7 @@ public class GroupService {
             .orElseThrow(() -> new EntityNotFoundException(Course.class, String.valueOf(courseId)));
 
         List<Long> newIds = groupIds != null ? groupIds : List.of();
-        List<Group> currentGroups = groupRepository.findByCourseId(courseId);
+        List<Group> currentGroups = groupRepository.findByCourse(course);
 
         currentGroups.stream()
             .filter(g -> !newIds.contains(g.getId()))

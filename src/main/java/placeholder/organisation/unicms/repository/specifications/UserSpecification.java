@@ -32,7 +32,7 @@ public class UserSpecification {
         };
     }
 
-    public static Specification<User> hasTypeIn(List<?> roles) {
-        return (root, query, cb) -> root.get("dtype").in(roles);
+    public static Specification<User> hasTypeIn(List<?> types) {
+        return (root, query, cb) -> root.get("dtype").in(types);
     }
 }

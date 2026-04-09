@@ -87,7 +87,7 @@ class GroupServiceTest {
         Group groupC = new Group(3L, "C", null);
 
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
-        when(groupRepository.findByCourseId(1L)).thenReturn(List.of(groupA, groupB));
+        when(groupRepository.findByCourse(course)).thenReturn(List.of(groupA, groupB));
         when(groupRepository.findById(3L)).thenReturn(Optional.of(groupC));
 
         groupService.updateCourseGroups(1L, List.of(1L, 3L));

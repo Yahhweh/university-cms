@@ -11,11 +11,11 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LessonFilter implements RedirectAttributesProvider {
-    Long durationId;
-    String subject;
-    String group;
-    LecturerFilter lecturer = new LecturerFilter();
-    String room;
+    private Long durationId;
+    private String subject;
+    private String group;
+    private LecturerFilter lecturer = new LecturerFilter();
+    private String room;
 
     @Override
     public Map<String, String> toAttributes() {

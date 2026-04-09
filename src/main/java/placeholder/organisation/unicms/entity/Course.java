@@ -29,5 +29,5 @@ public class Course {
         joinColumns = @JoinColumn(name = "course_id"),
         inverseJoinColumns = @JoinColumn(name = "study_subject_id")
     )
-    List<Subject> subjects;
+    private List<Subject> subjects;
 }

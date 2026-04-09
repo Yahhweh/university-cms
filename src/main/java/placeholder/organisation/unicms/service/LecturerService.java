@@ -13,6 +13,7 @@ import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.repository.LecturerRepository;
 import placeholder.organisation.unicms.repository.SubjectRepository;
 import placeholder.organisation.unicms.service.dto.request.LecturerRequestDTO;
+import placeholder.organisation.unicms.service.dto.response.LecturerSubjectsDTO;
 import placeholder.organisation.unicms.service.mapper.LecturerMapper;
 
 import java.util.*;
@@ -67,6 +68,15 @@ public class LecturerService {
         Optional<Lecturer> lecturer = lecturerRepository.findById(lecturerId);
         lecturer.ifPresent(value -> log.debug("Found lecturer {}", value));
         return lecturer;
+    }
+
+    public Optional<LecturerSubjectsDTO> findLecturerDto(Long lecturerId) {
+        return lecturerRepository.findById(lecturerId)
+            .map(l -> new LecturerSubjectsDTO(
+                l.getId(),
+                l.getName() + " " + l.getSureName(),
+                l.getSubjects().stream().map(Subject::getId).collect(Collectors.toSet())
+            ));
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")

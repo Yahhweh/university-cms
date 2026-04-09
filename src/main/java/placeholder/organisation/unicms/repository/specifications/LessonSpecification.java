@@ -10,27 +10,27 @@
 
     public class LessonSpecification {
 
-        public static Specification<Lesson> filter(LessonFilter requestDTO){
+        public static Specification<Lesson> filter(LessonFilter filter){
             return ((root, query, cb) -> {
                 List<Predicate> predicates = new ArrayList<>();
 
-                if(requestDTO.getDurationId() != null){
-                    predicates.add(cb.equal(root.get("duration").get("id"), requestDTO.getDurationId()));
+                if(filter.getDurationId() != null){
+                    predicates.add(cb.equal(root.get("duration").get("id"), filter.getDurationId()));
                 }
-                if(requestDTO.getSubject() != null && !requestDTO.getSubject().isBlank()){
-                    predicates.add(cb.like(cb.lower(root.get("subject").get("name")), "%" + requestDTO.getSubject().toLowerCase() + "%"));
+                if(filter.getSubject() != null && !filter.getSubject().isBlank()){
+                    predicates.add(cb.like(cb.lower(root.get("subject").get("name")), "%" + filter.getSubject().toLowerCase() + "%"));
                 }
-                if(requestDTO.getGroup() != null && !requestDTO.getGroup().isBlank()){
-                    predicates.add(cb.like(cb.lower(root.get("group").get("name")), "%" + requestDTO.getGroup().toLowerCase() + "%"));
+                if(filter.getGroup() != null && !filter.getGroup().isBlank()){
+                    predicates.add(cb.like(cb.lower(root.get("group").get("name")), "%" + filter.getGroup().toLowerCase() + "%"));
                 }
-                if(requestDTO.getRoom() != null && !requestDTO.getRoom().isBlank()){
-                    predicates.add(cb.like(cb.lower(root.get("room").get("room")), "%" + requestDTO.getRoom().toLowerCase() + "%"));
+                if(filter.getRoom() != null && !filter.getRoom().isBlank()){
+                    predicates.add(cb.like(cb.lower(root.get("room").get("room")), "%" + filter.getRoom().toLowerCase() + "%"));
                 }
-                if(requestDTO.getLecturer().getName() != null && !requestDTO.getLecturer().getName().isBlank()){
-                    predicates.add(cb.like(cb.lower(root.get("lecturer").get("name")), "%" + requestDTO.getLecturer().getName().toLowerCase() + "%"));
+                if(filter.getLecturer().getName() != null && !filter.getLecturer().getName().isBlank()){
+                    predicates.add(cb.like(cb.lower(root.get("lecturer").get("name")), "%" + filter.getLecturer().getName().toLowerCase() + "%"));
                 }
-                if(requestDTO.getLecturer().getSureName() != null && !requestDTO.getLecturer().getSureName().isBlank()){
-                    predicates.add(cb.like(cb.lower(root.get("lecturer").get("sureName")), "%" + requestDTO.getLecturer().getSureName().toLowerCase() + "%"));
+                if(filter.getLecturer().getSureName() != null && !filter.getLecturer().getSureName().isBlank()){
+                    predicates.add(cb.like(cb.lower(root.get("lecturer").get("sureName")), "%" + filter.getLecturer().getSureName().toLowerCase() + "%"));
                 }
 
                 return cb.and(predicates.toArray(new Predicate[0]));

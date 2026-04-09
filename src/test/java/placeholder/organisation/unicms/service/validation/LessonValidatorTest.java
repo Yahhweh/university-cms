@@ -147,7 +147,7 @@ class LessonValidatorTest {
     }
 
     private Course getCourse(){
-        return new Course(1L, "SE", List.of(new Subject()));
+        return new Course(1L, "SE", List.of(new Subject(1L, "Math")));
     }
 
     private Room getClassRoom() {
