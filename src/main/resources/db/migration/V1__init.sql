@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS address (
 CREATE TABLE IF NOT EXISTS "group" (
                                        id SERIAL PRIMARY KEY,
                                        name VARCHAR(255) NOT NULL
+
 );
 
 CREATE TABLE IF NOT EXISTS duration (

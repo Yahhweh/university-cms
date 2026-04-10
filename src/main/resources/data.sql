@@ -283,29 +283,6 @@ INSERT INTO public.course_study_subject(course_id, study_subject_id) VALUES (1, 
 INSERT INTO public.course_study_subject(course_id, study_subject_id) VALUES (1, 10);
 
 
-
-INSERT INTO public."group" (id, name, course) VALUES (1, 'HN-85', 1);
-INSERT INTO public."group" (id, name, course) VALUES (2, 'PS-58', 1);
-INSERT INTO public."group" (id, name, course) VALUES (3, 'UB-01', 1);
-INSERT INTO public."group" (id, name, course) VALUES (4, 'RA-83', 1);
-INSERT INTO public."group" (id, name, course) VALUES (5, 'WU-29', 1);
-INSERT INTO public."group" (id, name, course) VALUES (6, 'GT-09', 1);
-INSERT INTO public."group" (id, name, course) VALUES (7, 'PA-74', 1);
-INSERT INTO public."group" (id, name, course) VALUES (8, 'MA-28',1 );
-INSERT INTO public."group" (id, name, course) VALUES (9, 'RE-70',1 );
-INSERT INTO public."group" (id, name, course) VALUES (10, 'OV-50', 1);
-INSERT INTO public."group" (id, name, course) VALUES (11, 'DA-13', 1);
-INSERT INTO public."group" (id, name, course) VALUES (12, 'PR-59', 1);
-INSERT INTO public."group" (id, name, course) VALUES (13, 'YB-12', 2);
-INSERT INTO public."group" (id, name, course) VALUES (14, 'FK-48', 1);
-INSERT INTO public."group" (id, name, course) VALUES (15, 'FG-93', 1);
-INSERT INTO public."group" (id, name, course) VALUES (16, 'CD-15', 3);
-INSERT INTO public."group" (id, name, course) VALUES (17, 'KF-17', 2);
-INSERT INTO public."group" (id, name, course) VALUES (18, 'GR-94', 1);
-INSERT INTO public."group" (id, name, course) VALUES (19, 'XQ-36', 1);
-INSERT INTO public."group" (id, name, course) VALUES (20, 'SD-95', 1);
-
-
 --
 -- Data for Name: user; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -495,6 +472,27 @@ INSERT INTO public.lecturer (id, salary) VALUES (13, 3882);
 
 
 
+
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (1, 'HN-85', 1, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (2, 'PS-58', 1, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (3, 'UB-01', 1, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (4, 'RA-83', 1, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (5, 'WU-29', 1, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (6, 'GT-09', 1, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (7, 'PA-74', 1, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (8, 'MA-28',1, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (9, 'RE-70',1, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (10, 'OV-50', 1, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (11, 'DA-13', 1, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (12, 'PR-59', 1, 1 );
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (13, 'YB-12', 2,1 );
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (14, 'FK-48', 1, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (15, 'FG-93', 1, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (16, 'CD-15', 3, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (17, 'KF-17', 2,1 );
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (18, 'GR-94', 1, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (19, 'XQ-36', 1, 1);
+INSERT INTO public."group" (id, name, course, mentor_id) VALUES (20, 'SD-95', 1, 1);
 
 --
 -- Data for Name: lecturer_study_subject; Type: TABLE DATA; Schema: public; Owner: postgres

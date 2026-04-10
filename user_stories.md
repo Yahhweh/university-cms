@@ -86,3 +86,13 @@ Given User `C` logged in with Staff role.
 * User 'C' should be able to view the list of courses and see the details of each course.
 
 ---
+
+Given User `A` logged in with Admin role
+* User 'A' can Create/Read/Update/Delete group information
+
+Given User `B` logged in with Student or Teacher role
+* User 'B' should be able to list all groups information (read access).
+
+Given User `C` logged in with Staff role
+* User 'C' should be able to Create/Read/Update group information.
+

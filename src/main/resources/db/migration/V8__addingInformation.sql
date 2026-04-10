@@ -1,0 +1,2 @@
+ALTER TABLE "group"
+ADD IF NOT EXISTS info TEXT NOT NULL DEFAULT 'Group info';

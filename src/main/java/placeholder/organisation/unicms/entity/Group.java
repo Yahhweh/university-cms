@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.validation.constraints.*;
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Data
@@ -27,6 +28,16 @@ public class Group {
     @JoinColumn(name = "course")
     Course course;
 
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ColumnDefault("1")
+    @JoinColumn(name = "mentor_id", nullable = false)
+    private User mentor;
+
+    @NotNull
+    @ColumnDefault("'Group info'")
+    @Column(name = "info", nullable = false, length = Integer.MAX_VALUE)
+    private String info;
     public String toString(){
         return this.getName();
     }

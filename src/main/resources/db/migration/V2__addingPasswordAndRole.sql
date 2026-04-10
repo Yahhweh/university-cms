@@ -8,4 +8,4 @@ END IF;
 END $$;
 
 ALTER TABLE "user"
-    ADD COLUMN role role_type NOT NULL DEFAULT 'STAFF';
+    ADD COLUMN IF NOT EXISTS role role_type NOT NULL DEFAULT 'STAFF';

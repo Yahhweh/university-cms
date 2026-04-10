@@ -1,0 +1,2 @@
+ALTER TABLE "group"
+    ADD COLUMN IF NOT EXISTS course INTEGER REFERENCES course(id);

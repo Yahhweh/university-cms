@@ -1,0 +1,5 @@
+ALTER TABLE "group"
+ADD IF NOT EXISTS mentor_id  BIGINT NOT NULL DEFAULT 1;
+
+ALTER TABLE "group"
+    ADD CONSTRAINT fk_mentor_id FOREIGN KEY (mentor_id) REFERENCES "user"(id);
