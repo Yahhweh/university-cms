@@ -10,10 +10,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.service.GroupService;
 import placeholder.organisation.unicms.service.StudentService;
+import placeholder.organisation.unicms.service.dto.request.UpdateGroupInfoRequestDTO;
 
 import java.util.List;
 
@@ -51,6 +55,15 @@ public class GroupController {
         model.addAttribute("group", student.getGroup());
         model.addAttribute("students", students);
         return "group-profile";
+    }
+
+    @PreAuthorize("hasAnyRole('MENTOR', 'ADMIN')")
+    @PostMapping("/group-profile/update-info")
+    public String updateGroupInfo(@ModelAttribute UpdateGroupInfoRequestDTO dto,
+                                  RedirectAttributes redirectAttributes) {
+        groupService.updateGroupInfo(dto);
+        redirectAttributes.addFlashAttribute("successMessage", "Group information updated successfully");
+        return "redirect:/group-profile";
     }
 
 }

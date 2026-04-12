@@ -12,6 +12,7 @@ import placeholder.organisation.unicms.repository.CourseRepository;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.repository.UserRepository;
 import placeholder.organisation.unicms.service.dto.request.GroupRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.UpdateGroupInfoRequestDTO;
 import placeholder.organisation.unicms.service.mapper.GroupMapper;
 
 import java.util.*;
@@ -116,6 +117,16 @@ public class GroupService {
         return findGroupsByCourse(courseId).stream().map(Group::getId).toList();
     }
 
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MENTOR', 'STAFF')")
+    @Transactional
+    public void updateGroupInfo(UpdateGroupInfoRequestDTO dto) {
+        Group group = groupRepository.findById(dto.getGroupId())
+            .orElseThrow(() -> new EntityNotFoundException(Group.class, String.valueOf(dto.getGroupId())));
+        group.setInfo(dto.getInfo());
+        groupRepository.save(group);
+        log.debug("Group info updated successfully. ID: {}", dto.getGroupId());
+    }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @Transactional
