@@ -45,6 +45,7 @@ public class LessonController {
         this.groupService = groupService;
     }
 
+    @GetMapping("/lesson-setup")
     public String lessons(Model model, @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
                           @ModelAttribute("filters") LessonFilter filter) {
         Page<Lesson> lessons = lessonService.findAll(pageable, filter);

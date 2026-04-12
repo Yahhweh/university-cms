@@ -139,12 +139,22 @@ class WebSecurityConfigTest {
         student.setDateOfBirth(LocalDate.of(2000, 10, 20));
         student.setEmail("kirill.kovalenko@student.university.com");
         student.setGender(GenderType.Male);
-        student.setGroup(new Group(1L, "AB-11", getCourse()));
+        student.setGroup(new Group(1L, "AB-11", getCourse(), getMentor(), "info"));
         student.setAddress(new Address(1L, "kyiv", "tarasa shevchenka", "Ukraine", "1111", "1012", "1212"));
         return student;
     }
 
     private Course getCourse(){
         return new Course(1L, "SE", List.of(new Subject()));
+    }
+
+    private Student getMentor() {
+        Student student = new Student();
+        student.setId(1L);
+        student.setName("Bob");
+        student.setSureName("SureName");
+        student.setDegree(Degree.Bachelor);
+        student.getRoles().add(Role.MENTOR);
+        return student;
     }
 }

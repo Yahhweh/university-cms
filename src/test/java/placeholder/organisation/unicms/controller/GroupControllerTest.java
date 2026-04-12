@@ -9,6 +9,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.service.GroupService;
+import placeholder.organisation.unicms.service.StudentService;
 
 import java.util.List;
 
@@ -28,6 +29,8 @@ class GroupControllerTest {
     MockMvc mockMvc;
     @MockitoBean
     GroupService groupService;
+    @MockitoBean
+    StudentService studentService;
 
     @Test
     void getGroups_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {

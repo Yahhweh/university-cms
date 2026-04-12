@@ -1,22 +1,27 @@
 INSERT INTO address (id, city, street, country, phone_number, house_number)
 VALUES (1, 'Vilnius', 'Sauletekio al.', 'Lithuania', '+37060000000', '11');
 
-INSERT INTO "user" (id, password, name, sure_name, gender, address_id, date_of_birth, email, role, dtype)
-VALUES (1,'bobo', 'John', 'Doe', 'Male', 1, '2005-01-01', 'john.doe@student.university.com', 'STUDENT', 'Student');
+INSERT INTO "user" (id, password, name, sure_name, gender, address_id, date_of_birth, email, dtype)
+VALUES (1,'bobo', 'John', 'Doe', 'Male', 1, '2005-01-01', 'john.doe@student.university.com', 'Student');
 
-INSERT INTO "user" (id, password, name, sure_name, gender, address_id, date_of_birth, email, role, dtype)
-VALUES (2,'bobo', 'Darius', 'Zabuluonis', 'Male', 1, '1980-01-01', 'darius.zabuluonis@lecturer.university.com', 'LECTURER', 'Lecturer');
+INSERT INTO user_roles (user_id, role) VALUES (1, 'STUDENT');
 
-INSERT INTO "user" (id, password, name, sure_name, gender, address_id, date_of_birth, email, role, dtype)
-VALUES (3, 'bobo', 'Bilbo', 'Begins', 'Male', 1, '2005-01-01',
-        'begins@gmail.com', 'STUDENT', 'Student');
+INSERT INTO "user" (id, password, name, sure_name, gender, address_id, date_of_birth, email, dtype)
+VALUES (2,'bobo', 'Darius', 'Zabuluonis', 'Male', 1, '1980-01-01', 'darius.zabuluonis@lecturer.university.com', 'Lecturer');
+
+INSERT INTO user_roles (user_id, role) VALUES (2, 'LECTURER');
+
+INSERT INTO "user" (id, password, name, sure_name, gender, address_id, date_of_birth, email, dtype)
+VALUES (3, 'bobo', 'Bilbo', 'Begins', 'Male', 1, '2005-01-01', 'begins@gmail.com', 'Student');
+
+INSERT INTO user_roles (user_id, role) VALUES (3, 'STUDENT');
 
 
 INSERT INTO lecturer (id, salary) VALUES (2, 3000.00);
 
-INSERT INTO "group" (id, name) VALUES (1,'ITfu-25/1');
+INSERT INTO "group" (id, name, mentor_id, info) VALUES (1,'ITfu-25/1', 1, 'Group info');
 
-INSERT INTO "group" (id, name) VALUES (2,'ITfu-25/2');
+INSERT INTO "group" (id, name, mentor_id, info) VALUES (2,'ITfu-25/2', 1, 'Group info');
 
 INSERT INTO student (id, group_id, degree) VALUES (1,1,  'Bachelor');
 

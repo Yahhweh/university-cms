@@ -133,7 +133,7 @@ class LessonControllerTest {
     }
 
     private Group getGroup() {
-        return new Group(1L, "A-122", getCourse());
+        return new Group(1L, "A-122", getCourse(), null, "info");
     }
 
     private Course getCourse(){

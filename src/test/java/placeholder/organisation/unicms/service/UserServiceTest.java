@@ -14,9 +14,11 @@ import placeholder.organisation.unicms.repository.UserRepository;
 import placeholder.organisation.unicms.service.dto.request.UserRequestDTO;
 import placeholder.organisation.unicms.service.mapper.UserMapper;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -97,7 +99,7 @@ class UserServiceTest {
     }
 
     private User getPerson(){
-        return new User(1L, "10fdifjowhef", "John", Set.of(Role.LECTURER),
+        return new User(1L, "10fdifjowhef", "John", new HashSet<>(Set.of(Role.LECTURER)),
             "Pork", GenderType.Male, "john.pork@lecturer.university.com",
             new Address(), LocalDate.now(), "Lecturer");
     }

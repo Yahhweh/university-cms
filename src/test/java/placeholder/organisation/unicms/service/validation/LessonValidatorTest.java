@@ -67,8 +67,6 @@ class LessonValidatorTest {
 
         lesson.getLecturer().getSubjects().add(lesson.getSubject());
 
-        when(groupRepository.findById(anyLong())).thenReturn(Optional.of(lesson.getGroup()));
-
         List<Student> overCapacityList = Arrays.asList(new Student[Math.toIntExact(roomCapacity + 1)]);
         when(studentRepository.findStudentsByGroupId(any(Long.class))).thenReturn(overCapacityList);
 
@@ -109,7 +107,6 @@ class LessonValidatorTest {
     }
 
     private void mockNoConflicts(Lesson lesson) {
-        when(groupRepository.findById(anyLong())).thenReturn(Optional.of(lesson.getGroup()));
         List<Student> normalList = Arrays.asList(new Student[50]);
 
         when(studentRepository.findStudentsByGroupId(any(Long.class))).thenReturn(normalList);
@@ -139,11 +136,12 @@ class LessonValidatorTest {
         lecturer.setId(1L);
         lecturer.setName("John");
         lecturer.setSureName("Doe");
+        lecturer.getRoles().add(Role.MENTOR);
         return lecturer;
     }
 
     private Group getGroup() {
-        return new Group(1L, "A-122", getCourse());
+        return new Group(1L, "A-122", getCourse(), getLecturer(), "info");
     }
 
     private Course getCourse(){

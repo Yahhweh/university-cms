@@ -7,9 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import placeholder.organisation.unicms.entity.Course;
-import placeholder.organisation.unicms.entity.Group;
-import placeholder.organisation.unicms.entity.Subject;
+import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.repository.CourseRepository;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.service.dto.request.GroupRequestDTO;
@@ -82,9 +80,9 @@ class GroupServiceTest {
     @Test
     void updateCourseGroups_addsAndRemovesGroups_differentially() {
         Course course = getCourse();
-        Group groupA = new Group(1L, "A", course);
-        Group groupB = new Group(2L, "B", course);
-        Group groupC = new Group(3L, "C", null);
+        Group groupA = new Group(1L, "A", course, getStudent(), "info");
+        Group groupB = new Group(2L, "B", course, getStudent(), "info");
+        Group groupC = new Group(3L, "C", null, getStudent(), "info");
 
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
         when(groupRepository.findByCourse(course)).thenReturn(List.of(groupA, groupB));
@@ -106,11 +104,21 @@ class GroupServiceTest {
     }
 
     Group getGroup() {
-        return new Group(1L, "A-122", getCourse());
+        return new Group(1L, "A-122", getCourse(), getStudent(), "info");
     }
 
     private Course getCourse(){
         return new Course(1L, "SE", List.of(new Subject()));
+    }
+
+    private Student getStudent() {
+        Student student = new Student();
+        student.setId(1L);
+        student.setName("Bob");
+        student.setSureName("SureName");
+        student.setDegree(Degree.Bachelor);
+        student.getRoles().add(Role.MENTOR);
+        return student;
     }
 
     GroupRequestDTO getGroupDTO() {

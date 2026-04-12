@@ -90,15 +90,15 @@ class AdminControllerTest {
                 .param("newRole", "ROLE_ADMIN")
                 .with(csrf()))
             .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrlPattern("/admin/users*"));
+            .andExpect(redirectedUrlPattern("/admin/change-role*"));
 
-        verify(userService).changeRole(1L, Role.ADMIN);
+        verify(userService).changeRoles(1L, List.of(Role.ADMIN));
     }
 
 
     @Test
     void showCreateUserForm_shouldReturnCreateUserView_withGroupsAndSubjects() throws Exception {
-        List<Group> groups = List.of(new Group(1L, "AB-11", getCourse()));
+        List<Group> groups = List.of(new Group(1L, "AB-11", getCourse(), null, "info"));
         List<Subject> subjects = List.of(new Subject(1L, "Math"));
         when(groupService.findAllGroups()).thenReturn(groups);
         when(subjectService.findAllSubjects()).thenReturn(subjects);
