@@ -12,7 +12,9 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @Log4j2
 @Entity
@@ -36,9 +38,11 @@ public class User {
     @Pattern(regexp = "^[A-Za-z]+(?:'[A-Za-z]+)*$", message = "{person.name.pattern}")
     private String name;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Set<Role> roles = new HashSet<>();
 
     @Column(name = "sure_name")
     @Pattern(regexp = "^[A-Za-z]+(?:'[A-Za-z]+)*$", message = "{person.surname.pattern}")
@@ -67,6 +71,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{id=" + id + ", name=" + name + ", sureName=" + sureName + ", role=" + role + "}";
+        return "User{id=" + id + ", name=" + name + ", sureName=" + sureName + ", roles=" + roles + "}";
     }
 }

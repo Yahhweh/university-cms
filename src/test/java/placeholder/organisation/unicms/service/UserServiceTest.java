@@ -18,6 +18,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -35,14 +36,15 @@ class UserServiceTest {
     UserService userService;
 
     @Test
-    void changeRole() {
+    void changeRoles() {
         User user = getPerson();
         User expectedUser = getPerson();
-        Role role = Role.ADMIN;
-        expectedUser.setRole(Role.ADMIN);
+        List<Role> roles = List.of(Role.ADMIN);
+        expectedUser.getRoles().clear();
+        expectedUser.getRoles().addAll(roles);
         when(mockPersonRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
-        userService.changeRole(user.getId(), role);
+        userService.changeRoles(user.getId(), roles);
 
         assertThat(expectedUser).isEqualTo(user);
         verify(mockPersonRepository).save(user);
@@ -90,12 +92,12 @@ class UserServiceTest {
         userService.createUser(dto);
 
         assertThat(mappedUser.getPassword()).isEqualTo("encoded");
-        assertThat(mappedUser.getRole()).isEqualTo(Role.STAFF);
+        assertThat(mappedUser.getRoles()).contains(Role.STAFF);
         verify(mockPersonRepository).save(mappedUser);
     }
 
     private User getPerson(){
-        return new User(1L, "10fdifjowhef", "John", Role.LECTURER,
+        return new User(1L, "10fdifjowhef", "John", Set.of(Role.LECTURER),
             "Pork", GenderType.Male, "john.pork@lecturer.university.com",
             new Address(), LocalDate.now(), "Lecturer");
     }

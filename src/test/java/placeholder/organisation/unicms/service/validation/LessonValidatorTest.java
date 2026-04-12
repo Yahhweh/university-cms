@@ -70,7 +70,7 @@ class LessonValidatorTest {
         when(groupRepository.findById(anyLong())).thenReturn(Optional.of(lesson.getGroup()));
 
         List<Student> overCapacityList = Arrays.asList(new Student[Math.toIntExact(roomCapacity + 1)]);
-        when(studentRepository.findStudentsByGroup(any(Group.class))).thenReturn(overCapacityList);
+        when(studentRepository.findStudentsByGroupId(any(Long.class))).thenReturn(overCapacityList);
 
         assertThatThrownBy(() -> lessonValidator.validateLesson(lesson, -1L))
                 .isInstanceOf(EntityValidationException.class)
@@ -112,7 +112,7 @@ class LessonValidatorTest {
         when(groupRepository.findById(anyLong())).thenReturn(Optional.of(lesson.getGroup()));
         List<Student> normalList = Arrays.asList(new Student[50]);
 
-        when(studentRepository.findStudentsByGroup(any(Group.class))).thenReturn(normalList);
+        when(studentRepository.findStudentsByGroupId(any(Long.class))).thenReturn(normalList);
         when(lessonRepository.findConflictionLessonsForLecturer(any(), any(), any(), any(), anyLong())).thenReturn(false);
         when(lessonRepository.findRoomConflictsInTime(any(), any(), any(), anyLong(), anyLong())).thenReturn(false);
         when(lessonRepository.findGroupConflictInTime(any(), any(), any(), any(), anyLong())).thenReturn(false);

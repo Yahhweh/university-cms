@@ -76,7 +76,7 @@ public class LessonValidator {
 
     private boolean isCapacitySufficient(Lesson lesson) {
         long capacity = lesson.getRoom().getRoomType().getCapacity();
-        return studentRepository.findStudentsByGroup(groupRepository.findById(lesson.getGroup().getId()).get()).size() <= capacity;
+        return studentRepository.findStudentsByGroupId(lesson.getGroup().getId()).size() <= capacity;
     }
 
     private boolean isLectureOnWorkingDays(Lesson lesson){

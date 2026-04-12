@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import placeholder.organisation.unicms.service.EntityNotFoundException;
+import placeholder.organisation.unicms.service.InsufficientRoleException;
 
 import java.net.BindException;
 import java.sql.SQLException;
@@ -18,42 +19,16 @@ import java.sql.SQLIntegrityConstraintViolationException;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UsernameNotFoundException.class)
-    public String handleUsernameNotFoundException(UsernameNotFoundException ex, Model model){
-        model.addAttribute("message", ex.getMessage());
-        model.addAttribute("error", 401);
-        model.addAttribute("title", "User not Found");
-        return "error";
-    }
-
-    @ExceptionHandler(BindException.class)
-    public String handleBindException(BindException exception, Model model){
-        model.addAttribute("message", exception.getMessage());
-        model.addAttribute("error", 400);
-        model.addAttribute("title", "Wrong Validation");
-        return "error";
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public String handleBadCredentialsException(BadCredentialsException ex, Model model){
-        model.addAttribute("message", ex.getMessage());
-        model.addAttribute("error", 401);
-        model.addAttribute("title", "Bad Credentials");
-        return "error";
-    }
-
-    @ExceptionHandler(EntityNotFoundException.class)
-    public String handleEntityNotFoundException(EntityNotFoundException ex, Model model){
-        model.addAttribute("message", ex.getMessage());
-        model.addAttribute("error", 404);
-        model.addAttribute("title", "Entity not found");
-        return "redirect:error";
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public String handleDataIntegrityViolationException(DataIntegrityViolationException ex, RedirectAttributes redirectAttributes, HttpServletRequest request){
-        String url = request.getRequestURI();
+    @ExceptionHandler({
+        UsernameNotFoundException.class,
+        BindException.class,
+        BadCredentialsException.class,
+        EntityNotFoundException.class,
+        DataIntegrityViolationException.class,
+        InsufficientRoleException.class
+    })
+    public String handleException(Exception ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
-        return "redirect:" + url;
+        return "redirect:" + request.getRequestURI();
     }
 }

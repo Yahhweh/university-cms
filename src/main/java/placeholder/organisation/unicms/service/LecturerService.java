@@ -54,7 +54,7 @@ public class LecturerService {
     public void createLecturer(LecturerRequestDTO lecturerRequestDTO){
         Lecturer lecturer = lecturerMapper.toEntity(lecturerRequestDTO);
         lecturer.setPassword(passwordEncoder.encode(lecturerRequestDTO.getPassword()));
-        lecturer.setRole(Role.LECTURER);
+        lecturer.getRoles().add(Role.LECTURER);
         lecturerRepository.save(lecturer);
     }
 

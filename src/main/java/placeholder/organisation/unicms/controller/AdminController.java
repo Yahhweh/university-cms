@@ -63,15 +63,22 @@ public class AdminController {
         return "admin";
     }
 
+    @GetMapping("/change-role")
+    public String getChangeRoleForm(@RequestParam Long id, Model model) {
+        userService.findUser(id).ifPresent(user -> model.addAttribute("user", user));
+        model.addAttribute("allRoles", Role.values());
+        return "update-user-roles";
+    }
+
     @PostMapping("/change-role")
-    public String changeUserRole(@RequestParam Long id, @RequestParam String newRole,
-                                 RedirectAttributes redirectAttributes,
-                                 @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
-                                 @ModelAttribute UserFilter filter) {
-        Role enumRole = Role.valueOf(newRole.replace("ROLE_", ""));
-        userService.changeRole(id, enumRole);
-        RedirectAttributesHelper.addPageAndFilterAttributes(CHANGE_MESSAGE, pageable, redirectAttributes, filter);
-        return "redirect:/admin/users";
+    public String changeUserRole(@RequestParam Long id,
+                                 @RequestParam(required = false) List<String> newRole,
+                                 RedirectAttributes redirectAttributes) {
+        List<Role> roles = newRole == null ? List.of() :
+                newRole.stream().map(r -> Role.valueOf(r.replace("ROLE_", ""))).toList();
+        userService.changeRoles(id, roles);
+        redirectAttributes.addFlashAttribute("successMessage", CHANGE_MESSAGE);
+        return "redirect:/admin/change-role?id=" + id;
     }
 
     @GetMapping("/create-user")

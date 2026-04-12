@@ -1,15 +1,16 @@
 package placeholder.organisation.unicms.service;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.Course;
-import placeholder.organisation.unicms.entity.Group;
+import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.repository.CourseRepository;
 import placeholder.organisation.unicms.repository.GroupRepository;
+import placeholder.organisation.unicms.repository.UserRepository;
 import placeholder.organisation.unicms.service.dto.request.GroupRequestDTO;
 import placeholder.organisation.unicms.service.mapper.GroupMapper;
 
@@ -19,17 +20,13 @@ import java.util.stream.Collectors;
 @Service
 @Log4j2
 @Transactional(readOnly = true)
+@AllArgsConstructor
 public class GroupService {
 
     private final GroupRepository groupRepository;
     private final GroupMapper groupMapper;
     private final CourseRepository courseRepository;
-
-    public GroupService(GroupRepository groupRepository, GroupMapper groupMapper, CourseRepository courseRepository) {
-        this.groupRepository = groupRepository;
-        this.groupMapper = groupMapper;
-        this.courseRepository = courseRepository;
-    }
+    private final UserRepository userRepository;
 
     public List<Group> findAllGroups() {
         List<Group> groups = groupRepository.findAll();
@@ -48,7 +45,7 @@ public class GroupService {
         return groupRepository.findById(id);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @Transactional
     public void removeGroup(long groupId) {
         if (!groupRepository.existsById(groupId)) {
@@ -57,6 +54,7 @@ public class GroupService {
         groupRepository.deleteById(groupId);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN, MENTOR, STAFF')")
     @Transactional
     public void updateGroup(long groupId, GroupRequestDTO groupResponseDTO) {
         Group group = groupRepository.findById(groupId)
@@ -118,4 +116,19 @@ public class GroupService {
         return findGroupsByCourse(courseId).stream().map(Group::getId).toList();
     }
 
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    @Transactional
+    public void assignMentorToGroup(Long mentorId, Long groupId){
+        User mentor = userRepository.findById(mentorId)
+            .orElseThrow(() -> new EntityNotFoundException(User.class, String.valueOf(mentorId)));
+        Group group = groupRepository.findById(groupId)
+            .orElseThrow(() -> new EntityNotFoundException(Group.class, String.valueOf(groupId)));
+
+        if(!mentor.getRoles().contains(Role.MENTOR)){
+            throw new InsufficientRoleException(User.class, String.valueOf(mentorId));
+        }
+        group.setMentor(mentor);
+        log.debug("Mentor was assigned to group successfully. Mentor ID: {}. Group ID: {}", mentorId, groupId);
+    }
 }

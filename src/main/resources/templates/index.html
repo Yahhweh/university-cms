@@ -9,10 +9,10 @@
 <nav class="navbar navbar-dark bg-primary px-3">
     <span class="navbar-brand text-uppercase fw-bold" style="letter-spacing: 2px;">University</span>
     <div class="d-flex gap-2 align-items-center">
-        <div sec:authorize="hasRole('STUDENT')">
+        <div sec:authorize="hasAnyRole('STUDENT')">
             <a th:href="@{/students/profile}" class="btn btn-outline-light btn-sm">Profile</a>
         </div>
-        <div sec:authorize="hasRole('LECTURER')">
+        <div sec:authorize="hasAnyRole('LECTURER')">
             <a th:href="@{/lecturers/profile}" class="btn btn-outline-light btn-sm">Profile</a>
         </div>
         <div sec:authorize="hasRole('ADMIN')">

@@ -12,7 +12,6 @@ import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.repository.StudentRepository;
 import placeholder.organisation.unicms.service.dto.request.StudentRequestDTO;
-import placeholder.organisation.unicms.service.dto.response.StudentResponseDTO;
 import placeholder.organisation.unicms.service.mapper.StudentMapper;
 
 import java.util.List;
@@ -58,7 +57,7 @@ public class StudentService {
     public void createStudent(StudentRequestDTO studentRequestDTO) {
         Student student= studentMapper.toEntity(studentRequestDTO);
         student.setPassword(passwordEncoder.encode(studentRequestDTO.getPassword()));
-        student.setRole(Role.STUDENT);
+        student.getRoles().add(Role.STUDENT);
 
         studentRepository.save(student);
         log.info("Student saved: {} {}", student.getName(), student.getSureName());
@@ -95,10 +94,9 @@ public class StudentService {
         return studentRepository.findAll(pageable);
     }
 
-    private void resolveRelations(StudentResponseDTO dto, Student student) {
-        if (dto.getGroupId() != null) {
-            student.setGroup(groupRepository.getReferenceById(dto.getGroupId()));
-        }
+    public List<Student> findStudentsRelatedToGroup(Long groupId){
+        log.debug("Trying to get students related to group. group id: {}", groupId);
+        return studentRepository.findStudentsByGroupId(groupId);
     }
 
     private void resolveRelations(StudentRequestDTO dto, Student student) {

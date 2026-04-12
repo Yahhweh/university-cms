@@ -56,23 +56,24 @@ Admin rights
 
 Given User `A` logged in with Admin role
 
-* User 'A' should be able to create/read/update/delete lessons.
-* User 'A' should be able to assign/reassign anything for lectures  
+* User `A` should be able to create/read/update/delete lessons.
+* User `A` should be able to assign/reassign anything for lectures  
     (duration, studySubject, classroom, date).
-* User 'A' should be able to list all Users.
-* User 'A' should be able to do anything that Staff can do.     
+* User `A` should be able to list all Users.
+* User `A` should be able to do anything that Staff can do.   
+* User `A` should be able to Create/Read/Update/Delete group information !
 ---
 
 Student/Lecturer rights
 
 Given User `B` logged in with Student or Lecturer role
 
-* User 'B' should be able to list courses that he is enrolled in / assigned to (
+* User `B` should be able to list courses that he is enrolled in / assigned to (
   read access).
-* User 'B' (Lecturer) should be able to list all groups and their students
+* User `B` (Lecturer) should be able to list all groups and their students
   within courses assigned to him.
-* User 'B' (Student) should be able to view only his own group and
-  its members within his enrolled courses.
+* User `B` (Student) should be able to view only his own group
+* User `B` should be able to list all groups information (read access).
 
 ---
 
@@ -80,19 +81,22 @@ Staff rights
 
 Given User `C` logged in with Staff role.
 
-* User 'C' should be able to create/read/update/delete all lessons. 
-* User 'C' should be able to assign/reassign teacher to a lessons. 
-* User 'C' should be able to list Students and Lecturers (not staff and admins).
-* User 'C' should be able to view the list of courses and see the details of each course.
+* User `C` should be able to create/read/update/delete all lessons. 
+* User `C` should be able to assign/reassign teacher to a lessons. 
+* User `C` should be able to list Students and Lecturers (not staff and admins).
+* User `C` should be able to view the list of courses and see the details of each course.
+* User `C` should be able to Create/Read/Update group information.
 
 ---
 
-Given User `A` logged in with Admin role
-* User 'A' can Create/Read/Update/Delete group information
+Mentor rights
 
-Given User `B` logged in with Student or Teacher role
-* User 'B' should be able to list all groups information (read access).
+Given User `D` logged in with Mentor role.  
 
-Given User `C` logged in with Staff role
-* User 'C' should be able to Create/Read/Update group information.
+* User `D` has the same rights as Student
+* If User `D` is connected to the group he should be able to update info to this exact group
+* If User `D` is connected to the group he should be able to list students of this exact group
 
+Mentor Role can be assigned to anybody;
+
+---

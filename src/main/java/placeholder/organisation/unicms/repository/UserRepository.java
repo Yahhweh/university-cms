@@ -13,5 +13,5 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     Optional<User> findByEmail(String email);
-    Page<User> findByRole(Role role, Pageable pageable);
+    Page<User> findByRolesContaining(Role role, Pageable pageable);
 }

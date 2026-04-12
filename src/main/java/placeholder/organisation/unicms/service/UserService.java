@@ -53,11 +53,12 @@ public class UserService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public void changeRole(Long id, Role role) {
+    public void changeRoles(Long id, List<Role> roles) {
         User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(User.class, String.valueOf(id)));
-        user.setRole(role);
+        user.getRoles().clear();
+        user.getRoles().addAll(roles);
         userRepository.save(user);
-        log.debug("Changed role of user {} to {}", id, role);
+        log.debug("Changed roles of user {} to {}", id, roles);
     }
 
     public Page<User> findAll(Pageable pageable) {
@@ -92,7 +93,7 @@ public class UserService {
         log.debug("Deleted user with id: {}", id);
     }
 
-//    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     public User createUser(User user){
         return userRepository.save(user);
@@ -103,7 +104,7 @@ public class UserService {
     public User createUser(UserRequestDTO dto) {
         User user = userMapper.toEntity(dto);
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
-        user.setRole(Role.STAFF);
+        user.getRoles().add(Role.STAFF);
         return userRepository.save(user);
     }
 }

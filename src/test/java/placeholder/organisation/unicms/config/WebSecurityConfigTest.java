@@ -135,7 +135,7 @@ class WebSecurityConfigTest {
         student.setSureName("Kovalenko");
         student.setPassword("123");
         student.setDegree(Degree.Bachelor);
-        student.setRole(Role.STUDENT);
+        student.getRoles().add(Role.STUDENT);
         student.setDateOfBirth(LocalDate.of(2000, 10, 20));
         student.setEmail("kirill.kovalenko@student.university.com");
         student.setGender(GenderType.Male);

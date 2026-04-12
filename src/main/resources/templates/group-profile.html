@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:insert="~{styles/css.html :: my-css}">
+    <title>Profile</title>
+</head>
+<body class="py-5">
+
+<div class="card shadow mx-auto" style="max-width: 900px;">
+    <div class="card-header bg-primary text-white text-center py-4">
+        <h1 class="h2 mb-1" th:text="${group.name}">Group name</h1>
+    </div>
+
+    <div class="card-body p-4">
+
+        <h6 class="bg-primary text-white text-uppercase fw-bold px-3 py-2 rounded-top mb-0" style="letter-spacing: 1px;">Group Information</h6>
+        <table class="table table-bordered table-striped mb-4">
+            <tr>
+                <th class="table-primary w-25">Information</th>
+                <td th:text="${group.info}">info</td>
+            </tr>
+            <tr>
+                <th class="table-primary">Course</th>
+                <td th:text="${group.course.getName()}">It-fu</td>
+            </tr>
+            <tr>
+                <th class="table-primary">Mentor</th>
+                <td th:text="${group.mentor.getName() + ' ' + group.getMentor().getSureName()}">John Doe</td>
+            </tr>
+            <tr>
+                <th class="table-primary">Mentor contact information</th>
+                <td th:text="${group.getMentor().getEmail()}">email</td>
+            </tr>
+            <tr>
+                <th class="table-primary">Number of Students</th>
+                <td th:text="${students.size()}">11</td>
+            </tr>
+
+        </table>
+        <a th:href="@{/}" class="btn btn-primary mt-2">Back to Main page</a>
+        <div sec:authorize="hasRole('MENTOR')">
+        <a class="btn btn-primary mt-2 ms-auto">Edit group information</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

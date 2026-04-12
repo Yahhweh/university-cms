@@ -52,12 +52,7 @@
                         Email
                     </a>
                 </th>
-                <th>
-                    <a class="text-white"
-                       th:href="@{/{path}(path=${url}, page=${page.number}, size=${page.size}, sort='role,' + (${page.sort.getOrderFor('role')?.ascending} ? 'desc' : 'asc'))}">
-                        Role
-                    </a>
-                </th>
+                <th class="text-white">Role</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -66,22 +61,13 @@
                 <td th:text="${user.name}"></td>
                 <td th:text="${user.sureName}"></td>
                 <td th:text="${user.email}"></td>
-                <td th:text="${user.role}"></td>
+                <td th:text="${#strings.listJoin(user.roles, ', ')}"></td>
                 <td th:if="${roles}" class="d-flex gap-2">
-                    <form th:action="@{/admin/change-role}" method="post" class="d-flex gap-2">
-                        <div th:replace="~{hidden-inputs/hidden-inputs :: inputs}">Hidden Inputs</div>
-                        <input type="hidden" name="id" th:value="${user.id}"/>
-                        <select name="newRole" class="form-select form-select-sm">
-                            <option value="ADMIN">ADMIN</option>
-                            <option value="STUDENT">STUDENT</option>
-                            <option value="LECTURER">LECTURER</option>
-                            <option value="STAFF">STAFF</option>
-                        </select>
-                        <button type="submit" class="btn btn-link p-0" title="Change role">
-                            <i class="bi bi-arrow-repeat fs-5"></i>
-                        </button>
-                    </form>
-                    <a th:if="${user.role.name() == 'LECTURER'}"
+                    <a th:href="@{/admin/change-role(id=${user.id})}"
+                       class="btn btn-link p-0" title="Change roles">
+                        <i class="bi bi-arrow-repeat fs-5"></i>
+                    </a>
+                    <a th:if="${user.dtype == 'Lecturer'}"
                        th:href="@{/users/update-lecturer-subjects(lecturerId=${user.id})}"
                        class="btn btn-link p-0" title="Assign subjects">
                         <i class="bi bi-journal-bookmark fs-5"></i>

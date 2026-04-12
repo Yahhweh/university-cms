@@ -215,14 +215,14 @@ class AdminControllerTest {
     private Student getStudent() {
         Student student = new Student();
         student.setId(1L);
-        student.setRole(Role.STUDENT);
+        student.getRoles().add(Role.STUDENT);
         return student;
     }
 
     private Lecturer getLecturer() {
         Lecturer lecturer = new Lecturer();
         lecturer.setId(2L);
-        lecturer.setRole(Role.LECTURER);
+        lecturer.getRoles().add(Role.LECTURER);
         return lecturer;
     }
 

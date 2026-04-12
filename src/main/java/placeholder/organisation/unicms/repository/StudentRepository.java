@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long>, JpaSpecificationExecutor<Student> {
-    List<Student> findStudentsByGroup(Group group);
+    List<Student> findStudentsByGroupId(Long groupId);
 
     Optional<Student> findByEmail(String email);
 }
