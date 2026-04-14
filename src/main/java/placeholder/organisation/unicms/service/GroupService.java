@@ -130,13 +130,13 @@ public class GroupService {
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @Transactional
-    public void assignMentorToGroup(Long mentorId, Long groupId){
+    public void assignMentorToGroup(Long mentorId, Long groupId) {
         User mentor = userRepository.findById(mentorId)
             .orElseThrow(() -> new EntityNotFoundException(User.class, String.valueOf(mentorId)));
         Group group = groupRepository.findById(groupId)
             .orElseThrow(() -> new EntityNotFoundException(Group.class, String.valueOf(groupId)));
 
-        if(!mentor.getRoles().contains(Role.MENTOR)){
+        if (!mentor.getRoles().contains(Role.MENTOR)) {
             throw new InsufficientRoleException(User.class, String.valueOf(mentorId));
         }
         group.setMentor(mentor);
