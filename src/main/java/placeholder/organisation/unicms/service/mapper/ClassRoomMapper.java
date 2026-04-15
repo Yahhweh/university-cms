@@ -7,8 +7,8 @@ import placeholder.organisation.unicms.service.dto.request.RoomRequestDTO;
 
 @Component
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    componentModel = "spring",
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ClassRoomMapper {
     RoomRequestDTO toDto(Room room);
 

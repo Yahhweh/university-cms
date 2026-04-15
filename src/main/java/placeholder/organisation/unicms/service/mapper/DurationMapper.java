@@ -5,8 +5,8 @@ import placeholder.organisation.unicms.entity.Duration;
 import placeholder.organisation.unicms.service.dto.request.DurationRequestDTO;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    componentModel = "spring",
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface DurationMapper {
     DurationRequestDTO toDto(Duration duration);
 

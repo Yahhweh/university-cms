@@ -33,7 +33,7 @@ public class RoomType {
         this.capacity = capacity;
     }
 
-    public String toString(){
+    public String toString() {
         return this.getName();
     }
 }

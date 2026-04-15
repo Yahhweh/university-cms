@@ -6,8 +6,8 @@ import placeholder.organisation.unicms.service.dto.request.AddressRequestDTO;
 import placeholder.organisation.unicms.service.dto.response.AddressResponseDTO;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
-        componentModel = "spring")
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+    componentModel = "spring")
 public interface AddressMapper {
     AddressResponseDTO toDto(Address address);
 

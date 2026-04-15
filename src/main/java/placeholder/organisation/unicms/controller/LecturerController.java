@@ -41,7 +41,7 @@ public class LecturerController {
     public String getProfile(
         Model model,
         Authentication authentication
-    ){
+    ) {
         Lecturer lecturer = lecturerService.findByEmail(authentication.getName());
 
         model.addAttribute("lecturer", lecturer);

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class StartController {
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    public String show(Model model){
+    public String show(Model model) {
         model.addAttribute("name");
         return "index";
     }

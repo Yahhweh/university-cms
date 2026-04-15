@@ -1,9 +1,12 @@
 <div th:fragment="inputs">
-    <th:block th:replace="~{hidden-inputs/preserve-pagination :: preserve-pagination}"></th:block>
+    <th:block
+        th:replace="~{hidden-inputs/preserve-pagination :: preserve-pagination}"></th:block>
     <input type="hidden" name="durationId" th:value="${filters.durationId}">
     <input type="hidden" name="subject" th:value="${filters.subject}">
     <input type="hidden" name="group" th:value="${filters.group}">
-    <input type="hidden" name="lecturer.name" th:value="${filters.lecturer.name}">
-    <input type="hidden" name="lecturer.sureName" th:value="${filters.lecturer.sureName}">
+    <input type="hidden" name="lecturer.name"
+           th:value="${filters.lecturer.name}">
+    <input type="hidden" name="lecturer.sureName"
+           th:value="${filters.lecturer.sureName}">
     <input type="hidden" name="room" th:value="${filters.room}">
 </div>

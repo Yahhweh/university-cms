@@ -36,11 +36,11 @@ public class StudentController {
         return "students";
     }
 
-    @GetMapping( "/profile")
+    @GetMapping("/profile")
     public String getProfile(
         Model model,
         Authentication authentication
-    ){
+    ) {
         Student student = service.findByEmail(authentication.getName());
 
         model.addAttribute("student", student);

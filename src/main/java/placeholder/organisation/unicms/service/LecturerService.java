@@ -51,7 +51,7 @@ public class LecturerService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public void createLecturer(LecturerRequestDTO lecturerRequestDTO){
+    public void createLecturer(LecturerRequestDTO lecturerRequestDTO) {
         Lecturer lecturer = lecturerMapper.toEntity(lecturerRequestDTO);
         lecturer.setPassword(passwordEncoder.encode(lecturerRequestDTO.getPassword()));
         lecturer.getRoles().add(Role.LECTURER);
@@ -124,7 +124,7 @@ public class LecturerService {
         return lecturer;
     }
 
-    public List<Lecturer> findLecturersBySubject(Long subjectId){
+    public List<Lecturer> findLecturersBySubject(Long subjectId) {
         log.debug("Trying to get Lecturers by subject id: {}", subjectId);
         return lecturerRepository.findDistinctBySubjectsId(subjectId);
     }

@@ -33,7 +33,7 @@ public class GroupController {
         this.studentService = studentService;
     }
 
-    @GetMapping( "/groups")
+    @GetMapping("/groups")
     public String getGroups(Model model,
                             @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
@@ -48,7 +48,7 @@ public class GroupController {
 
     @PreAuthorize("hasAnyRole('STUDENT', 'MENTOR')")
     @GetMapping("/group-profile")
-    public String getStudentGroupProfile(Model model, @AuthenticationPrincipal UserDetails userDetails ){
+    public String getStudentGroupProfile(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         Student student = studentService.findByEmail(userDetails.getUsername());
         List<Student> students = studentService.findStudentsRelatedToGroup(student.getGroup().getId());
 

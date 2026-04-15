@@ -75,7 +75,7 @@ public class AdminController {
                                  @RequestParam(required = false) List<String> newRole,
                                  RedirectAttributes redirectAttributes) {
         List<Role> roles = newRole == null ? List.of() :
-                newRole.stream().map(r -> Role.valueOf(r.replace("ROLE_", ""))).toList();
+            newRole.stream().map(r -> Role.valueOf(r.replace("ROLE_", ""))).toList();
         userService.changeRoles(id, roles);
         redirectAttributes.addFlashAttribute("successMessage", CHANGE_MESSAGE);
         return "redirect:/admin/change-role?id=" + id;

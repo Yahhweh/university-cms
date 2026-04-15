@@ -59,7 +59,7 @@ public class CourseService {
         log.info("Course saved successfully. Name: {}", course.getName());
     }
 
-    public Optional<Course> findCourse(Long courseId){
+    public Optional<Course> findCourse(Long courseId) {
         log.debug("Trying to get course with id: {}", courseId);
         return courseRepository.findById(courseId);
     }

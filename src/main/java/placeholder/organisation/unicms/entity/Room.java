@@ -28,7 +28,7 @@ public class Room {
     @NotNull(message = "{classroom.type.notnull}")
     RoomType roomType;
 
-    public String toString(){
+    public String toString() {
         return this.getRoom();
     }
 }

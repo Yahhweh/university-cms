@@ -31,7 +31,7 @@ public class DurationController {
         this.durationService = service;
     }
 
-    @GetMapping( "/durations")
+    @GetMapping("/durations")
     public String getDuration(Model model,
                               @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable
     ) {
@@ -51,7 +51,7 @@ public class DurationController {
 
     @PostMapping("/create-duration")
     public String createDuration(RedirectAttributes redirectAttributes,
-                              @ModelAttribute() DurationRequestDTO dto, BindingResult bindingResult) {
+                                 @ModelAttribute() DurationRequestDTO dto, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage", VALIDATION_CREATE_DURATION_MESSAGE);
         }

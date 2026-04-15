@@ -12,7 +12,8 @@
             <thead class="table-dark">
             <tr>
                 <th>
-                    <a class="text-white" th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
+                    <a class="text-white"
+                       th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
                         Group Name
                     </a>
                 </th>

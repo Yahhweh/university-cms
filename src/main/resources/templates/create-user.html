@@ -154,17 +154,17 @@
         if (role === 'STUDENT') {
             studentFields.style.display = 'block';
             studentFields.querySelector('[name="degree"]').setAttribute('required', '');
-            form.action =  '/admin/create-student';
+            form.action = '/admin/create-student';
             submitBtn.textContent = 'Add Student';
             formTitle.textContent = 'Add Student';
         } else if (role === 'LECTURER') {
             lecturerFields.style.display = 'block';
             lecturerFields.querySelector('[name="salary"]').setAttribute('required', '');
-            form.action =  '/admin/create-lecturer';
+            form.action = '/admin/create-lecturer';
             submitBtn.textContent = 'Add Lecturer';
             formTitle.textContent = 'Add Lecturer';
         } else {
-            form.action =  '/admin/create-user';
+            form.action = '/admin/create-user';
             submitBtn.textContent = 'Add User';
             formTitle.textContent = 'Add User';
         }

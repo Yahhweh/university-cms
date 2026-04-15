@@ -36,8 +36,8 @@ public class CourseController {
 
     @PostMapping("/admin/create-course")
     public String createCourse(@ModelAttribute CourseRequestDTO courseRequestDTO,
-                            BindingResult bindingResult,
-                            RedirectAttributes redirectAttributes) {
+                               BindingResult bindingResult,
+                               RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage", ERROR_CREATE_MESSAGE);
             return "redirect:create-course";

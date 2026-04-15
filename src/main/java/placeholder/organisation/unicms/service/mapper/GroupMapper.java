@@ -5,8 +5,8 @@ import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.service.dto.request.GroupRequestDTO;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    componentModel = "spring",
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface GroupMapper {
     GroupRequestDTO toDto(Group group);
 

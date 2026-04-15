@@ -1,5 +1,6 @@
 <div th:fragment="inputs">
-    <th:block th:replace="~{hidden-inputs/preserve-pagination :: preserve-pagination}"></th:block>
+    <th:block
+        th:replace="~{hidden-inputs/preserve-pagination :: preserve-pagination}"></th:block>
     <input type="hidden" name="number" th:value="${filters.number}">
     <input type="hidden" name="roomType" th:value="${filters.roomType}">
 </div>

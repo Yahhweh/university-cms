@@ -38,7 +38,8 @@ public class Group {
     @ColumnDefault("'Group info'")
     @Column(name = "info", nullable = false, length = Integer.MAX_VALUE)
     private String info;
-    public String toString(){
+
+    public String toString() {
         return this.getName();
     }
 }

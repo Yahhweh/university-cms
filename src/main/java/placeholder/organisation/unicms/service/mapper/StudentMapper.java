@@ -6,8 +6,8 @@ import placeholder.organisation.unicms.service.dto.request.StudentRequestDTO;
 import placeholder.organisation.unicms.service.dto.response.StudentResponseDTO;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    componentModel = "spring",
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface StudentMapper {
     StudentResponseDTO toDto(Student student);
 

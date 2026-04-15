@@ -23,16 +23,16 @@ public class SubjectController {
     private static final String ERROR_ADD_SUBJECT_MESSAGE = "Error in validation subject";
     private static final String CREATE_SUBJECT_MESSAGE = "Subject has been successfully added";
 
-    private final  SubjectService subjectService;
+    private final SubjectService subjectService;
 
     public SubjectController(SubjectService subjectService) {
         this.subjectService = subjectService;
     }
 
-    @GetMapping( "/subjects")
+    @GetMapping("/subjects")
     public String getRoomTypes(Model model,
                                @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
-                               @ModelAttribute SubjectFilter filter ) {
+                               @ModelAttribute SubjectFilter filter) {
         Page<Subject> page = subjectService.findAll(pageable, filter);
 
         model.addAttribute("subjects", page.getContent());
@@ -45,7 +45,7 @@ public class SubjectController {
     @PostMapping("/delete-subject")
     public String deleteSubject(RedirectAttributes redirectAttributes, @RequestParam Long subjectId,
                                 @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
-                                @RequestParam String name){
+                                @RequestParam String name) {
 
         subjectService.removeStudySubject(subjectId);
         redirectAttributes.addFlashAttribute("successMessage", REMOVE_SUBJECT_MESSAGE);
@@ -60,15 +60,15 @@ public class SubjectController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/create-subject")
-    public String showCreateLessonForm(){
+    public String showCreateLessonForm() {
         return "create-subject";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create-subject")
     public String createLesson(@ModelAttribute SubjectRequestDTO subjectRequestDTO, BindingResult bindingResult,
-                            RedirectAttributes redirectAttributes){
-        if(bindingResult.hasErrors()){
+                               RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage", ERROR_ADD_SUBJECT_MESSAGE);
         }
 

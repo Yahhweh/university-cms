@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+
 import java.time.LocalTime;
 
 @Table(name = "duration")
@@ -27,7 +28,7 @@ public class Duration {
     @Column(name = "\"end\"")
     LocalTime end;
 
-    public String toString(){
-        return this.getStart() + "-"  + this.getEnd();
+    public String toString() {
+        return this.getStart() + "-" + this.getEnd();
     }
 }

@@ -10,10 +10,10 @@ import java.util.List;
 
 public class SubjectSpecification {
 
-    public static Specification<Subject> filter(SubjectFilter filter){
+    public static Specification<Subject> filter(SubjectFilter filter) {
         return ((root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
-            if(filter.getName() != null && !filter.getName().isBlank()){
+            if (filter.getName() != null && !filter.getName().isBlank()) {
                 predicates.add(cb.like(cb.lower(root.get("name")), "%" + filter.getName().toLowerCase() + "%"));
             }
             return cb.and(predicates.toArray(new Predicate[0]));

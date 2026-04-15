@@ -5,8 +5,8 @@ import placeholder.organisation.unicms.entity.Subject;
 import placeholder.organisation.unicms.service.dto.request.SubjectRequestDTO;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    componentModel = "spring",
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface SubjectMapper {
     SubjectRequestDTO toDto(Subject subject);
 

@@ -53,7 +53,7 @@ public class RoomController {
         return "create-room";
     }
 
-    @PostMapping( "/create-room")
+    @PostMapping("/create-room")
     public String createRoom(RedirectAttributes redirectAttributes, @ModelAttribute RoomRequestDTO roomRequestDTO,
                              BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

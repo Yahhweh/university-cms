@@ -6,9 +6,9 @@ import placeholder.organisation.unicms.service.dto.request.UserRequestDTO;
 import placeholder.organisation.unicms.service.dto.response.UserResponseDTO;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        componentModel = "spring",
-        uses = {AddressMapper.class},
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    componentModel = "spring",
+    uses = {AddressMapper.class},
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserMapper {
     UserResponseDTO toDto(User user);
 

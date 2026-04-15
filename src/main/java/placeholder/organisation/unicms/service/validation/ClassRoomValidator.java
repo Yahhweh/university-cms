@@ -19,7 +19,7 @@ public class ClassRoomValidator {
     public void validateClassRoom(Room room) {
         if (!isClassRoomInCorrectCorpus(room)) {
             throw new EntityValidationException(
-                    "Classroom type is not compatible with the assigned corpus letter", Room.class, room.getRoom());
+                "Classroom type is not compatible with the assigned corpus letter", Room.class, room.getRoom());
         }
     }
 
@@ -39,6 +39,7 @@ public class ClassRoomValidator {
             return true;
         } else if (realCorpus.equals("D") && typesForD.contains(roomType.getName())) {
             return true;
-        } else return realCorpus.equals("E") && typesForE.contains(roomType.getName());
+        } else
+            return realCorpus.equals("E") && typesForE.contains(roomType.getName());
     }
 }

@@ -7,13 +7,15 @@
 
 <div class="card shadow mx-auto" style="max-width: 900px;">
     <div class="card-header bg-primary text-white text-center py-4">
-        <h1 class="h2 mb-1" th:text="${lecturer.name + ' ' + lecturer.sureName}">John Doe</h1>
+        <h1 class="h2 mb-1"
+            th:text="${lecturer.name + ' ' + lecturer.sureName}">John Doe</h1>
         <p class="mb-0 opacity-75">Lecturer Profile</p>
     </div>
 
     <div class="card-body p-4">
 
-        <h6 class="bg-primary text-white text-uppercase fw-bold px-3 py-2 rounded-top mb-0" style="letter-spacing: 1px;">Personal Information</h6>
+        <h6 class="bg-primary text-white text-uppercase fw-bold px-3 py-2 rounded-top mb-0"
+            style="letter-spacing: 1px;">Personal Information</h6>
         <table class="table table-bordered table-striped mb-4">
             <tr>
                 <th class="table-primary w-25">Name</th>
@@ -33,7 +35,9 @@
             </tr>
             <tr>
                 <th class="table-primary">Date of Birth</th>
-                <td th:text="${#temporals.format(lecturer.dateOfBirth, 'yyyy-MM-dd')}">1980-01-01</td>
+                <td th:text="${#temporals.format(lecturer.dateOfBirth, 'yyyy-MM-dd')}">
+                    1980-01-01
+                </td>
             </tr>
             <tr>
                 <th class="table-primary">Role</th>
@@ -41,12 +45,16 @@
             </tr>
             <tr>
                 <th class="table-primary">Salary</th>
-                <td th:text="${lecturer.salary != null ? lecturer.salary + ' €' : 'N/A'}">5000 €</td>
+                <td th:text="${lecturer.salary != null ? lecturer.salary + ' €' : 'N/A'}">
+                    5000 €
+                </td>
             </tr>
         </table>
 
-        <h6 class="bg-primary text-white text-uppercase fw-bold px-3 py-2 rounded-top mb-0" style="letter-spacing: 1px;">Address</h6>
-        <table class="table table-bordered table-striped mb-4" th:if="${lecturer.address != null}">
+        <h6 class="bg-primary text-white text-uppercase fw-bold px-3 py-2 rounded-top mb-0"
+            style="letter-spacing: 1px;">Address</h6>
+        <table class="table table-bordered table-striped mb-4"
+               th:if="${lecturer.address != null}">
             <tr>
                 <th class="table-primary w-25">Street</th>
                 <td th:text="${lecturer.address.street}">Main Street</td>
@@ -64,17 +72,23 @@
                 <td th:text="${lecturer.address.country}">Lithuania</td>
             </tr>
         </table>
-        <p th:if="${lecturer.address == null}" class="text-muted fst-italic px-2 py-2 bg-light">No address information available</p>
+        <p th:if="${lecturer.address == null}"
+           class="text-muted fst-italic px-2 py-2 bg-light">No address
+            information available</p>
 
-        <h6 class="bg-primary text-white text-uppercase fw-bold px-3 py-2 rounded-top mb-0" style="letter-spacing: 1px;">Teaching Subjects</h6>
-        <div class="p-3 border border-top-0 mb-4" th:if="${lecturer.subjects != null && !lecturer.subjects.isEmpty()}">
+        <h6 class="bg-primary text-white text-uppercase fw-bold px-3 py-2 rounded-top mb-0"
+            style="letter-spacing: 1px;">Teaching Subjects</h6>
+        <div class="p-3 border border-top-0 mb-4"
+             th:if="${lecturer.subjects != null && !lecturer.subjects.isEmpty()}">
             <div class="d-flex flex-wrap gap-2">
                 <span th:each="subject : ${lecturer.subjects}"
                       class="badge rounded-pill bg-primary fs-6"
                       th:text="${subject.name}">Mathematics</span>
             </div>
         </div>
-        <p th:if="${lecturer.subjects == null || lecturer.subjects.isEmpty()}" class="text-muted fst-italic px-2 py-2 bg-light">No subjects assigned</p>
+        <p th:if="${lecturer.subjects == null || lecturer.subjects.isEmpty()}"
+           class="text-muted fst-italic px-2 py-2 bg-light">No subjects
+            assigned</p>
 
         <a th:href="@{/}" class="btn btn-primary mt-2">Back to Main page</a>
     </div>

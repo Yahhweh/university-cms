@@ -24,7 +24,7 @@ public class DurationValidator {
             throw new EntityValidationException("Start time must be before end time", Duration.class, String.valueOf(duration.getId()));
         }
         if (!isDurationInRange(duration.getStart(), duration.getEnd())) {
-            String message = String.format("Duration must be between %d and %d minutes",minDurationMinutes, maxDurationMinutes);
+            String message = String.format("Duration must be between %d and %d minutes", minDurationMinutes, maxDurationMinutes);
             throw new EntityValidationException(message, Duration.class, String.valueOf(duration.getId()));
         }
     }
@@ -37,6 +37,6 @@ public class DurationValidator {
         java.time.Duration duration = java.time.Duration.between(start, end);
 
         return duration.toMinutes() >= minDurationMinutes &&
-        duration.toMinutes() <= maxDurationMinutes;
+            duration.toMinutes() <= maxDurationMinutes;
     }
 }

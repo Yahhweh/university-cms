@@ -12,12 +12,14 @@
             <thead class="table-dark">
             <tr>
                 <th>
-                    <a class="text-white" th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
+                    <a class="text-white"
+                       th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
                         Type Name
                     </a>
                 </th>
                 <th>
-                    <a class="text-white" th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='capacity,' + (${page.sort.getOrderFor('capacity')?.ascending} ? 'desc' : 'asc'))}">
+                    <a class="text-white"
+                       th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='capacity,' + (${page.sort.getOrderFor('capacity')?.ascending} ? 'desc' : 'asc'))}">
                         Capacity
                     </a>
                 </th>

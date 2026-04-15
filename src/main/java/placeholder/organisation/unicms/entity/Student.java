@@ -16,7 +16,7 @@ public class Student extends User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = true,
-            referencedColumnName = "id")
+        referencedColumnName = "id")
     private Group group;
 
     @Enumerated(EnumType.STRING)

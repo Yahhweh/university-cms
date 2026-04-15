@@ -20,21 +20,26 @@
             <form method="post" th:action="@{/admin/create-room}">
                 <div class="mb-3">
                     <label class="form-label">Room Number</label>
-                    <input type="text" name="room" placeholder="A-101" required class="form-control">
+                    <input type="text" name="room" placeholder="A-101" required
+                           class="form-control">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Room Type</label>
                     <select name="classRoomTypeId" required class="form-select">
-                        <option value="" disabled selected>Select room type</option>
+                        <option value="" disabled selected>Select room type
+                        </option>
                         <option th:each="roomType : ${roomTypes}"
                                 th:value="${roomType.id}"
                                 th:text="${roomType.name}"></option>
                     </select>
                 </div>
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <input type="hidden" th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}"/>
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">Add Room</button>
-                    <a th:href="@{/admin}" class="btn btn-secondary">Back to Admin Panel</a>
+                    <button type="submit" class="btn btn-primary">Add Room
+                    </button>
+                    <a th:href="@{/admin}" class="btn btn-secondary">Back to
+                        Admin Panel</a>
                 </div>
             </form>
         </div>

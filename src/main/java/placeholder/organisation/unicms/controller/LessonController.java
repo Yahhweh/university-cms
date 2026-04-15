@@ -72,9 +72,9 @@ public class LessonController {
         return "create-lesson";
     }
 
-    @PostMapping ("/create-lesson")
+    @PostMapping("/create-lesson")
     public String createLesson(RedirectAttributes redirectAttributes, @Valid @ModelAttribute LessonRequestDTO lessonRequestDTO,
-                            BindingResult bindingResult) {
+                               BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage", VALIDATION_ADD_LESSON_MESSAGE);
             return "redirect:/lessons/create-lesson";

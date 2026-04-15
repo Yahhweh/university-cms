@@ -3,7 +3,8 @@
         <ul class="pagination">
             <li class="page-item" th:classappend="${page.first} ? 'disabled'">
                 <form method="get" th:action="@{'/'+${url}}">
-                    <input type="hidden" name="page" th:value="${page.number - 1}">
+                    <input type="hidden" name="page"
+                           th:value="${page.number - 1}">
                     <input type="hidden" name="size" th:value="${page.size}">
                     <th:block th:each="order : ${page.sort}">
                         <input type="hidden" name="sort"
@@ -12,7 +13,8 @@
                     <th:block th:each="entry : ${param}"
                               th:if="${entry.key != 'page' and entry.key != 'sort' and entry.key != 'size'}">
                         <th:block th:each="val : ${entry.value}">
-                            <input type="hidden" th:name="${entry.key}" th:value="${val}">
+                            <input type="hidden" th:name="${entry.key}"
+                                   th:value="${val}">
                         </th:block>
                     </th:block>
                     <button type="submit" class="page-link">Back</button>
@@ -23,7 +25,8 @@
             </li>
             <li class="page-item" th:classappend="${page.last} ? 'disabled'">
                 <form method="get" th:action="@{'/'+${url}}">
-                    <input type="hidden" name="page" th:value="${page.number + 1}">
+                    <input type="hidden" name="page"
+                           th:value="${page.number + 1}">
                     <input type="hidden" name="size" th:value="${page.size}">
                     <th:block th:each="order : ${page.sort}">
                         <input type="hidden" name="sort"
@@ -32,7 +35,8 @@
                     <th:block th:each="entry : ${param}"
                               th:if="${entry.key != 'page' and entry.key != 'sort' and entry.key != 'size'}">
                         <th:block th:each="val : ${entry.value}">
-                            <input type="hidden" th:name="${entry.key}" th:value="${val}">
+                            <input type="hidden" th:name="${entry.key}"
+                                   th:value="${val}">
                         </th:block>
                     </th:block>
                     <button type="submit" class="page-link">Next</button>

@@ -6,7 +6,7 @@ import placeholder.organisation.unicms.service.dto.request.LecturerRequestDTO;
 import placeholder.organisation.unicms.service.dto.response.LecturerResponseDTO;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface LecturerMapper {
 
     Lecturer toEntity(LecturerResponseDTO dto);

@@ -21,7 +21,8 @@
                 <div class="mb-3">
                     <label class="form-label">Duration</label>
                     <select name="durationId" required class="form-select">
-                        <option value="" disabled selected>Select duration</option>
+                        <option value="" disabled selected>Select duration
+                        </option>
                         <option th:each="duration : ${durations}"
                                 th:value="${duration.id}"
                                 th:text="${duration.start} + ' - ' + ${duration.end}"></option>
@@ -31,7 +32,10 @@
                     <label class="form-label">Subject</label>
                     <select name="studySubjectId" required class="form-select"
                             onchange="window.location.href='/admin/create-lesson?subjectId=' + this.value">
-                        <option value="" disabled th:selected="${subjectId == null}">Select subject</option>
+                        <option value="" disabled
+                                th:selected="${subjectId == null}">Select
+                            subject
+                        </option>
                         <option th:each="subject : ${subjects}"
                                 th:value="${subject.id}"
                                 th:text="${subject.name}"
@@ -50,7 +54,8 @@
                 <div class="mb-3">
                     <label class="form-label">Lecturer</label>
                     <select name="lecturerId" required class="form-select">
-                        <option value="" disabled selected>Select lecturer</option>
+                        <option value="" disabled selected>Select lecturer
+                        </option>
                         <option th:each="lecturer : ${lecturers}"
                                 th:value="${lecturer.id}"
                                 th:text="${lecturer.name} + ' ' + ${lecturer.sureName}"></option>
@@ -67,12 +72,16 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Date</label>
-                    <input type="date" name="date" required class="form-control">
+                    <input type="date" name="date" required
+                           class="form-control">
                 </div>
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <input type="hidden" th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}"/>
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">Add Lesson</button>
-                    <a th:href="@{/admin}" class="btn btn-secondary">Back to Admin Panel</a>
+                    <button type="submit" class="btn btn-primary">Add Lesson
+                    </button>
+                    <a th:href="@{/admin}" class="btn btn-secondary">Back to
+                        Admin Panel</a>
                 </div>
             </form>
         </div>

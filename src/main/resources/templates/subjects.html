@@ -44,10 +44,15 @@
                 <td th:text="${subject.name}">Math</td>
                 <td class="d-flex gap-2">
                     <form th:action="@{/admin/delete-subject}" method="post">
-                        <input type="hidden" name="subjectId" th:value="${subject.id}"/>
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                        <div th:replace="~{hidden-inputs/subject-hidden-inputs :: inputs}"></div>
-                        <button type="submit" class="btn btn-link p-0 text-danger" title="Delete subject">
+                        <input type="hidden" name="subjectId"
+                               th:value="${subject.id}"/>
+                        <input type="hidden" th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}"/>
+                        <div
+                            th:replace="~{hidden-inputs/subject-hidden-inputs :: inputs}"></div>
+                        <button type="submit"
+                                class="btn btn-link p-0 text-danger"
+                                title="Delete subject">
                             <i class="bi bi-trash fs-5"></i>
                         </button>
                     </form>

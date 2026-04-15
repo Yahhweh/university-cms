@@ -1,6 +1,7 @@
 <div th:fragment="inputs">
     <input type="hidden" name="id" th:value="${user.id}">
-    <th:block th:replace="~{hidden-inputs/preserve-pagination :: preserve-pagination}"></th:block>
+    <th:block
+        th:replace="~{hidden-inputs/preserve-pagination :: preserve-pagination}"></th:block>
     <input type="hidden" name="name" th:value="${filters.name}">
     <input type="hidden" name="sureName" th:value="${filters.sureName}">
     <input type="hidden" name="email" th:value="${filters.email}">

@@ -40,15 +40,21 @@
                 <td th:text="${course.name}">Applied Math</td>
                 <td>
                     <span th:each="subject, iter : ${course.subjects}">
-                        <span th:text="${subject.name}">Math</span><span th:if="${!iter.last}">, </span>
+                        <span th:text="${subject.name}">Math</span><span
+                        th:if="${!iter.last}">, </span>
                     </span>
                 </td>
                 <td>
                     <form th:action="@{/admin/delete-course}" method="post">
-                        <input type="hidden" name="courseId" th:value="${course.id}"/>
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                        <div th:replace="~{hidden-inputs/cours-hidden-inputs :: inputs}"></div>
-                        <button type="submit" class="btn btn-link p-0 text-danger" title="Delete course">
+                        <input type="hidden" name="courseId"
+                               th:value="${course.id}"/>
+                        <input type="hidden" th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}"/>
+                        <div
+                            th:replace="~{hidden-inputs/cours-hidden-inputs :: inputs}"></div>
+                        <button type="submit"
+                                class="btn btn-link p-0 text-danger"
+                                title="Delete course">
                             <i class="bi bi-trash fs-5"></i>
                         </button>
                     </form>

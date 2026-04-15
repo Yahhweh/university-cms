@@ -62,7 +62,7 @@ public class UserController {
 
     @GetMapping("/update-lecturer-subjects")
     public String getAssignSubjectsForm(Model model,
-                                       @RequestParam Long lecturerId) {
+                                        @RequestParam Long lecturerId) {
         model.addAttribute("subjects", subjectService.findAllSubjects());
         lecturerService.findLecturerDto(lecturerId)
             .ifPresent(dto -> model.addAttribute("lecturer", dto));
@@ -71,8 +71,8 @@ public class UserController {
 
     @PostMapping("/update-lecturer-subjects")
     public String updateLecturerSubjects(@RequestParam Long lecturerId,
-                                @RequestParam List<Long> subjectIds,
-                                RedirectAttributes redirectAttributes) {
+                                         @RequestParam List<Long> subjectIds,
+                                         RedirectAttributes redirectAttributes) {
         lecturerService.updateLecturerSubjects(subjectIds, lecturerId);
         redirectAttributes.addFlashAttribute("successMessage", UPDATE_LECTURER_SUBJECTS);
         return "redirect:/users/update-lecturer-subjects?lecturerId=" + lecturerId;

@@ -23,7 +23,7 @@ public class LessonValidator {
 
     public void validateLesson(Lesson lesson, long lessonId) {
 
-        if(!isLectureOnWorkingDays(lesson)){
+        if (!isLectureOnWorkingDays(lesson)) {
             throw new EntityValidationException("Lecture on weekends.", Lesson.class, String.valueOf(lessonId));
         }
         if (hasLecturerTimeConflict(lesson)) {
@@ -45,29 +45,29 @@ public class LessonValidator {
 
     private boolean hasLecturerTimeConflict(Lesson lesson) {
         return lessonRepository.findConflictionLessonsForLecturer(
-                lesson.getLecturer().getId(),
-                lesson.getDate(),
-                lesson.getDuration().getStart(),
-                lesson.getDuration().getEnd(),
-                lesson.getId());
+            lesson.getLecturer().getId(),
+            lesson.getDate(),
+            lesson.getDuration().getStart(),
+            lesson.getDuration().getEnd(),
+            lesson.getId());
     }
 
     private boolean hasRoomTimeConflict(Lesson lesson) {
         return lessonRepository.findRoomConflictsInTime(
-                lesson.getDate(),
-                lesson.getDuration().getStart(),
-                lesson.getDuration().getEnd(),
-                lesson.getRoom().getId(),
-                lesson.getId());
+            lesson.getDate(),
+            lesson.getDuration().getStart(),
+            lesson.getDuration().getEnd(),
+            lesson.getRoom().getId(),
+            lesson.getId());
     }
 
     private boolean hasGroupTimeConflict(Lesson lesson) {
         return lessonRepository.findGroupConflictInTime(
-                lesson.getGroup().getId(),
-                lesson.getDate(),
-                lesson.getDuration().getStart(),
-                lesson.getDuration().getEnd(),
-                lesson.getId());
+            lesson.getGroup().getId(),
+            lesson.getDate(),
+            lesson.getDuration().getStart(),
+            lesson.getDuration().getEnd(),
+            lesson.getId());
     }
 
     private boolean isLecturerAuthorized(Lesson lesson) {
@@ -79,8 +79,8 @@ public class LessonValidator {
         return studentRepository.findStudentsByGroupId(lesson.getGroup().getId()).size() <= capacity;
     }
 
-    private boolean isLectureOnWorkingDays(Lesson lesson){
-        DayOfWeek day =  lesson.getDate().getDayOfWeek();
+    private boolean isLectureOnWorkingDays(Lesson lesson) {
+        DayOfWeek day = lesson.getDate().getDayOfWeek();
         return DayOfWeek.SATURDAY != day && DayOfWeek.SUNDAY != day;
     }
 }

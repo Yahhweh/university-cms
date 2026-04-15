@@ -14,9 +14,11 @@
     <div class="card-body p-4">
 
         <div class="d-flex align-items-center mb-0">
-            <h6 class="bg-primary text-white text-uppercase fw-bold px-3 py-2 rounded-top mb-0 flex-grow-1" style="letter-spacing: 1px;">Group Information</h6>
+            <h6 class="bg-primary text-white text-uppercase fw-bold px-3 py-2 rounded-top mb-0 flex-grow-1"
+                style="letter-spacing: 1px;">Group Information</h6>
             <span sec:authorize="hasRole('MENTOR')">
-                <button type="button" class="btn btn-link p-1 text-primary" onclick="toggleInfoEdit()" title="Edit group info">
+                <button type="button" class="btn btn-link p-1 text-primary"
+                        onclick="toggleInfoEdit()" title="Edit group info">
                     <i class="bi bi-pencil fs-5"></i>
                 </button>
             </span>
@@ -26,12 +28,21 @@
                 <th class="table-primary w-25">Information</th>
                 <td>
                     <span id="infoText" th:text="${group.info}">info</span>
-                    <form id="infoForm" th:action="@{/group-profile/update-info}" method="post" style="display:none;">
-                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                        <input type="hidden" name="groupId" th:value="${group.id}"/>
-                        <textarea name="info" class="form-control mb-2" th:text="${group.info}"></textarea>
-                        <button type="submit" class="btn btn-primary btn-sm">Save</button>
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="toggleInfoEdit()">Cancel</button>
+                    <form id="infoForm"
+                          th:action="@{/group-profile/update-info}"
+                          method="post" style="display:none;">
+                        <input type="hidden" th:name="${_csrf.parameterName}"
+                               th:value="${_csrf.token}"/>
+                        <input type="hidden" name="groupId"
+                               th:value="${group.id}"/>
+                        <textarea name="info" class="form-control mb-2"
+                                  th:text="${group.info}"></textarea>
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            Save
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm"
+                                onclick="toggleInfoEdit()">Cancel
+                        </button>
                     </form>
                 </td>
             </tr>
@@ -41,7 +52,9 @@
             </tr>
             <tr>
                 <th class="table-primary">Mentor</th>
-                <td th:text="${group.mentor.getName() + ' ' + group.getMentor().getSureName()}">John Doe</td>
+                <td th:text="${group.mentor.getName() + ' ' + group.getMentor().getSureName()}">
+                    John Doe
+                </td>
             </tr>
             <tr>
                 <th class="table-primary">Mentor contact information</th>
@@ -58,12 +71,12 @@
 </div>
 
 <script>
-function toggleInfoEdit() {
-    const text = document.getElementById('infoText');
-    const form = document.getElementById('infoForm');
-    text.style.display = text.style.display === 'none' ? '' : 'none';
-    form.style.display = form.style.display === 'none' ? '' : 'none';
-}
+    function toggleInfoEdit() {
+        const text = document.getElementById('infoText');
+        const form = document.getElementById('infoForm');
+        text.style.display = text.style.display === 'none' ? '' : 'none';
+        form.style.display = form.style.display === 'none' ? '' : 'none';
+    }
 </script>
 
 </body>

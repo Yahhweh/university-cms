@@ -5,7 +5,9 @@
     <title>Users</title>
 </head>
 <body>
-<div th:if="${successMessage}" th:insert="~{toasts/success-toast :: success-toast(${successMessage})}" class="py-4"></div>
+<div th:if="${successMessage}"
+     th:insert="~{toasts/success-toast :: success-toast(${successMessage})}"
+     class="py-4"></div>
 <div class="container">
     <h1 class="h2 text-white mb-4">Users</h1>
 
@@ -73,9 +75,14 @@
                         <i class="bi bi-journal-bookmark fs-5"></i>
                     </a>
                     <form th:action="@{/admin/delete-user}" method="post">
-                        <div th:replace="~{hidden-inputs/hidden-inputs :: inputs}">Hidden Inputs</div>
+                        <div
+                            th:replace="~{hidden-inputs/hidden-inputs :: inputs}">
+                            Hidden Inputs
+                        </div>
                         <input type="hidden" name="id" th:value="${user.id}"/>
-                        <button type="submit" class="btn btn-link p-0 text-danger" title="Delete user">
+                        <button type="submit"
+                                class="btn btn-link p-0 text-danger"
+                                title="Delete user">
                             <i class="bi bi-trash fs-5"></i>
                         </button>
                     </form>

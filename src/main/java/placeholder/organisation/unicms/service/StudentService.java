@@ -55,7 +55,7 @@ public class StudentService {
 
     @Transactional
     public void createStudent(StudentRequestDTO studentRequestDTO) {
-        Student student= studentMapper.toEntity(studentRequestDTO);
+        Student student = studentMapper.toEntity(studentRequestDTO);
         student.setPassword(passwordEncoder.encode(studentRequestDTO.getPassword()));
         student.getRoles().add(Role.STUDENT);
 
@@ -94,7 +94,7 @@ public class StudentService {
         return studentRepository.findAll(pageable);
     }
 
-    public List<Student> findStudentsRelatedToGroup(Long groupId){
+    public List<Student> findStudentsRelatedToGroup(Long groupId) {
         log.debug("Trying to get students related to group. group id: {}", groupId);
         return studentRepository.findStudentsByGroupId(groupId);
     }

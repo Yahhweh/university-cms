@@ -115,14 +115,14 @@ public class LessonService {
 
     public Page<Lesson> findAll(Pageable pageable, LessonFilter filter) {
         log.debug("Trying to get filtered lesson: group={}, room={}, subject={}, lecturer name={}, lecturer surename={}, durationId={},", filter.getGroup(),
-            filter.getRoom(), filter.getSubject(), filter.getLecturer().getName(), filter.getLecturer().getSureName(), filter.getDurationId() );
+            filter.getRoom(), filter.getSubject(), filter.getLecturer().getName(), filter.getLecturer().getSureName(), filter.getDurationId());
 
         return lessonRepository.findAll(LessonSpecification.filter(filter), pageable);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public void createLesson(LessonRequestDTO requestDTO){
+    public void createLesson(LessonRequestDTO requestDTO) {
         Lesson lesson = new Lesson();
         lesson.setDate(requestDTO.getDate());
         resolveRelations(requestDTO, lesson);

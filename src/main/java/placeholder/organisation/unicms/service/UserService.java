@@ -37,17 +37,17 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public Optional<User> findByEmail(String email){
+    public Optional<User> findByEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);
         log.debug("Found User with email {}", email);
         return user;
     }
 
-    public Optional<User> findUser(Long id){
+    public Optional<User> findUser(Long id) {
         return userRepository.findById(id);
     }
 
-    public List<User> findAllUsers(){
+    public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
@@ -85,9 +85,9 @@ public class UserService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public void deleteUser(Long id){
-        if(!userRepository.existsById(id)){
-            throw  new EntityNotFoundException(User.class, String.valueOf(id));
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new EntityNotFoundException(User.class, String.valueOf(id));
         }
         userRepository.deleteById(id);
         log.debug("Deleted user with id: {}", id);
@@ -95,7 +95,7 @@ public class UserService {
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
-    public User createUser(User user){
+    public User createUser(User user) {
         return userRepository.save(user);
     }
 

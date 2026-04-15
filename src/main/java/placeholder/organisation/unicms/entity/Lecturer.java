@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,11 +29,11 @@ public class Lecturer extends User {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "lecturer_study_subject",
-            joinColumns = @JoinColumn(name = "lecturer_id"),
-            inverseJoinColumns = @JoinColumn(name = "study_subject_id"))
+        joinColumns = @JoinColumn(name = "lecturer_id"),
+        inverseJoinColumns = @JoinColumn(name = "study_subject_id"))
     private Set<Subject> subjects = new HashSet<>();
 
-    public String toString(){
+    public String toString() {
         return this.getName() + " " + this.getSureName();
     }
 }
