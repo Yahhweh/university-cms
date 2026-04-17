@@ -5,6 +5,7 @@
     <title>Users</title>
 </head>
 <body>
-<div th:replace="~{users-list-form :: list(${successMessage},${url},${filters},${path}, ${page},${users},${roles},null)}"></div>
+<div
+    th:replace="~{users-list-form :: list(${successMessage},${url},${filters},${path}, ${page},${users},null,${groupId})}"></div>
 </body>
 </html>

@@ -61,7 +61,9 @@ Given User `A` logged in with Admin role
     (duration, studySubject, classroom, date).
 * User `A` should be able to list all Users.
 * User `A` should be able to do anything that Staff can do.   
-* User `A` should be able to Create/Read/Update/Delete group information !
+* User `A` should be able to Create/Read/Update/Delete group information 
+* User `A` can assign/ reassign Students to Group
+* User `A` should be able to list all students in a group (read access).
 ---
 
 Student/Lecturer rights
@@ -74,6 +76,8 @@ Given User `B` logged in with Student or Lecturer role
   within courses assigned to him.
 * User `B` (Student) should be able to view only his own group
 * User `B` should be able to list all groups information (read access).
+* User `B` (Student) should be able to list all students related to his group (read access).
+* User `B` (Lecturer) should be able to list all students in a group (read access).
 
 ---
 
@@ -86,6 +90,8 @@ Given User `C` logged in with Staff role.
 * User `C` should be able to list Students and Lecturers (not staff and admins).
 * User `C` should be able to view the list of courses and see the details of each course.
 * User `C` should be able to Create/Read/Update group information.
+* User `C` can assign/ reassign Students to Group
+* User `C` should be able to list all students in a group (read access).
 
 ---
 
@@ -96,6 +102,7 @@ Given User `D` logged in with Mentor role.
 * User `D` has the same rights as Student
 * If User `D` is connected to the group he should be able to update info to this exact group
 * If User `D` is connected to the group he should be able to list students of this exact group
+* User `D` (Student) should be able to list all students related to his group (read access).
 
 Mentor Role can be assigned to anybody;
 

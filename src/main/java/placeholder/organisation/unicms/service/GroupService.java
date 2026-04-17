@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.repository.CourseRepository;
 import placeholder.organisation.unicms.repository.GroupRepository;
+import placeholder.organisation.unicms.repository.LecturerRepository;
+import placeholder.organisation.unicms.repository.StudentRepository;
 import placeholder.organisation.unicms.repository.UserRepository;
 import placeholder.organisation.unicms.service.dto.request.GroupRequestDTO;
 import placeholder.organisation.unicms.service.dto.request.UpdateGroupInfoRequestDTO;
@@ -28,6 +30,8 @@ public class GroupService {
     private final GroupMapper groupMapper;
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
+    private final LecturerRepository lecturerRepository;
 
     public List<Group> findAllGroups() {
         List<Group> groups = groupRepository.findAll();
@@ -126,6 +130,13 @@ public class GroupService {
         group.setInfo(dto.getInfo());
         groupRepository.save(group);
         log.debug("Group info updated successfully. ID: {}", dto.getGroupId());
+    }
+
+    public Page<Group> findGroupsRelatedToLecturer(Long lecturerId, Pageable pageable) {
+        Lecturer lecturer = lecturerRepository.findById(lecturerId)
+            .orElseThrow(() -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId)));
+        if (lecturer.getSubjects().isEmpty()) return Page.empty(pageable);
+        return groupRepository.findDistinctByCourseSubjectsIn(lecturer.getSubjects(), pageable);
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")

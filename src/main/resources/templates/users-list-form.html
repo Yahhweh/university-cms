@@ -1,0 +1,106 @@
+<div
+<div th:fragment="list(successMessage,url,filters,path,page,users,roles,groupId)">
+<div th:if="${successMessage}"
+     th:insert="~{toasts/success-toast :: success-toast(${successMessage})}"
+     class="py-4"></div>
+<div class="container">
+    <h1 class="h2 text-white mb-4">Users</h1>
+
+    <form th:action="@{/{url}(url=${url})}" method="get"
+          class="row g-2 mb-4">
+        <div class="col-auto">
+            <input type="text" name="name" placeholder="First name"
+                   th:value="${filters.name}" class="form-control">
+        </div>
+        <div class="col-auto">
+            <input type="text" name="sureName" placeholder="Last name"
+                   th:value="${filters.sureName}" class="form-control">
+        </div>
+        <div class="col-auto">
+            <input type="text" name="email" placeholder="Email"
+                   th:value="${filters.email}" class="form-control">
+        </div>
+        <input th:if="${groupId}" type="hidden" name="groupId"
+               th:value="${groupId}"/>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+        <div class="col-auto">
+            <a th:href="${groupId} ? @{/{url}(url=${url},groupId=${groupId})} : @{/{url}(url=${url})}"
+               class="btn btn-outline-light">Reset</a>
+        </div>
+    </form>
+
+    <div class="table-responsive">
+        <table
+            class="table table-bordered table-striped table-hover bg-white">
+            <thead class="table-dark">
+            <tr>
+                <th>
+                    <a class="text-white"
+                       th:href="@{/{path}(path=${url}, page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
+                        First Name
+                    </a>
+                </th>
+                <th>
+                    <a class="text-white"
+                       th:href="@{/{path}(path=${url}, page=${page.number}, size=${page.size}, sort='sureName,' + (${page.sort.getOrderFor('sureName')?.ascending} ? 'desc' : 'asc'))}">
+                        Last Name
+                    </a>
+                </th>
+                <th>
+                    <a class="text-white"
+                       th:href="@{/{path}(path=${url}, page=${page.number}, size=${page.size}, sort='email,' + (${page.sort.getOrderFor('email')?.ascending} ? 'desc' : 'asc'))}">
+                        Email
+                    </a>
+                </th>
+                <th th:if="${roles}">Role</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.name}"></td>
+                <td th:text="${user.sureName}"></td>
+                <td th:text="${user.email}"></td>
+                <td th:if="${roles}"
+                    th:text="${#strings.listJoin(user.roles, ', ')}"></td>
+                <td sec:authorize="hasAnyRole('ADMIN','STAFF')"
+                    class="d-flex gap-2">
+                    <a th:href="@{/admin/change-role(id=${user.id})}"
+                       class="btn btn-link p-0" title="Change roles">
+                        <i class="bi bi-arrow-repeat fs-5"></i>
+                    </a>
+                    <a th:if="${user.dtype == 'Lecturer'}"
+                       th:href="@{/users/update-lecturer-subjects(lecturerId=${user.id})}"
+                       class="btn btn-link p-0" title="Assign subjects">
+                        <i class="bi bi-journal-bookmark fs-5"></i>
+                    </a>
+                    <form th:if="${roles}" th:action="@{/admin/delete-user}"
+                          method="post">
+                        <div
+                            th:replace="~{hidden-inputs/hidden-inputs :: inputs}">
+                            Hidden Inputs
+                        </div>
+                        <input type="hidden" name="id"
+                               th:value="${user.id}"/>
+                        <button type="submit"
+                                class="btn btn-link p-0 text-danger"
+                                title="Delete user">
+                            <i class="bi bi-trash fs-5"></i>
+                        </button>
+                    </form>
+                    <a th:if="${user.dtype == 'Student'}"
+                       th:href="@{/students/update-student-group(studentId=${user.id})}"
+                       class="btn btn-link p-0" title="Assign group">
+                        <i class="bi bi-journal-bookmark fs-5"></i>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:insert="~{page :: pageNavigation}"></div>
+</div>
+</div>

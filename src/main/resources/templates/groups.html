@@ -17,11 +17,26 @@
                         Group Name
                     </a>
                 </th>
+                <th>
+
+                    <a>Actions</a>
+                </th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="group : ${groups}">
                 <td th:text="${group.name}">A-123</td>
+                <td>
+                    <form th:action="@{/groups/students}" method="get">
+                        <input type="hidden" th:value="${group.id}"
+                               name="groupId">
+                        <button type="submit"
+                                class="btn btn-link p-0 text-bg-primary"
+                                title="Details user">
+                            <i class="bi bi-journal-bookmark fs-5"></i>
+                        </button>
+                    </form>
+                </td>
             </tr>
             </tbody>
         </table>

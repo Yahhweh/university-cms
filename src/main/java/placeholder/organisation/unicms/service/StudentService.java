@@ -7,15 +7,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import placeholder.organisation.unicms.entity.Role;
-import placeholder.organisation.unicms.entity.Student;
+import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.repository.StudentRepository;
+import placeholder.organisation.unicms.repository.specifications.StudentSpecification;
 import placeholder.organisation.unicms.service.dto.request.StudentRequestDTO;
+import placeholder.organisation.unicms.service.dto.request.filter.UserFilter;
+import placeholder.organisation.unicms.service.dto.response.StudentGroupDTO;
 import placeholder.organisation.unicms.service.mapper.StudentMapper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -94,9 +97,37 @@ public class StudentService {
         return studentRepository.findAll(pageable);
     }
 
+    public Page<Student> findStudentsRelatedToGroup(Long groupId, UserFilter filter, Pageable pageable) {
+        log.debug("Trying to get filtered paginated Students for group {}: {}", groupId, pageable);
+        return studentRepository.findAll(
+            StudentSpecification.filter(filter).and(StudentSpecification.byGroupId(groupId)),
+            pageable);
+    }
+
     public List<Student> findStudentsRelatedToGroup(Long groupId) {
         log.debug("Trying to get students related to group. group id: {}", groupId);
         return studentRepository.findStudentsByGroupId(groupId);
+    }
+
+    public Optional<StudentGroupDTO> findStudentDto(Long studentId) {
+        return studentRepository.findById(studentId)
+            .map(l -> new StudentGroupDTO(
+                l.getId(),
+                l.getName() + " " + l.getSureName(),
+                l.getGroup().getId())
+            );
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    @Transactional
+    public void assignStudentToGroup(Long studentId, Long groupId) {
+        Student student = studentRepository.findById(studentId)
+            .orElseThrow(() -> new EntityNotFoundException(Student.class, String.valueOf(studentId)));
+        Group group = groupRepository.findById(groupId)
+            .orElseThrow(() -> new EntityNotFoundException(Group.class, String.valueOf(groupId)));
+
+        student.setGroup(group);
+        log.debug("Student was assigned to group successfully. Student ID: {}. Group ID: {}", studentId, groupId);
     }
 
     private void resolveRelations(StudentRequestDTO dto, Student student) {

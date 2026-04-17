@@ -14,9 +14,17 @@
             <a th:href="@{/students/profile}"
                class="btn btn-outline-light btn-sm">Profile</a>
         </div>
+        <div sec:authorize="hasAnyRole('STUDENT', 'MENTOR')">
+            <a th:href="@{/group-profile}"
+               class="btn btn-outline-light btn-sm">Group</a>
+        </div>
         <div sec:authorize="hasAnyRole('LECTURER')">
             <a th:href="@{/lecturers/profile}"
                class="btn btn-outline-light btn-sm">Profile</a>
+        </div>
+        <div sec:authorize="hasAnyRole('LECTURER')">
+            <a th:href="@{/lecturer/groups}"
+               class="btn btn-outline-light btn-sm">Groups</a>
         </div>
         <div sec:authorize="hasRole('ADMIN')">
             <a th:href="@{/admin}"
