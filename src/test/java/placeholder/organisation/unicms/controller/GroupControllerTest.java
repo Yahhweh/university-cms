@@ -69,24 +69,18 @@ class GroupControllerTest {
     void getLecturerGroups_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
         Lecturer lecturer = getLecturer();
         List<Group> groups = List.of(getGroup());
-        Pageable pageable = PageRequest.of(0, 20, Sort.by("id").ascending());
-        Page<Group> groupPage = new PageImpl<>(groups, pageable, groups.size());
 
         when(lecturerService.findByEmail("lecturer@test.com")).thenReturn(lecturer);
-        when(groupService.findGroupsRelatedToLecturer(lecturer.getId(), pageable)).thenReturn(groupPage);
+        when(groupService.findGroupsRelatedToLecturer(lecturer.getId())).thenReturn(groups);
 
-        mockMvc.perform(get("/lecturer/groups")
-                .param("page", "0")
-                .param("size", "20")
-                .param("sort", "id,asc"))
+        mockMvc.perform(get("/" + lecturer.getId()+"/groups"))
             .andExpect(status().isOk())
             .andExpect(view().name("groups"))
             .andExpect(model().attribute("groups", groups))
-            .andExpect(model().attribute("page", groupPage))
-            .andExpect(model().attribute("url", "lecturer/groups"));
+            .andExpect(model().attribute("url", lecturer.getId() +"/groups"));
 
         verify(lecturerService).findByEmail("lecturer@test.com");
-        verify(groupService).findGroupsRelatedToLecturer(lecturer.getId(), pageable);
+        verify(groupService).findGroupsRelatedToLecturer(lecturer.getId());
     }
 
     private Group getGroup() {

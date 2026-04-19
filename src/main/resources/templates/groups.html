@@ -12,10 +12,7 @@
             <thead class="table-dark">
             <tr>
                 <th>
-                    <a class="text-white"
-                       th:href="@{/{path}(path = ${url}, page=${page.number}, size=${page.size}, sort='name,' + (${page.sort.getOrderFor('name')?.ascending} ? 'desc' : 'asc'))}">
-                        Group Name
-                    </a>
+                    <a class="text-white">Group Name</a>
                 </th>
                 <th>
 
@@ -27,12 +24,10 @@
             <tr th:each="group : ${groups}">
                 <td th:text="${group.name}">A-123</td>
                 <td>
-                    <form th:action="@{/groups/students}" method="get">
-                        <input type="hidden" th:value="${group.id}"
-                               name="groupId">
+                    <form th:action="@{/{groupId}/students(groupId=${group.id})}" method="get">
                         <button type="submit"
                                 class="btn btn-link p-0 text-bg-primary"
-                                title="Details user">
+                                title="users detail">
                             <i class="bi bi-journal-bookmark fs-5"></i>
                         </button>
                     </form>
@@ -41,7 +36,6 @@
             </tbody>
         </table>
     </div>
-    <div th:insert="~{page :: pageNavigation}"></div>
 </div>
 </body>
 </html>

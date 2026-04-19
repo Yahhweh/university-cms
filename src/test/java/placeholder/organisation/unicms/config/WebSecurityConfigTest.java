@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.User;
+//import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -21,12 +21,13 @@ import placeholder.organisation.unicms.service.mapper.AddressMapper;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = {AdminController.class, AuthenticationController.class, LecturerController.class, StudentController.class})
 @Import(WebSecurityConfig.class)
@@ -62,8 +63,8 @@ class WebSecurityConfigTest {
     private CourseService courseService;
 
     @Test
-    @WithMockUser(username = "user", roles = {"STUDENT", "LECTURER", "ADMIN", "STAFF"})
-    void filterChain_shouldReturnOk_whenUserHasAllRoles() throws Exception {
+    @WithMockUser(username = "user", roles = {"STUDENT", "ADMIN", "STAFF"})
+    void filterChain_shouldReturnOk_whenUserHasAllRolesExceptLecturer() throws Exception {
         mockMvc.perform(get("/"))
             .andExpect(status().isOk());
     }
@@ -100,7 +101,7 @@ class WebSecurityConfigTest {
 
     @Test
     void filterChain_shouldReturnOk_whenStudentAccessesOwnProfile() throws Exception {
-        UserDetails userDetails = User.withUsername("kirill.kovalenko@student.university.com")
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.withUsername("kirill.kovalenko@student.university.com")
             .password("123").roles("STUDENT").build();
 
         when(customUserDetailsService.loadUserByUsername("kirill.kovalenko@student.university.com")).thenReturn(userDetails);

@@ -20,5 +20,5 @@ public interface GroupRepository extends JpaRepository<Group, Long>, JpaSpecific
     List<Group> findByCourse(Course course);
 
     @Query("SELECT DISTINCT g FROM Group g JOIN g.course c JOIN c.subjects s WHERE s IN :subjects")
-    Page<Group> findDistinctByCourseSubjectsIn(@Param("subjects") Set<Subject> subjects, Pageable pageable);
+    List<Group> findDistinctByCourseSubjectsIn(@Param("subjects") Set<Subject> subjects);
 }

@@ -9,10 +9,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.service.*;
@@ -73,25 +70,24 @@ public class GroupController {
     }
 
     @PreAuthorize("hasRole('LECTURER')")
-    @GetMapping("/lecturer/groups")
-    public String getLecturerGroups(Model model, @AuthenticationPrincipal UserDetails userDetails,
-                                    @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+    @GetMapping("/{lecturerId}/groups")
+    public String getLecturerGroups(Model model, @PathVariable Long lecturerId,
+                                    @AuthenticationPrincipal UserDetails userDetails) {
+        List<Group> groups = groupService.findGroupsRelatedToLecturer(lecturerId);
         Lecturer lecturer = lecturerService.findByEmail(userDetails.getUsername());
-        Page<Group> page = groupService.findGroupsRelatedToLecturer(lecturer.getId(), pageable);
-        model.addAttribute("groups", page.getContent());
-        model.addAttribute("page", page);
-        model.addAttribute("url", "lecturer/groups");
+        model.addAttribute("groups", groups);
+        model.addAttribute("lecturerId", lecturerId);
+        model.addAttribute("url", lecturerId + "/groups");
         return "groups";
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF', 'MENTOR', 'LECTURER', 'STUDENT')")
-    @GetMapping("/groups/students")
-    public String listStudentsRelatedToGroup(Model model, @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
-                                             @ModelAttribute UserFilter filter, @RequestParam Long groupId) {
-        Page<Student> pages = studentService.findStudentsRelatedToGroup(groupId, filter, pageable);
-        model.addAttribute("users", pages.getContent());
-        model.addAttribute("page", pages);
-        model.addAttribute("url", "groups/students");
+    @GetMapping("/{groupId}/students")
+    public String listStudentsRelatedToGroup(Model model, @ModelAttribute UserFilter filter,
+                                             @PathVariable Long groupId) {
+        List<Student> students = studentService.findStudentsRelatedToGroup(groupId, filter);
+        model.addAttribute("users", students);
+        model.addAttribute("url", groupId + "/students");
         model.addAttribute("groupId", groupId);
         model.addAttribute("filters", filter);
 

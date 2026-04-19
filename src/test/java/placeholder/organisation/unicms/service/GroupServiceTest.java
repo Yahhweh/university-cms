@@ -149,17 +149,15 @@ class GroupServiceTest {
         lecturer.setId(1L);
         Subject subject = new Subject();
         lecturer.setSubjects(new HashSet<>(Set.of(subject)));
-
-        Pageable pageable = PageRequest.of(0, 9, Sort.by("id").ascending());
-        Page<Group> expected = new PageImpl<>(List.of(getGroup()), pageable, 1);
+        List<Group> groups = List.of(getGroup());
 
         when(lecturerRepository.findById(1L)).thenReturn(Optional.of(lecturer));
-        when(groupRepository.findDistinctByCourseSubjectsIn(lecturer.getSubjects(), pageable)).thenReturn(expected);
+        when(groupRepository.findDistinctByCourseSubjectsIn(lecturer.getSubjects())).thenReturn(groups);
 
-        Page<Group> result = groupService.findGroupsRelatedToLecturer(1L, pageable);
+        List<Group> result = groupService.findGroupsRelatedToLecturer(1L);
 
-        assertThat(result).isEqualTo(expected);
-        verify(groupRepository).findDistinctByCourseSubjectsIn(lecturer.getSubjects(), pageable);
+        assertThat(result).isEqualTo(groups);
+        verify(groupRepository).findDistinctByCourseSubjectsIn(lecturer.getSubjects());
     }
 
     @Test
@@ -172,9 +170,9 @@ class GroupServiceTest {
 
         when(lecturerRepository.findById(1L)).thenReturn(Optional.of(lecturer));
 
-        Page<Group> result = groupService.findGroupsRelatedToLecturer(1L, pageable);
+        List<Group> groups = groupService.findGroupsRelatedToLecturer(1L);
 
-        assertThat(result.isEmpty()).isTrue();
+        assertThat(groups.isEmpty()).isTrue();
     }
 
 }

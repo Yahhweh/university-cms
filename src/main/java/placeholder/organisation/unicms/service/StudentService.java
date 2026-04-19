@@ -18,7 +18,6 @@ import placeholder.organisation.unicms.service.mapper.StudentMapper;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -97,11 +96,10 @@ public class StudentService {
         return studentRepository.findAll(pageable);
     }
 
-    public Page<Student> findStudentsRelatedToGroup(Long groupId, UserFilter filter, Pageable pageable) {
-        log.debug("Trying to get filtered paginated Students for group {}: {}", groupId, pageable);
+    public List<Student> findStudentsRelatedToGroup(Long groupId, UserFilter filter) {
+        log.debug("Trying to get filtered paginated Students for group {}: ", groupId);
         return studentRepository.findAll(
-            StudentSpecification.filter(filter).and(StudentSpecification.byGroupId(groupId)),
-            pageable);
+            StudentSpecification.filter(filter).and(StudentSpecification.byGroupId(groupId)));
     }
 
     public List<Student> findStudentsRelatedToGroup(Long groupId) {
@@ -109,25 +107,9 @@ public class StudentService {
         return studentRepository.findStudentsByGroupId(groupId);
     }
 
-    public Optional<StudentGroupDTO> findStudentDto(Long studentId) {
+    public Optional<StudentGroupDTO> findStudent(Long studentId) {
         return studentRepository.findById(studentId)
-            .map(l -> new StudentGroupDTO(
-                l.getId(),
-                l.getName() + " " + l.getSureName(),
-                l.getGroup().getId())
-            );
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
-    @Transactional
-    public void assignStudentToGroup(Long studentId, Long groupId) {
-        Student student = studentRepository.findById(studentId)
-            .orElseThrow(() -> new EntityNotFoundException(Student.class, String.valueOf(studentId)));
-        Group group = groupRepository.findById(groupId)
-            .orElseThrow(() -> new EntityNotFoundException(Group.class, String.valueOf(groupId)));
-
-        student.setGroup(group);
-        log.debug("Student was assigned to group successfully. Student ID: {}. Group ID: {}", studentId, groupId);
+            .map(studentMapper::toStudentGroupDto);
     }
 
     private void resolveRelations(StudentRequestDTO dto, Student student) {

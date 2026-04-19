@@ -11,6 +11,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import placeholder.organisation.unicms.entity.Degree;
 import placeholder.organisation.unicms.entity.Student;
+import placeholder.organisation.unicms.service.GroupService;
 import placeholder.organisation.unicms.service.StudentService;
 
 import java.util.List;
@@ -30,6 +31,8 @@ class StudentControllerTest {
     MockMvc mockMvc;
     @MockitoBean
     StudentService studentService;
+    @MockitoBean
+    GroupService groupService;
 
     @Test
     void getLecturers_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {

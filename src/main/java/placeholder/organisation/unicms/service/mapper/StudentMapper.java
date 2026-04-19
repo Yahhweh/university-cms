@@ -3,6 +3,7 @@ package placeholder.organisation.unicms.service.mapper;
 import org.mapstruct.*;
 import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.service.dto.request.StudentRequestDTO;
+import placeholder.organisation.unicms.service.dto.response.StudentGroupDTO;
 import placeholder.organisation.unicms.service.dto.response.StudentResponseDTO;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE,
@@ -22,4 +23,8 @@ public interface StudentMapper {
     Student toEntity(StudentRequestDTO requestDTO);
 
     Student toEntity(StudentResponseDTO studentResponseDTO);
+
+    @Mapping(target = "fullName", expression = "java(student.getName() + \" \" + student.getSureName())")
+    @Mapping(target = "groupIds", source = "group.id")
+    StudentGroupDTO toStudentGroupDto(Student student);
 }

@@ -67,8 +67,7 @@
 
         </table>
         <a th:href="@{/}" class="btn btn-primary mt-2">Back to Main page</a>
-        <form th:action="@{/groups/students}">
-            <input type="hidden" name="groupId" th:value="${group.id}">
+        <form th:action="@{{groupId}/students(groupId=${group.id})}">
             <button type="submit" class="btn btn-primary btn-sm">
                 Group Detail
             </button>

@@ -132,11 +132,13 @@ public class GroupService {
         log.debug("Group info updated successfully. ID: {}", dto.getGroupId());
     }
 
-    public Page<Group> findGroupsRelatedToLecturer(Long lecturerId, Pageable pageable) {
+    public List<Group> findGroupsRelatedToLecturer(Long lecturerId) {
         Lecturer lecturer = lecturerRepository.findById(lecturerId)
             .orElseThrow(() -> new EntityNotFoundException(Lecturer.class, String.valueOf(lecturerId)));
-        if (lecturer.getSubjects().isEmpty()) return Page.empty(pageable);
-        return groupRepository.findDistinctByCourseSubjectsIn(lecturer.getSubjects(), pageable);
+        if (lecturer.getSubjects().isEmpty()) {
+            return List.of();
+        }
+        return groupRepository.findDistinctByCourseSubjectsIn(lecturer.getSubjects());
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")

@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.service.GroupService;
 import placeholder.organisation.unicms.service.StudentService;
+import placeholder.organisation.unicms.service.dto.request.StudentRequestDTO;
 
 @Controller
 @RequestMapping("/students")
@@ -56,14 +57,17 @@ public class StudentController {
     public String getAssignSubjectsForm(Model model,
                                         @RequestParam Long studentId) {
         model.addAttribute("groups", groupService.findAllGroups());
-        studentService.findStudentDto(studentId)
+        studentService.findStudent(studentId)
             .ifPresent(dto -> model.addAttribute("student", dto));
         return "update-students-group";
     }
 
     @PostMapping("/update-student-group")
-    public String assignStudent(@RequestParam Long studentId, @RequestParam Long groupId, RedirectAttributes redirectAttributes) {
-        studentService.assignStudentToGroup(studentId, groupId);
+    public String assignStudent(@RequestParam Long studentId, @RequestParam Long groupId,
+                                RedirectAttributes redirectAttributes) {
+        StudentRequestDTO dto = new StudentRequestDTO();
+        dto.setGroupId(groupId);
+        studentService.updateStudent(studentId, dto);
 
         redirectAttributes.addFlashAttribute("successMessage", ASSIGN_STUDENT_GROUP);
         return "redirect:/students/update-student-group?studentId=" + studentId;
