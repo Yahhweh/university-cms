@@ -1,5 +1,9 @@
 package placeholder.organisation.unicms.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -87,4 +91,8 @@ public interface LessonRepository extends JpaRepository<Lesson, Long>, JpaSpecif
         @Param("start") LocalTime start,
         @Param("end") LocalTime end,
         @Param("excludeId") Long excludeId);
+
+    @Override
+    @EntityGraph(attributePaths = {"duration", "group", "lecturer", "room", "subject"})
+    Page<Lesson> findAll(Specification<Lesson> spec, Pageable pageable);
 }
