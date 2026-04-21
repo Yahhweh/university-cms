@@ -44,7 +44,7 @@ class RoomServiceTest {
         RoomType newType = new RoomType(4L, "Physics Lab", 100L);
 
         when(roomRepository.findById(initialRoom.getId()))
-                .thenReturn(Optional.of(initialRoom));
+            .thenReturn(Optional.of(initialRoom));
 
         when(roomTypeRepository.getReferenceById(4L)).thenReturn(newType);
 
@@ -56,7 +56,7 @@ class RoomServiceTest {
     }
 
     @Test
-    void updateClassRoom_shouldThrowException_whenDTOIsNotValidated(){
+    void updateClassRoom_shouldThrowException_whenDTOIsNotValidated() {
         RoomRequestDTO roomRequestDTO = getClassRoomDTO();
         Room room = getClassRoom();
         roomRequestDTO.setRoom("B-102");
@@ -70,7 +70,7 @@ class RoomServiceTest {
     }
 
     @Test
-    void createClassRoom_shouldThrowEntityValidationException_whenWrongClassRoomTypeGiven(){
+    void createClassRoom_shouldThrowEntityValidationException_whenWrongClassRoomTypeGiven() {
         Room room = getClassRoom();
         room.setRoomType(new RoomType(2L, "Smth", 2L));
 
@@ -80,38 +80,37 @@ class RoomServiceTest {
     }
 
     @Test
-    void createClassRoom_shouldSave_whenCorrectClassRoomTypeGiven(){
+    void createClassRoom_shouldSave_whenCorrectClassRoomTypeGiven() {
         Room room = getClassRoom();
 
-        assertDoesNotThrow( () -> roomService.createClassRoom(room));
+        assertDoesNotThrow(() -> roomService.createClassRoom(room));
 
         verify(classRoomValidator).validateClassRoom(room);
         verify(roomRepository).save(room);
     }
 
 
-
     @Test
-    void removeClassRoom_shouldRemoveClassRoom_WhenClassRoomExists(){
+    void removeClassRoom_shouldRemoveClassRoom_WhenClassRoomExists() {
         Room room = getClassRoom();
 
         when(roomRepository.existsById(room.getId())).thenReturn(true);
 
         roomService.removeClassRoom(room.getId());
-        
+
         verify(roomRepository).deleteById(room.getId());
     }
-    
+
     @Test
-    void removeClassRoom_shouldThrowEntityNotFound_WhenClassRoomDoesNotExist(){
+    void removeClassRoom_shouldThrowEntityNotFound_WhenClassRoomDoesNotExist() {
         long id = 22L;
 
         when(roomRepository.existsById(id)).thenReturn(false);
 
-        assertThrows(EntityNotFoundException.class,()-> roomService.removeClassRoom(id));
+        assertThrows(EntityNotFoundException.class, () -> roomService.removeClassRoom(id));
         verify(roomRepository).existsById(id);
     }
-    
+
 
     Room getClassRoom() {
         return new Room(1L, "A-101", new RoomType(1L, "Hall", 100L));

@@ -98,7 +98,7 @@ class UserServiceTest {
         verify(mockPersonRepository).save(mappedUser);
     }
 
-    private User getPerson(){
+    private User getPerson() {
         return new User(1L, "10fdifjowhef", "John", new HashSet<>(Set.of(Role.LECTURER)),
             "Pork", GenderType.Male, "john.pork@lecturer.university.com",
             new Address(), LocalDate.now(), "Lecturer");

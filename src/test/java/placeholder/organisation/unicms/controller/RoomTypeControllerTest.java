@@ -21,7 +21,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(RoomTypeController.class)
 @WithMockUser(username = "user", roles = {"ADMIN"})
-
 class RoomTypeControllerTest {
 
     @Autowired
@@ -37,17 +36,17 @@ class RoomTypeControllerTest {
         Page<RoomType> roomPage = new PageImpl<>(rooms, pageable, rooms.size());
 
         when(roomTypeService.findAll(pageable))
-                .thenReturn(roomPage);
+            .thenReturn(roomPage);
 
         mockMvc.perform(get("/room-types")
-                        .param("page", "0")
-                        .param("size", "9")
-                        .param("sort", "id,asc"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("roomTypes"))
-                .andExpect(model().attribute("roomTypes", rooms))
-                .andExpect(model().attribute("page", roomPage))
-                .andExpect(model().attribute("url", "room-types"));
+                .param("page", "0")
+                .param("size", "9")
+                .param("sort", "id,asc"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("roomTypes"))
+            .andExpect(model().attribute("roomTypes", rooms))
+            .andExpect(model().attribute("page", roomPage))
+            .andExpect(model().attribute("url", "room-types"));
     }
 
     private RoomType getClassRoomType() {

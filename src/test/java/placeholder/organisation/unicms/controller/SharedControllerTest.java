@@ -64,7 +64,6 @@ public class SharedControllerTest {
     }
 
 
-
     private Student getStudent() {
         Student student = new Student();
         student.setId(1L);
@@ -79,7 +78,7 @@ public class SharedControllerTest {
         return lecturer;
     }
 
-    private Course getCourse(){
+    private Course getCourse() {
         return new Course(1L, "SE", List.of(new Subject()));
     }
 }

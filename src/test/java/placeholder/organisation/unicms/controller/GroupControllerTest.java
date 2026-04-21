@@ -73,11 +73,11 @@ class GroupControllerTest {
         when(lecturerService.findByEmail("lecturer@test.com")).thenReturn(lecturer);
         when(groupService.findGroupsRelatedToLecturer(lecturer.getId())).thenReturn(groups);
 
-        mockMvc.perform(get("/" + lecturer.getId()+"/groups"))
+        mockMvc.perform(get("/" + lecturer.getId() + "/groups"))
             .andExpect(status().isOk())
             .andExpect(view().name("groups"))
             .andExpect(model().attribute("groups", groups))
-            .andExpect(model().attribute("url", lecturer.getId() +"/groups"));
+            .andExpect(model().attribute("url", lecturer.getId() + "/groups"));
 
         verify(lecturerService).findByEmail("lecturer@test.com");
         verify(groupService).findGroupsRelatedToLecturer(lecturer.getId());

@@ -12,7 +12,8 @@
 <div class="d-flex gap-2 p-3 justify-content-between">
     <div class="d-flex gap-2" sec:authorize="hasRole('ADMIN')">
         <a th:href="@{/admin/durations}" class="btn btn-outline-light btn-sm">Duration</a>
-        <a th:href="@{/subjects}" class="btn btn-outline-light btn-sm">Subject</a>
+        <a th:href="@{/subjects}"
+           class="btn btn-outline-light btn-sm">Subject</a>
         <a th:href="@{/rooms}"
            class="btn btn-outline-light btn-sm">Room</a>
     </div>

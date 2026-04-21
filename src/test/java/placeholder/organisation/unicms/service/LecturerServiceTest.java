@@ -6,7 +6,9 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.repository.LecturerRepository;
 import placeholder.organisation.unicms.repository.SubjectRepository;
@@ -96,7 +98,7 @@ class LecturerServiceTest {
         when(subjectRepository.findById(subjectId)).thenThrow(new EntityNotFoundException(javax.security.auth.Subject.class, "1"));
 
         assertThrows(EntityNotFoundException.class, () ->
-                lecturerService.updateLecturerSubjects(List.of(subjectId), lecturerId)
+            lecturerService.updateLecturerSubjects(List.of(subjectId), lecturerId)
         );
     }
 

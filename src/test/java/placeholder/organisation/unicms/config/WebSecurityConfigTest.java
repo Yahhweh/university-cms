@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -21,8 +20,6 @@ import placeholder.organisation.unicms.service.mapper.AddressMapper;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
@@ -42,7 +39,8 @@ class WebSecurityConfigTest {
     @MockitoBean
     private LecturerService lecturerService;
 
-    @MockitoBean LessonService lessonService;
+    @MockitoBean
+    LessonService lessonService;
 
     @MockitoBean
     private CustomUserDetailsService customUserDetailsService;
@@ -145,7 +143,7 @@ class WebSecurityConfigTest {
         return student;
     }
 
-    private Course getCourse(){
+    private Course getCourse() {
         return new Course(1L, "SE", List.of(new Subject()));
     }
 

@@ -18,11 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 
 @DataJpaTest(
-        includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = LessonRepository.class)
+    includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = LessonRepository.class)
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Sql(scripts = "/datasets/lesson_jpa.sql",
-        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class LessonRepositoryTest {
     private static final LocalDate TEST_DATE = LocalDate.of(2026, 1, 17);
 
@@ -181,7 +181,7 @@ class LessonRepositoryTest {
         LocalTime end = LocalTime.of(15, 00);
 
         boolean hasConflict = lessonRepository.findConflictionLessonsForLecturer(
-                lecturerId, TEST_DATE, start, end, existingLessonId);
+            lecturerId, TEST_DATE, start, end, existingLessonId);
 
         assertThat(hasConflict).isFalse();
     }
@@ -196,7 +196,7 @@ class LessonRepositoryTest {
         LocalTime end = LocalTime.of(12, 0);
 
         boolean hasConflict = lessonRepository.findConflictionLessonsForLecturer(
-                lecturerId, TEST_DATE, start, end, lessonBeingUpdated);
+            lecturerId, TEST_DATE, start, end, lessonBeingUpdated);
 
         assertThat(hasConflict).isTrue();
     }

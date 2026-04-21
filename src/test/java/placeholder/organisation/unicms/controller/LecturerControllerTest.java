@@ -35,17 +35,17 @@ class LecturerControllerTest {
         Page<Lecturer> lecturerPage = new PageImpl<>(lecturers, pageable, lecturers.size());
 
         when(lecturerService.findAll(pageable))
-                .thenReturn(lecturerPage);
+            .thenReturn(lecturerPage);
 
         mockMvc.perform(get("/lecturers")
-                        .param("size", "9")
-                        .param("sort", "id,asc")
-                        .param("page", "0"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("lecturers"))
-                .andExpect(model().attribute("lecturers", lecturerPage.getContent()))
-                .andExpect(model().attribute("page", lecturerPage))
-                .andExpect(model().attribute("url", "lecturers"));
+                .param("size", "9")
+                .param("sort", "id,asc")
+                .param("page", "0"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("lecturers"))
+            .andExpect(model().attribute("lecturers", lecturerPage.getContent()))
+            .andExpect(model().attribute("page", lecturerPage))
+            .andExpect(model().attribute("url", "lecturers"));
     }
 
     private Lecturer getLecturer() {

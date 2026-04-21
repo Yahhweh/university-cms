@@ -25,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(DurationController.class)
 @WithMockUser(username = "user", roles = {"ADMIN"})
-
 class DurationControllerTest {
 
     @MockitoBean
@@ -43,17 +42,17 @@ class DurationControllerTest {
         when(durationService.findAll(pageable)).thenReturn(durationPage);
 
         mockMvc.perform(get("/admin/durations")
-                        .param("page", "0")
-                        .param("size", "9")
-                        .param("sort", "id,asc"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("durations"))
-                .andExpect(model().attribute("durations", durationPage.getContent()))
-                .andExpect(model().attribute("page", durationPage))
-                .andExpect(model().attribute("url", "durations"));
+                .param("page", "0")
+                .param("size", "9")
+                .param("sort", "id,asc"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("durations"))
+            .andExpect(model().attribute("durations", durationPage.getContent()))
+            .andExpect(model().attribute("page", durationPage))
+            .andExpect(model().attribute("url", "durations"));
     }
 
-    private Duration getDuration(){
+    private Duration getDuration() {
         return new Duration(1L, LocalTime.of(10, 00), LocalTime.of(12, 00));
     }
 }

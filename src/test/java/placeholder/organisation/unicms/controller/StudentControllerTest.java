@@ -7,6 +7,7 @@ import org.springframework.data.domain.*;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import placeholder.organisation.unicms.entity.Degree;
@@ -25,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(StudentController.class)
 @WithMockUser(username = "user", roles = "ADMIN")
-class StudentControllerTest {
+class `StudentControllerTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -44,14 +45,14 @@ class StudentControllerTest {
         when(studentService.findAll(pageable)).thenReturn(studentPage);
 
         mockMvc.perform(get("/students")
-                        .param("sort", "id,asc")
-                        .param("page", "0")
-                        .param("size", "9"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("students"))
-                .andExpect(model().attribute("students", studentPage.getContent()))
-                .andExpect(model().attribute("page", studentPage))
-                .andExpect(model().attribute("url", "students"));
+                .param("sort", "id,asc")
+                .param("page", "0")
+                .param("size", "9"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("students"))
+            .andExpect(model().attribute("students", studentPage.getContent()))
+            .andExpect(model().attribute("page", studentPage))
+            .andExpect(model().attribute("url", "students"));
     }
 
     private Student getStudent() {

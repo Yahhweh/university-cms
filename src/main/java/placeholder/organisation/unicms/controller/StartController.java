@@ -24,7 +24,7 @@ public class StartController {
         User user = userService.findByEmail(userDetails.getUsername())
             .orElseThrow(() -> new EntityNotFoundException(User.class, userDetails.getUsername()));
 
-        if(user.getRoles().contains(Role.LECTURER)){
+        if (user.getRoles().contains(Role.LECTURER)) {
             model.addAttribute("lecturer", user);
         }
         model.addAttribute("name");

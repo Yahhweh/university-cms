@@ -226,7 +226,7 @@ class AdminControllerTest {
         return lecturer;
     }
 
-    private Course getCourse(){
+    private Course getCourse() {
         return new Course(1L, "SE", List.of(new Subject()));
     }
 }

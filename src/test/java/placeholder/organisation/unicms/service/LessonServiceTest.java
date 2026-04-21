@@ -62,7 +62,7 @@ class LessonServiceTest {
 
         when(studentRepository.existsById(personId)).thenReturn(true);
         when(lessonRepositoryMock.findInRangeForStudent(start, end, personId))
-                .thenReturn(List.of(lesson));
+            .thenReturn(List.of(lesson));
 
         List<Lesson> result = lessonService.findLessonsInRange(start, end, personId);
 
@@ -84,7 +84,7 @@ class LessonServiceTest {
         when(studentRepository.existsById(personId)).thenReturn(false);
         when(lecturerRepository.existsById(personId)).thenReturn(true);
         when(lessonRepositoryMock.findInRangeForLecturer(start, end, personId))
-                .thenReturn(List.of(lesson));
+            .thenReturn(List.of(lesson));
 
         List<Lesson> result = lessonService.findLessonsInRange(start, end, personId);
 
@@ -106,7 +106,7 @@ class LessonServiceTest {
         when(lecturerRepository.existsById(personId)).thenReturn(false);
 
         assertThrows(IllegalArgumentException.class,
-                () -> lessonService.findLessonsInRange(start, end, personId));
+            () -> lessonService.findLessonsInRange(start, end, personId));
 
         verify(studentRepository).existsById(personId);
         verify(lecturerRepository).existsById(personId);
@@ -120,7 +120,7 @@ class LessonServiceTest {
 
         when(studentRepository.existsById(personId)).thenReturn(true);
         when(lessonRepositoryMock.findByDateForStudent(date, personId))
-                .thenReturn(List.of(lesson));
+            .thenReturn(List.of(lesson));
 
         List<Lesson> result = lessonService.findByDate(date, personId);
 
@@ -138,7 +138,7 @@ class LessonServiceTest {
         when(studentRepository.existsById(personId)).thenReturn(false);
         when(lecturerRepository.existsById(personId)).thenReturn(true);
         when(lessonRepositoryMock.findByDateAndLecturerId(date, personId))
-                .thenReturn(List.of());
+            .thenReturn(List.of());
 
         List<Lesson> result = lessonService.findByDate(date, personId);
 
@@ -158,7 +158,7 @@ class LessonServiceTest {
         when(lecturerRepository.existsById(personId)).thenReturn(false);
 
         assertThrows(IllegalArgumentException.class,
-                () -> lessonService.findByDate(date, personId));
+            () -> lessonService.findByDate(date, personId));
 
         verify(studentRepository).existsById(personId);
         verify(lecturerRepository).existsById(personId);
@@ -202,15 +202,16 @@ class LessonServiceTest {
         when(lessonRepositoryMock.findById(lesson.getId())).thenReturn(Optional.of(lesson));
 
         doThrow(EntityValidationException.class)
-                .when(lessonValidator)
-                .validateLesson(any(Lesson.class), anyLong());
+            .when(lessonValidator)
+            .validateLesson(any(Lesson.class), anyLong());
 
         assertThrows(EntityValidationException.class, () ->
-                lessonService.updateLesson(lesson.getId(), lessonRequestDto)
+            lessonService.updateLesson(lesson.getId(), lessonRequestDto)
         );
 
         verify(lessonValidator, times(1)).validateLesson(any(Lesson.class), anyLong());
     }
+
     @Test
     void createLesson_shouldSave_whenCorrectLessonGiven() {
         Lesson lesson = getLesson();
@@ -218,7 +219,7 @@ class LessonServiceTest {
         assertDoesNotThrow(() -> lessonService.createLesson(lesson));
 
         verify(lessonValidator).validateLesson(lesson, -
-                1L);
+            1L);
         verify(lessonRepositoryMock).save(lesson);
     }
 
@@ -294,8 +295,8 @@ class LessonServiceTest {
 
     LessonRequestDTO getLessonDto() {
         return LessonRequestDTO.builder()
-                .studySubjectId(10L)
-                .build();
+            .studySubjectId(10L)
+            .build();
     }
 
     Lecturer getLecturer() {
@@ -308,12 +309,11 @@ class LessonServiceTest {
     }
 
 
-
     Group getGroup() {
         return new Group(1L, "A-122", getCourse(), null, "info");
     }
 
-    private Course getCourse(){
+    private Course getCourse() {
         return new Course(1L, "SE", List.of(new Subject()));
     }
 

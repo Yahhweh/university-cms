@@ -5,7 +5,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import placeholder.organisation.unicms.entity.Duration;
@@ -71,7 +73,7 @@ class DurationServiceTest {
         doThrow(EntityValidationException.class).when(durationValidator).validateDuration(any(Duration.class));
 
         assertThrows(EntityValidationException.class, () ->
-                durationService.updateDuration(duration.getId(), durationRequestDTO)
+            durationService.updateDuration(duration.getId(), durationRequestDTO)
         );
     }
 
@@ -106,10 +108,11 @@ class DurationServiceTest {
         verify(durationRepository).existsById(id);
     }
 
-    Duration getDuration(){
+    Duration getDuration() {
         return new Duration(1L, LocalTime.of(8, 30), LocalTime.of(10, 00));
     }
-    DurationRequestDTO getDurationDto(){
+
+    DurationRequestDTO getDurationDto() {
         return new DurationRequestDTO(LocalTime.of(10, 00), LocalTime.of(11, 30));
     }
 }

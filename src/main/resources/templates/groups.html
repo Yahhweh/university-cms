@@ -24,7 +24,9 @@
             <tr th:each="group : ${groups}">
                 <td th:text="${group.name}">A-123</td>
                 <td>
-                    <form th:action="@{/{groupId}/students(groupId=${group.id})}" method="get">
+                    <form
+                        th:action="@{/{groupId}/students(groupId=${group.id})}"
+                        method="get">
                         <button type="submit"
                                 class="btn btn-link p-0 text-bg-primary"
                                 title="users detail">

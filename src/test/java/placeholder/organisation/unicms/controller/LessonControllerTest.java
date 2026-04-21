@@ -136,7 +136,7 @@ class LessonControllerTest {
         return new Group(1L, "A-122", getCourse(), null, "info");
     }
 
-    private Course getCourse(){
+    private Course getCourse() {
         return new Course(1L, "SE", List.of(new Subject()));
     }
 
