@@ -63,4 +63,9 @@ public class CourseService {
         log.debug("Trying to get course with id: {}", courseId);
         return courseRepository.findById(courseId);
     }
+
+    public List<Course> findCoursesRelatedToLecturer(Long lecturerId){
+        log.debug("Trying to get course with lecturerId: {}", lecturerId);
+        return courseRepository.findCoursesByLecturerId(lecturerId);
+    }
 }

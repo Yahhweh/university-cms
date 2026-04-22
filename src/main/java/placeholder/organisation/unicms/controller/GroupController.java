@@ -71,10 +71,8 @@ public class GroupController {
 
     @PreAuthorize("hasRole('LECTURER')")
     @GetMapping("/{lecturerId}/groups")
-    public String getLecturerGroups(Model model, @PathVariable Long lecturerId,
-                                    @AuthenticationPrincipal UserDetails userDetails) {
+    public String getLecturerGroups(Model model, @PathVariable Long lecturerId) {
         List<Group> groups = groupService.findGroupsRelatedToLecturer(lecturerId);
-        Lecturer lecturer = lecturerService.findByEmail(userDetails.getUsername());
         model.addAttribute("groups", groups);
         model.addAttribute("lecturerId", lecturerId);
         model.addAttribute("url", lecturerId + "/groups");

@@ -5,7 +5,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,8 +16,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import placeholder.organisation.unicms.entity.Course;
 import placeholder.organisation.unicms.service.CourseService;
+import placeholder.organisation.unicms.service.LecturerService;
 import placeholder.organisation.unicms.service.SubjectService;
 import placeholder.organisation.unicms.service.dto.request.CourseRequestDTO;
+
+import java.util.List;
+import java.util.Objects;
 
 @Controller
 @PreAuthorize("hasAnyRole('ADMIN')")
@@ -27,6 +34,7 @@ public class CourseController {
 
     private final CourseService courseService;
     private final SubjectService subjectService;
+    private final LecturerService lecturerService;
 
     @GetMapping("/admin/create-course")
     public String getCreateCourseForm(Model model) {
@@ -69,5 +77,23 @@ public class CourseController {
         model.addAttribute("url", "courses");
         model.addAttribute("name", name);
         return "courses";
+    }
+
+    @PreAuthorize("hasAnyRole('LECTURER', 'MENTOR')")
+    @GetMapping("/my-courses")
+    public String getLecturerCourses(Model model, @RequestParam Long lecturerId, @AuthenticationPrincipal UserDetails userDetails) {
+        List<Course> courses = courseService.findCoursesRelatedToLecturer(lecturerId);
+        ifLecturerCanCheckCourses(userDetails.getUsername(), lecturerId);
+
+        model.addAttribute("courses", courses);
+        return "lecturer-courses";
+    }
+
+
+    private void ifLecturerCanCheckCourses(String email, Long lecturerId) {
+        if (Objects.equals(lecturerService.findByEmail(email).getId(), lecturerId)) {
+            return;
+        }
+        throw new AccessDeniedException("You are not allowed to visit this page");
     }
 }

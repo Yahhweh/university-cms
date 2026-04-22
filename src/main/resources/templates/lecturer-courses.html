@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="styles/css.html :: my-css">
+    <meta charset="UTF-8">
+    <title>Lecturer-courses</title>
+</head>
+<body>
+<div class="container">
+    <h2 class="text-white mb-3">Durations</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover bg-white">
+            <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="course : ${courses}">
+                <td th:text="${course.name}">Applied Math</td>
+            </tr>
+            </tbody>
+        </table>
+        <a href="/" class="btn btn-primary">Go to Home</a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -77,7 +77,8 @@ Given User `B` logged in with Student or Lecturer role
 * User `B` (Student) should be able to view only his own group
 * User `B` should be able to list all groups information (read access).
 * User `B` (Student) should be able to list all students related to his group (read access).
-* User `B` (Lecturer) should be able to list all students in a group (read access).
+* User `B` (Lecturer) should be able to list all students in a group (read access). 
+* User `B` (Lecturer) should be able to list all its courses.
 
 ---
 
