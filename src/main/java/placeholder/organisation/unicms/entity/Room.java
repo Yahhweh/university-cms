@@ -1,15 +1,14 @@
 package placeholder.organisation.unicms.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 @Table(name = "class_room")
-@Data
+@Getter
+@Setter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor

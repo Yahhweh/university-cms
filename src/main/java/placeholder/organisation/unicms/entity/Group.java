@@ -1,15 +1,14 @@
 package placeholder.organisation.unicms.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import jakarta.validation.constraints.*;
 import org.hibernate.annotations.ColumnDefault;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "\"group\"")
 @AllArgsConstructor
 @NoArgsConstructor

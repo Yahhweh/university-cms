@@ -1,10 +1,7 @@
 package placeholder.organisation.unicms.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
 import jakarta.validation.Valid;
@@ -18,7 +15,8 @@ import java.util.Set;
 
 @Log4j2
 @Entity
-@Data
+@Getter
+@Setter
 @Table(name = "\"user\"")
 @AllArgsConstructor
 @NoArgsConstructor
