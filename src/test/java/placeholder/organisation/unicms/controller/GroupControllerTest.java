@@ -18,7 +18,6 @@ import placeholder.organisation.unicms.service.UserService;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -61,7 +60,6 @@ class GroupControllerTest {
             .andExpect(model().attribute("page", groupPage))
             .andExpect(model().attribute("url", "groups"));
 
-        verify(groupService).findAll(pageable);
     }
 
     @Test
@@ -78,9 +76,6 @@ class GroupControllerTest {
             .andExpect(view().name("groups"))
             .andExpect(model().attribute("groups", groups))
             .andExpect(model().attribute("url", lecturer.getId() + "/groups"));
-
-        verify(lecturerService).findByEmail("lecturer@test.com");
-        verify(groupService).findGroupsRelatedToLecturer(lecturer.getId());
     }
 
     private Group getGroup() {

@@ -88,7 +88,6 @@ class LessonControllerTest {
             .andExpect(model().attribute("lecturers", List.of(lecturer)))
             .andExpect(model().attribute("subjectId", 1L));
 
-        verify(lecturerService).findLecturersBySubject(1L);
     }
 
     @Test

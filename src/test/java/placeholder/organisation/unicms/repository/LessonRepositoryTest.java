@@ -72,7 +72,7 @@ class LessonRepositoryTest {
 
         List<Lesson> lessons = lessonRepository.findByDateForStudent(lessonDate, studentId);
 
-        assertThat(lessons.isEmpty()).isTrue();
+        assertThat(lessons).isEqualTo(List.of());
     }
 
     @Test
@@ -82,7 +82,7 @@ class LessonRepositoryTest {
 
         List<Lesson> lessons = lessonRepository.findByDateForStudent(lessonDate, studentId);
 
-        assertThat(lessons.isEmpty()).isTrue();
+        assertThat(lessons).isEqualTo(List.of());
     }
 
     @Test
@@ -108,7 +108,7 @@ class LessonRepositoryTest {
 
         List<Lesson> lessons = lessonRepository.findByDateAndLecturerId(lessonDate, lecturerId);
 
-        assertThat(lessons.isEmpty()).isTrue();
+        assertThat(lessons).isEqualTo(List.of());
     }
 
     @Test

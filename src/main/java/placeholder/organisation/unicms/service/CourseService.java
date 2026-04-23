@@ -64,7 +64,7 @@ public class CourseService {
         return courseRepository.findById(courseId);
     }
 
-    public List<Course> findCoursesRelatedToLecturer(Long lecturerId){
+    public List<Course> findCoursesRelatedToLecturer(Long lecturerId) {
         log.debug("Trying to get course with lecturerId: {}", lecturerId);
         return courseRepository.findCoursesByLecturerId(lecturerId);
     }

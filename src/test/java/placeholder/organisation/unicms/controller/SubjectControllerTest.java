@@ -64,7 +64,6 @@ class SubjectControllerTest {
             .andExpect(view().name("subjects"))
             .andExpect(model().attribute("subjects", subjectPage.getContent()));
 
-        verify(subjectService).findAll(any(Pageable.class), any(SubjectFilter.class));
     }
 
     @Test

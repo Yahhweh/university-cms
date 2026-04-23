@@ -143,7 +143,7 @@ class LessonServiceTest {
         List<Lesson> result = lessonService.findByDate(date, personId);
 
         assertThat(result).isNotNull();
-        assertThat(result.isEmpty()).isTrue();
+        assertThat(result).isEqualTo(List.of());
         verify(studentRepository).existsById(personId);
         verify(lecturerRepository).existsById(personId);
         verify(lessonRepositoryMock).findByDateAndLecturerId(date, personId);

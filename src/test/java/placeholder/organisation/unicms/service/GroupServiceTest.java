@@ -172,7 +172,7 @@ class GroupServiceTest {
 
         List<Group> groups = groupService.findGroupsRelatedToLecturer(1L);
 
-        assertThat(groups.isEmpty()).isTrue();
+        assertThat(groups).isEqualTo(List.of());
     }
 
 }

@@ -14,7 +14,6 @@ import placeholder.organisation.unicms.service.SubjectService;
 
 import java.util.List;
 
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -43,14 +42,38 @@ class CourseControllerTest {
         when(lecturerService.findByEmail("darius.zabuluonis@lecturer.university.com")).thenReturn(lecturer);
         when(courseService.findCoursesRelatedToLecturer(lecturer.getId())).thenReturn(courses);
 
-        mockMvc.perform(get("/my-courses")
-                .param("lecturerId", String.valueOf(lecturer.getId())))
+        mockMvc.perform(get("/my-courses"))
             .andExpect(status().isOk())
             .andExpect(view().name("lecturer-courses"))
             .andExpect(model().attribute("courses", courses));
+    }
 
-        verify(courseService).findCoursesRelatedToLecturer(lecturer.getId());
-        verify(lecturerService).findByEmail("darius.zabuluonis@lecturer.university.com");
+    @Test
+    @WithMockUser(username = "darius.zabuluonis@lecturer.university.com", roles = "MENTOR")
+    void getLecturerCoursesByMentorWithLecturerRole_ShouldReturnViewName() throws Exception {
+        Lecturer lecturer = getLecturer();
+        List<Course> courses = List.of(getCourse());
+
+        when(lecturerService.findByEmail("darius.zabuluonis@lecturer.university.com")).thenReturn(lecturer);
+        when(courseService.findCoursesRelatedToLecturer(lecturer.getId())).thenReturn(courses);
+
+        mockMvc.perform(get("/my-courses"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("lecturer-courses"))
+            .andExpect(model().attribute("courses", courses));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void getLecturerCoursesByAdmin_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
+        List<Course> courses = List.of(getCourse());
+
+        when(courseService.findCoursesRelatedToLecturer(1L)).thenReturn(courses);
+
+        mockMvc.perform(get("/lecturer-courses").param("lecturerId", "1"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("lecturer-courses"))
+            .andExpect(model().attribute("courses", courses));
     }
 
     private Lecturer getLecturer() {

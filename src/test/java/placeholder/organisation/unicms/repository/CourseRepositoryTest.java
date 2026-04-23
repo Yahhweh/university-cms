@@ -45,6 +45,6 @@ class CourseRepositoryTest {
 
         List<Course> courses = courseRepository.findCoursesByLecturerId(nonExistentLecturerId);
 
-        assertThat(courses.isEmpty()).isTrue();
+        assertThat(courses).isEqualTo(List.of());
     }
 }

@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,7 +20,6 @@ import placeholder.organisation.unicms.service.SubjectService;
 import placeholder.organisation.unicms.service.dto.request.CourseRequestDTO;
 
 import java.util.List;
-import java.util.Objects;
 
 @Controller
 @PreAuthorize("hasAnyRole('ADMIN')")
@@ -81,19 +79,18 @@ public class CourseController {
 
     @PreAuthorize("hasAnyRole('LECTURER', 'MENTOR')")
     @GetMapping("/my-courses")
-    public String getLecturerCourses(Model model, @RequestParam Long lecturerId, @AuthenticationPrincipal UserDetails userDetails) {
+    public String getLecturerCourses(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        Long lecturerId = lecturerService.findByEmail(userDetails.getUsername()).getId();
         List<Course> courses = courseService.findCoursesRelatedToLecturer(lecturerId);
-        ifLecturerCanCheckCourses(userDetails.getUsername(), lecturerId);
-
         model.addAttribute("courses", courses);
         return "lecturer-courses";
     }
 
-
-    private void ifLecturerCanCheckCourses(String email, Long lecturerId) {
-        if (Objects.equals(lecturerService.findByEmail(email).getId(), lecturerId)) {
-            return;
-        }
-        throw new AccessDeniedException("You are not allowed to visit this page");
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    @GetMapping("/lecturer-courses")
+    public String getLecturerCoursesByPrivilegedRole(Model model, @RequestParam Long lecturerId) {
+        List<Course> courses = courseService.findCoursesRelatedToLecturer(lecturerId);
+        model.addAttribute("courses", courses);
+        return "lecturer-courses";
     }
 }
