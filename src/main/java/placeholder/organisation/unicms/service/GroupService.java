@@ -121,7 +121,6 @@ public class GroupService {
         return findGroupsByCourse(courseId).stream().map(Group::getId).toList();
     }
 
-
     @PreAuthorize("hasAnyRole('ADMIN', 'MENTOR', 'STAFF')")
     @Transactional
     public void updateGroupInfo(UpdateGroupInfoRequestDTO dto) {

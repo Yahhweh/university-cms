@@ -7,6 +7,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +16,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.service.GroupService;
+import placeholder.organisation.unicms.service.LessonService;
 import placeholder.organisation.unicms.service.StudentService;
 import placeholder.organisation.unicms.service.dto.request.StudentRequestDTO;
+import placeholder.organisation.unicms.service.util.ScheduleUtil;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 @RequestMapping("/students")
@@ -28,6 +36,7 @@ public class StudentController {
 
     private final StudentService studentService;
     private final GroupService groupService;
+    private final LessonService lessonService;
 
     @GetMapping()
     public String getStudents(Model model,
@@ -71,5 +80,18 @@ public class StudentController {
 
         redirectAttributes.addFlashAttribute("successMessage", ASSIGN_STUDENT_GROUP);
         return "redirect:/students/update-student-group?studentId=" + studentId;
+    }
+
+    @PreAuthorize("hasRole('STUDENT')")
+    @GetMapping("/my-schedule")
+    public String getStudentSchedule(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(required = false, defaultValue = "week") String period, Model model) {
+
+        Student student = studentService.findByEmail(userDetails.getUsername());
+        LocalDate[] range = ScheduleUtil.resolveDateRange(period);
+        List<Lesson> lessons = lessonService.findLessonsInRange(range[0], range[1], student.getId());
+
+        model.addAttribute("lessonsByDay", ScheduleUtil.groupLessonsByDay(lessons));
+        model.addAttribute("period", period);
+        return "student-schedule";
     }
 }

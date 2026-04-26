@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import placeholder.organisation.unicms.entity.DayOfWeek;
+import placeholder.organisation.unicms.entity.Group;
 import placeholder.organisation.unicms.entity.Schedule;
 
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @Repository
 public interface ScheduleRepository extends JpaRepository<Schedule, Long>, JpaSpecificationExecutor<Schedule> {
 
-    List<Schedule> findByGroup_Id(Long groupId);
+    List<Schedule> findByGroupId(Long groupId);
 
     @Query("SELECT COUNT(s) > 0 FROM Schedule s " +
         "WHERE s.lecturer.id = :lecturerId AND s.day = :day " +
@@ -22,4 +23,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long>, JpaSp
                                    @Param("day") DayOfWeek day,
                                    @Param("durationId") Long durationId,
                                    @Param("excludeId") Long excludeId);
+
+    List<Schedule> findByLecturerId(Long lecturerId);
 }

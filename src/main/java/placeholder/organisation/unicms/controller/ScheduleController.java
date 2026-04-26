@@ -13,9 +13,9 @@ import placeholder.organisation.unicms.entity.Schedule;
 import placeholder.organisation.unicms.service.*;
 import placeholder.organisation.unicms.service.dto.request.GenerateLessonsRequestDTO;
 import placeholder.organisation.unicms.service.dto.request.ScheduleRequestDTO;
+import placeholder.organisation.unicms.service.util.ScheduleUtil;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -41,13 +41,7 @@ public class ScheduleController {
         model.addAttribute("selectedGroupId", groupId);
         if (groupId != null) {
             List<Schedule> schedules = scheduleService.findByGroupId(groupId);
-            EnumMap<DayOfWeek, List<Schedule>> schedulesByDay = new EnumMap<>(DayOfWeek.class);
-            for (DayOfWeek day : DayOfWeek.values()) {
-                schedulesByDay.put(day, new ArrayList<>());
-            }
-            for (Schedule s : schedules) {
-                schedulesByDay.get(s.getDay()).add(s);
-            }
+            EnumMap<DayOfWeek, List<Schedule>> schedulesByDay = ScheduleUtil.groupSchedulesByDay(schedules);
             model.addAttribute("schedulesByDay", schedulesByDay);
         }
         return "schedule-setup";

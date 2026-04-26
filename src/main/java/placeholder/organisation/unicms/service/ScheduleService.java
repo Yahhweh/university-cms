@@ -34,7 +34,7 @@ public class ScheduleService {
     }
 
     public List<Schedule> findByGroupId(Long groupId) {
-        return scheduleRepository.findByGroup_Id(groupId);
+        return scheduleRepository.findByGroupId(groupId);
     }
 
     public Optional<Schedule> findById(Long id) {
@@ -75,6 +75,11 @@ public class ScheduleService {
             throw new EntityNotFoundException(Schedule.class, String.valueOf(scheduleId));
         }
         scheduleRepository.deleteById(scheduleId);
+    }
+
+    public List<Schedule> findSchedulesRelatedToLecturer(Long lecturerId) {
+        log.debug("Trying to get schedules related to lecturer. id: {}", lecturerId);
+        return scheduleRepository.findByLecturerId(lecturerId);
     }
 
     @Transactional

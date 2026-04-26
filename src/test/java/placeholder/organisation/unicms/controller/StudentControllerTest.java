@@ -13,9 +13,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import placeholder.organisation.unicms.entity.Degree;
 import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.service.GroupService;
+import placeholder.organisation.unicms.service.LessonService;
 import placeholder.organisation.unicms.service.StudentService;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
@@ -34,6 +36,8 @@ class StudentControllerTest {
     StudentService studentService;
     @MockitoBean
     GroupService groupService;
+    @MockitoBean
+    LessonService lessonService;
 
     @Test
     void getLecturers_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
@@ -53,6 +57,40 @@ class StudentControllerTest {
             .andExpect(model().attribute("students", studentPage.getContent()))
             .andExpect(model().attribute("page", studentPage))
             .andExpect(model().attribute("url", "students"));
+    }
+
+    @Test
+    @WithMockUser(username = "student@test.com", roles = "STUDENT")
+    void getMySchedule_ShouldReturnScheduleView_whenWeekPeriod() throws Exception {
+        Student student = getStudent();
+        when(studentService.findByEmail("student@test.com")).thenReturn(student);
+        when(lessonService.findLessonsInRange(any(), any(), eq(student.getId()))).thenReturn(List.of());
+
+        mockMvc.perform(get("/students/my-schedule").param("period", "week"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("student-schedule"))
+            .andExpect(model().attribute("period", "week"))
+            .andExpect(model().attribute("lessonsByDay", Map.of()));
+    }
+
+    @Test
+    @WithMockUser(username = "student@test.com", roles = "STUDENT")
+    void getMySchedule_ShouldReturnScheduleView_whenMonthPeriod() throws Exception {
+        Student student = getStudent();
+        when(studentService.findByEmail("student@test.com")).thenReturn(student);
+        when(lessonService.findLessonsInRange(any(), any(), eq(student.getId()))).thenReturn(List.of());
+
+        mockMvc.perform(get("/students/my-schedule").param("period", "month"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("student-schedule"))
+            .andExpect(model().attribute("period", "month"))
+            .andExpect(model().attribute("lessonsByDay", Map.of()));
+    }
+
+    @Test
+    void getMySchedule_ShouldReturnForbidden_whenRoleIsAdmin() throws Exception {
+        mockMvc.perform(get("/students/my-schedule"))
+            .andExpect(status().isForbidden());
     }
 
     private Student getStudent() {

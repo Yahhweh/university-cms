@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.repository.*;
 import placeholder.organisation.unicms.repository.specifications.LessonSpecification;
@@ -103,11 +104,8 @@ public class LessonService {
             .orElseThrow(() -> new EntityNotFoundException(Lesson.class, String.valueOf(lessonId)));
 
         lessonMapper.updateEntityFromDto(lessonRequestDTO, lesson);
-
         resolveRelations(lessonRequestDTO, lesson);
-
         lessonValidator.validateLesson(lesson, lessonId);
-
         lessonRepository.save(lesson);
 
         log.debug("Lesson updated successfully. ID: {}", lessonId);
@@ -131,7 +129,6 @@ public class LessonService {
         log.info("Lesson saved successfully: {}", lesson.getSubject());
     }
 
-
     private void resolveRelations(LessonRequestDTO dto, Lesson lesson) {
         if (dto.getDurationId() != null) {
             lesson.setDuration(durationRepository.findById(dto.getDurationId())
@@ -143,11 +140,9 @@ public class LessonService {
         if (dto.getGroupId() != null) {
             lesson.setGroup(groupRepository.getReferenceById(dto.getGroupId()));
         }
-
         if (dto.getLecturerId() != null) {
             lesson.setLecturer(lecturerRepository.getReferenceById(dto.getLecturerId()));
         }
-
         if (dto.getClassRoomId() != null) {
             lesson.setRoom(roomRepository.getReferenceById(dto.getClassRoomId()));
         }

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{styles/css.html :: my-css}">
+    <meta charset="UTF-8">
+    <title>My Schedule</title>
+</head>
+<body class="py-4">
+<div class="container">
+    <h4 class="text-white mb-4">My Schedule</h4>
+
+    <div class="d-flex gap-2 mb-4">
+        <a th:href="@{/students/my-schedule(period='week')}"
+           th:if="${period == 'week'}" class="btn btn-primary btn-sm">This week</a>
+        <a th:href="@{/students/my-schedule(period='week')}"
+           th:unless="${period == 'week'}" class="btn btn-outline-light btn-sm">This week</a>
+        <a th:href="@{/students/my-schedule(period='month')}"
+           th:if="${period == 'month'}" class="btn btn-primary btn-sm">This month</a>
+        <a th:href="@{/students/my-schedule(period='month')}"
+           th:unless="${period == 'month'}" class="btn btn-outline-light btn-sm">This month</a>
+    </div>
+
+    <p th:if="${lessonsByDay.isEmpty()}" class="text-muted">No lessons found for the selected period.</p>
+
+    <div th:if="${!lessonsByDay.isEmpty()}">
+        <div th:each="entry : ${lessonsByDay}" class="mb-4">
+            <h5 class="text-white mb-2" th:text="${entry.key}">MONDAY</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover bg-white">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Subject</th>
+                        <th>Duration</th>
+                        <th>Room</th>
+                        <th>Lecturer</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="lesson : ${entry.value}">
+                        <td th:text="${#temporals.format(lesson.date, 'dd.MM.yyyy')}"></td>
+                        <td th:text="${lesson.subject}"></td>
+                        <td th:text="${lesson.duration}"></td>
+                        <td th:text="${lesson.room}"></td>
+                        <td th:text="${lesson.lecturer}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

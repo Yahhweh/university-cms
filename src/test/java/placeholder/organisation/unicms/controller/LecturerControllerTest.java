@@ -9,8 +9,10 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.service.LecturerService;
+import placeholder.organisation.unicms.service.LessonService;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
@@ -27,6 +29,8 @@ class LecturerControllerTest {
     MockMvc mockMvc;
     @MockitoBean
     LecturerService lecturerService;
+    @MockitoBean
+    LessonService lessonService;
 
     @Test
     void getLecturers_ShouldReturnViewName_whenEverythingIsCorrect() throws Exception {
@@ -46,6 +50,40 @@ class LecturerControllerTest {
             .andExpect(model().attribute("lecturers", lecturerPage.getContent()))
             .andExpect(model().attribute("page", lecturerPage))
             .andExpect(model().attribute("url", "lecturers"));
+    }
+
+    @Test
+    @WithMockUser(username = "lecturer@test.com", roles = "LECTURER")
+    void getMySchedule_ShouldReturnScheduleView_whenWeekPeriod() throws Exception {
+        Lecturer lecturer = getLecturer();
+        when(lecturerService.findByEmail("lecturer@test.com")).thenReturn(lecturer);
+        when(lessonService.findLessonsInRange(any(), any(), eq(lecturer.getId()))).thenReturn(List.of());
+
+        mockMvc.perform(get("/lecturers/my-schedule").param("period", "week"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("lecturer-schedule"))
+            .andExpect(model().attribute("period", "week"))
+            .andExpect(model().attribute("lessonsByDay", Map.of()));
+    }
+
+    @Test
+    @WithMockUser(username = "lecturer@test.com", roles = "LECTURER")
+    void getMySchedule_ShouldReturnScheduleView_whenMonthPeriod() throws Exception {
+        Lecturer lecturer = getLecturer();
+        when(lecturerService.findByEmail("lecturer@test.com")).thenReturn(lecturer);
+        when(lessonService.findLessonsInRange(any(), any(), eq(lecturer.getId()))).thenReturn(List.of());
+
+        mockMvc.perform(get("/lecturers/my-schedule").param("period", "month"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("lecturer-schedule"))
+            .andExpect(model().attribute("period", "month"))
+            .andExpect(model().attribute("lessonsByDay", Map.of()));
+    }
+
+    @Test
+    void getMySchedule_ShouldReturnForbidden_whenRoleIsAdmin() throws Exception {
+        mockMvc.perform(get("/lecturers/my-schedule"))
+            .andExpect(status().isForbidden());
     }
 
     private Lecturer getLecturer() {

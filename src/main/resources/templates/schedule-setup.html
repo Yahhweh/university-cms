@@ -10,10 +10,10 @@
 <div th:if="${errorMessage}"
      th:insert="~{toasts/error-toast :: error-toast(${errorMessage})}"></div>
 <div class="container">
-    <div class="mb-4 d-flex gap-3 align-items-center">
+    <form th:action="@{/schedules/schedule-setup}" method="get"
+          class="d-flex gap-3 align-items-center mb-4">
         <label class="form-label mb-0 fw-bold">Group:</label>
-        <select class="form-select w-auto"
-                onchange="window.location.href='/schedules/schedule-setup?groupId=' + this.value">
+        <select name="groupId" class="form-select w-auto">
             <option value="" disabled th:selected="${selectedGroupId == null}">
                 Select group
             </option>
@@ -21,10 +21,11 @@
                     th:text="${g.name}"
                     th:selected="${g.id == selectedGroupId}"></option>
         </select>
+        <button type="submit" class="btn btn-primary btn-sm">Show</button>
         <a th:if="${selectedGroupId != null}"
            th:href="@{/schedules/create-schedule(groupId=${selectedGroupId})}"
-           class="btn btn-success btn-sm"> Add Entry</a>
-    </div>
+           class="btn btn-success btn-sm">Add Entry</a>
+    </form>
 
     <p th:if="${selectedGroupId == null}" class="text-muted">Select a group to
         view its schedule.</p>
@@ -44,9 +45,6 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:if="${#lists.isEmpty(entry.value)}">
-                        <td colspan="4" class="text-muted">No classes</td>
-                    </tr>
                     <tr th:each="s : ${entry.value}">
                         <td th:text="${s.subject}"></td>
                         <td th:text="${s.duration}"></td>

@@ -1,5 +1,6 @@
 package placeholder.organisation.unicms.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -12,29 +13,25 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import placeholder.organisation.unicms.entity.Group;
-import placeholder.organisation.unicms.entity.Lecturer;
-import placeholder.organisation.unicms.service.GroupService;
-import placeholder.organisation.unicms.service.LecturerService;
+import org.springframework.web.bind.annotation.RequestParam;
+import placeholder.organisation.unicms.entity.*;
+import placeholder.organisation.unicms.service.*;
+import placeholder.organisation.unicms.service.util.ScheduleUtil;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
 @RequestMapping("/lecturers")
 @PreAuthorize("hasAnyRole('ADMIN', 'LECTURER')")
+@AllArgsConstructor
 public class LecturerController {
 
     private final LecturerService lecturerService;
-    private final GroupService groupService;
-
-    public LecturerController(LecturerService lecturerService, GroupService groupService) {
-        this.lecturerService = lecturerService;
-        this.groupService = groupService;
-    }
+    private final LessonService lessonService;
 
     @GetMapping()
-    public String getLecturers(Model model,
-                               @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+    public String getLecturers(Model model, @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
         Page<Lecturer> page = lecturerService.findAll(pageable);
 
@@ -46,9 +43,7 @@ public class LecturerController {
     }
 
     @GetMapping("/profile")
-    public String getProfile(
-        Model model,
-        Authentication authentication
+    public String getProfile(Model model, Authentication authentication
     ) {
         Lecturer lecturer = lecturerService.findByEmail(authentication.getName());
 
@@ -56,14 +51,16 @@ public class LecturerController {
         return "lecturer-profile";
     }
 
-//    @PreAuthorize("hasRole('LECTURER')")
-//    @GetMapping("my-schedule")
-//    public String getLecturerSchedule(@AuthenticationPrincipal UserDetails userDetails, Model model){
-//        Lecturer lecturer = lecturerService.findByEmail(userDetails.getUsername());
-//        List<Group> groups = groupService.findGroupsRelatedToLecturer(lecturer.getId());
-//
-//        model.addAttribute("groups", groups);
-//
-//    }
+    @PreAuthorize("hasRole('LECTURER')")
+    @GetMapping("my-schedule")
+    public String getLecturerSchedule(@AuthenticationPrincipal UserDetails userDetails, @RequestParam(required = false, defaultValue = "week") String period, Model model) {
 
+        Lecturer lecturer = lecturerService.findByEmail(userDetails.getUsername());
+        LocalDate[] range = ScheduleUtil.resolveDateRange(period);
+        List<Lesson> lessons = lessonService.findLessonsInRange(range[0], range[1], lecturer.getId());
+
+        model.addAttribute("lessonsByDay", ScheduleUtil.groupLessonsByDay(lessons));
+        model.addAttribute("period", period);
+        return "lecturer-schedule";
+    }
 }
