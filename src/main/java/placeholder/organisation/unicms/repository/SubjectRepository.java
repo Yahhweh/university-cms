@@ -14,4 +14,7 @@ import java.util.Optional;
 @Repository
 public interface SubjectRepository extends JpaRepository<Subject, Long>, JpaSpecificationExecutor<Subject> {
     Optional<Subject> findByName(String name);
+
+    @Query("SELECT DISTINCT s FROM Course c JOIN c.subjects s WHERE c.id = (SELECT g.course.id FROM Group g WHERE g.id = :groupId)")
+    List<Subject> findSubjectsByGroupId(@Param("groupId") Long groupId);
 }

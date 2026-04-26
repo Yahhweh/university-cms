@@ -29,6 +29,10 @@ public class SubjectService {
         this.subjectMapper = subjectMapper;
     }
 
+    public List<Subject> findSubjectsByGroupId(Long groupId) {
+        return subjectRepository.findSubjectsByGroupId(groupId);
+    }
+
     public List<Subject> findAllSubjects() {
         List<Subject> subjects = subjectRepository.findAll();
         log.debug("Found {} subjects in DB", subjects.size());

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{styles/css.html :: my-css}">
+    <meta charset="UTF-8">
+    <title>Schedule Setup</title>
+</head>
+<body class="py-4">
+<div th:if="${successMessage}"
+     th:insert="~{toasts/success-toast :: success-toast(${successMessage})}"></div>
+<div th:if="${errorMessage}"
+     th:insert="~{toasts/error-toast :: error-toast(${errorMessage})}"></div>
+<div class="container">
+    <div class="mb-4 d-flex gap-3 align-items-center">
+        <label class="form-label mb-0 fw-bold">Group:</label>
+        <select class="form-select w-auto"
+                onchange="window.location.href='/schedules/schedule-setup?groupId=' + this.value">
+            <option value="" disabled th:selected="${selectedGroupId == null}">
+                Select group
+            </option>
+            <option th:each="g : ${groups}" th:value="${g.id}"
+                    th:text="${g.name}"
+                    th:selected="${g.id == selectedGroupId}"></option>
+        </select>
+        <a th:if="${selectedGroupId != null}"
+           th:href="@{/schedules/create-schedule(groupId=${selectedGroupId})}"
+           class="btn btn-success btn-sm"> Add Entry</a>
+    </div>
+
+    <p th:if="${selectedGroupId == null}" class="text-muted">Select a group to
+        view its schedule.</p>
+
+    <div th:if="${schedulesByDay != null}">
+        <div th:each="entry : ${schedulesByDay}" class="mb-4">
+            <h5 class="text-white mb-2" th:text="${entry.key}">MONDAY</h5>
+            <div class="table-responsive">
+                <table
+                    class="table table-bordered table-striped table-hover bg-white">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Subject</th>
+                        <th>Duration</th>
+                        <th>Lecturer</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(entry.value)}">
+                        <td colspan="4" class="text-muted">No classes</td>
+                    </tr>
+                    <tr th:each="s : ${entry.value}">
+                        <td th:text="${s.subject}"></td>
+                        <td th:text="${s.duration}"></td>
+                        <td th:text="${s.lecturer}"></td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <a th:href="@{/schedules/{id}/edit(id=${s.id})}"
+                                   class="btn btn-link p-0 text-primary"
+                                   title="Edit">
+                                    <i class="bi bi-pencil fs-5"></i>
+                                </a>
+                                <a th:href="@{/schedules/generate-lessons(scheduleId=${s.id})}"
+                                   class="btn btn-link p-0 text-success"
+                                   title="Generate Lessons">
+                                    <i class="bi bi-calendar-plus fs-5"></i>
+                                </a>
+                                <form th:action="@{/schedules/delete-schedule}"
+                                      method="post" class="d-inline">
+                                    <input type="hidden" name="scheduleId"
+                                           th:value="${s.id}"/>
+                                    <input type="hidden"
+                                           th:name="${_csrf.parameterName}"
+                                           th:value="${_csrf.token}"/>
+                                    <button type="submit"
+                                            class="btn btn-link p-0 text-danger"
+                                            title="Delete">
+                                        <i class="bi bi-trash fs-5"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

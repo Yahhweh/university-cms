@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="styles/css.html :: my-css">
+    <meta charset="UTF-8">
+    <title>Add Lesson</title>
+</head>
+<body class="py-5">
+<div th:if="${successMessage}"
+     th:insert="~{toasts/success-toast :: success-toast(${successMessage})}"
+     class="py-4"></div>
+<div th:if="${errorMessage}"
+     th:insert="~{toasts/error-toast :: error-toast(${errorMessage})}"
+     class="py-4"></div>
+<div class="container">
+    <div class="card shadow mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-primary text-white">
+            <h1 class="h3 mb-0">Add Lesson</h1>
+        </div>
+        <div class="card-body">
+            <form method="post" th:action="@{/schedules/generate-lessons}">
+                <input type="hidden" name="scheduleId"
+                       th:value="${schedule.id}"/>
+                <div class="mb-3">
+                    <label class="form-label">Duration</label>
+                    <strong class="fw-bold"
+                            th:text="${schedule.duration}"></strong>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Subject</label>
+                    <strong class="fw-bold"
+                            th:text="${schedule.subject.name}"></strong>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Group</label>
+                    <strong class="fw-bold"
+                            th:text="${schedule.group.name}"></strong>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Lecturer</label>
+                    <strong class="fw-bold"
+                            th:text="${schedule.lecturer.name + ' ' + schedule.lecturer.sureName}"></strong>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Room</label>
+                    <select name="classRoomId" required class="form-select">
+                        <option value="" disabled selected>Select room</option>
+                        <option th:each="room : ${rooms}"
+                                th:value="${room.id}"
+                                th:text="${room.room}"></option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Weeks to generate</label>
+                    <select name="weeks" required class="form-select">
+                        <option value="" disabled selected>Select number of
+                            weeks
+                        </option>
+                        <option value="1">1 week (current week)</option>
+                        <option value="2">2 weeks</option>
+                        <option value="3">3 weeks</option>
+                        <option value="4">4 weeks</option>
+                    </select>
+                </div>
+                <input type="hidden" th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}"/>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Generate
+                        Lesson
+                    </button>
+                    <a th:href="@{/schedules/schedule-setup}"
+                       class="btn btn-secondary">Back to
+                        Schedules</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

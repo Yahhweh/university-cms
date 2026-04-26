@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="~{styles/css.html :: my-css}">
+    <meta charset="UTF-8">
+    <title>Edit Schedule</title>
+</head>
+<body class="py-5">
+<div th:if="${successMessage}"
+     th:insert="~{toasts/success-toast :: success-toast(${successMessage})}"
+     class="py-4"></div>
+<div th:if="${errorMessage}"
+     th:insert="~{toasts/error-toast :: error-toast(${errorMessage})}"
+     class="py-4"></div>
+<div class="container">
+    <div class="card shadow mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-primary text-white">
+            <h1 class="h3 mb-0">Edit Schedule</h1>
+        </div>
+        <div class="card-body">
+
+            <form th:action="@{/schedules/{id}/edit(id=${schedule.id})}"
+                  method="get">
+                <div class="mb-3">
+                    <label class="form-label">Subject</label>
+                    <div class="d-flex gap-2">
+                        <select name="subjectId" required class="form-select">
+                            <option th:each="s : ${subjects}" th:value="${s.id}"
+                                    th:text="${s.name}"
+                                    th:selected="${s.id == subjectId}"></option>
+                        </select>
+                        <button type="submit"
+                                class="btn btn-outline-primary text-nowrap">Load
+                            Lecturers
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <hr>
+
+            <form method="post"
+                  th:action="@{/schedules/{id}(id=${schedule.id})}">
+                <input type="hidden" th:name="${_csrf.parameterName}"
+                       th:value="${_csrf.token}"/>
+                <input type="hidden" name="subjectId" th:value="${subjectId}"/>
+
+                <div class="mb-3">
+                    <label class="form-label">Day</label>
+                    <p class="form-control-plaintext fw-bold"
+                       th:text="${schedule.day}"></p>
+                    <input type="hidden" name="day" th:value="${schedule.day}"/>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Duration</label>
+                    <select name="durationId" required class="form-select">
+                        <option th:each="d : ${durations}" th:value="${d.id}"
+                                th:text="${d.start} + ' - ' + ${d.end}"
+                                th:selected="${d.id == schedule.duration.id}"></option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Lecturer</label>
+                    <select name="lecturerId" required class="form-select">
+                        <option th:each="l : ${lecturers}" th:value="${l.id}"
+                                th:text="${l.name} + ' ' + ${l.sureName}"
+                                th:selected="${l.id == schedule.lecturer.id}"></option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Group</label>
+                    <p class="form-control-plaintext"
+                       th:text="${schedule.group}"></p>
+                    <input type="hidden" name="groupId"
+                           th:value="${schedule.group.id}"/>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">Save Changes
+                    </button>
+                    <a th:href="@{/schedules/schedule-setup}"
+                       class="btn btn-secondary">Back</a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -80,7 +80,7 @@ Given User `B` logged in with Student or Lecturer role
 * User `B` (Lecturer) should be able to list all students in a group (read access). 
 * User `B` (Lecturer) should be able to list all its courses.
 
----
+--- 
 
 Staff rights
 

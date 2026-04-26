@@ -13,10 +13,13 @@ CREATE TABLE schedule
     group_id    BIGINT           NOT NULL,
     lecturer_id BIGINT           NOT NULL,
     subject_id  BIGINT           NOT NULL,
+    duration_id BIGINT           NOT NULL,
     CONSTRAINT fk_schedule_group
         FOREIGN KEY (group_id) REFERENCES "group" (id),
     CONSTRAINT fk_schedule_lecturer
         FOREIGN KEY (lecturer_id) REFERENCES lecturer (id),
     CONSTRAINT fk_schedule_subject
-        FOREIGN KEY (subject_id) REFERENCES study_subject (id)
+        FOREIGN KEY (subject_id) REFERENCES study_subject (id),
+    CONSTRAINT fk_schedule_duration
+        FOREIGN KEY (duration_id) REFERENCES duration (id)
 );

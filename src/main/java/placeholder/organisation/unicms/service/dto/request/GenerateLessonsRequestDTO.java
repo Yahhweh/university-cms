@@ -1,27 +1,24 @@
 package placeholder.organisation.unicms.service.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import placeholder.organisation.unicms.entity.DayOfWeek;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScheduleRequestDTO {
+public class GenerateLessonsRequestDTO {
     @NotNull
-    private DayOfWeek day;
+    private Long scheduleId;
     @NotNull
-    private Long groupId;
+    private Long classRoomId;
     @NotNull
-    private Long lecturerId;
-    @NotNull
-    private Long subjectId;
-    @NotNull
-    private Long durationId;
-
+    @Min(1)
+    @Max(4)
+    private Integer weeks;
 }
