@@ -200,4 +200,25 @@ class LessonRepositoryTest {
 
         assertThat(hasConflict).isTrue();
     }
+
+    @Test
+    void findByGroupId_shouldReturnLessons_whenGroupExists() {
+        long groupId = 1L;
+        int expectedLessonsSize = 2;
+
+        List<Lesson> lessons = lessonRepository.findByGroupId(groupId);
+
+        assertThat(lessons).isNotNull();
+        assertThat(lessons.size()).isEqualTo(expectedLessonsSize);
+        assertThat(lessons.get(0).getGroup().getId()).isEqualTo(groupId);
+    }
+
+    @Test
+    void findByGroupId_shouldReturnEmpty_whenGroupDoesNotExist() {
+        long groupId = 999L;
+
+        List<Lesson> lessons = lessonRepository.findByGroupId(groupId);
+
+        assertThat(lessons).isEqualTo(List.of());
+    }
 }

@@ -73,19 +73,26 @@ public class LessonService {
     public List<Lesson> findLessonsInRange(LocalDate startDate, LocalDate endDate, long personId) {
         if (studentRepository.existsById(personId)) {
             return lessonRepository.findInRangeForStudent(startDate, endDate, personId);
-        } else if (lecturerRepository.existsById(personId)) {
+        }
+        if (lecturerRepository.existsById(personId)) {
             return lessonRepository.findInRangeForLecturer(startDate, endDate, personId);
         }
+
         throw new IllegalArgumentException("User with id " + personId + " is neither student nor lecturer");
     }
 
     public List<Lesson> findByDate(LocalDate date, long personId) {
         if (studentRepository.existsById(personId)) {
             return lessonRepository.findByDateForStudent(date, personId);
-        } else if (lecturerRepository.existsById(personId)) {
+        }
+        if (lecturerRepository.existsById(personId)) {
             return lessonRepository.findByDateAndLecturerId(date, personId);
         }
         throw new IllegalArgumentException("User with id " + personId + " is neither student nor lecturer");
+    }
+
+    public List<Lesson> findLessonsByGroup(long groupId){
+        return lessonRepository.findByGroupId(groupId);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

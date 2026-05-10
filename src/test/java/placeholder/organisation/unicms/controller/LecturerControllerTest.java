@@ -11,11 +11,13 @@ import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.service.LecturerService;
 import placeholder.organisation.unicms.service.LessonService;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -54,29 +56,43 @@ class LecturerControllerTest {
 
     @Test
     @WithMockUser(username = "lecturer@test.com", roles = "LECTURER")
-    void getMySchedule_ShouldReturnScheduleView_whenWeekPeriod() throws Exception {
+    void getMySchedule_ShouldReturnScheduleView_whenWeekRange() throws Exception {
+        LocalDate today = LocalDate.now();
+        LocalDate weekBegin = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+        LocalDate weekEnd = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
+
         Lecturer lecturer = getLecturer();
         when(lecturerService.findByEmail("lecturer@test.com")).thenReturn(lecturer);
-        when(lessonService.findLessonsInRange(any(), any(), eq(lecturer.getId()))).thenReturn(List.of());
+        when(lessonService.findLessonsInRange(eq(weekBegin), eq(weekEnd), eq(lecturer.getId()))).thenReturn(List.of());
 
-        mockMvc.perform(get("/lecturers/my-schedule").param("period", "week"))
+        mockMvc.perform(get("/lecturers/my-schedule")
+                .param("begin", weekBegin.toString())
+                .param("end", weekEnd.toString()))
             .andExpect(status().isOk())
             .andExpect(view().name("lecturer-schedule"))
-            .andExpect(model().attribute("period", "week"))
+            .andExpect(model().attribute("begin", weekBegin))
+            .andExpect(model().attribute("end", weekEnd))
             .andExpect(model().attribute("lessonsByDay", Map.of()));
     }
 
     @Test
     @WithMockUser(username = "lecturer@test.com", roles = "LECTURER")
-    void getMySchedule_ShouldReturnScheduleView_whenMonthPeriod() throws Exception {
+    void getMySchedule_ShouldReturnScheduleView_whenMonthRange() throws Exception {
+        LocalDate today = LocalDate.now();
+        LocalDate monthBegin = today.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate monthEnd = today.with(TemporalAdjusters.lastDayOfMonth());
+
         Lecturer lecturer = getLecturer();
         when(lecturerService.findByEmail("lecturer@test.com")).thenReturn(lecturer);
-        when(lessonService.findLessonsInRange(any(), any(), eq(lecturer.getId()))).thenReturn(List.of());
+        when(lessonService.findLessonsInRange(eq(monthBegin), eq(monthEnd), eq(lecturer.getId()))).thenReturn(List.of());
 
-        mockMvc.perform(get("/lecturers/my-schedule").param("period", "month"))
+        mockMvc.perform(get("/lecturers/my-schedule")
+                .param("begin", monthBegin.toString())
+                .param("end", monthEnd.toString()))
             .andExpect(status().isOk())
             .andExpect(view().name("lecturer-schedule"))
-            .andExpect(model().attribute("period", "month"))
+            .andExpect(model().attribute("begin", monthBegin))
+            .andExpect(model().attribute("end", monthEnd))
             .andExpect(model().attribute("lessonsByDay", Map.of()));
     }
 

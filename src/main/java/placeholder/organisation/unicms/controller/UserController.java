@@ -1,5 +1,6 @@
 package placeholder.organisation.unicms.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -11,17 +12,23 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import placeholder.organisation.unicms.entity.*;
+import placeholder.organisation.unicms.repository.GroupRepository;
+import placeholder.organisation.unicms.repository.LessonRepository;
 import placeholder.organisation.unicms.service.CourseService;
 import placeholder.organisation.unicms.service.LecturerService;
 import placeholder.organisation.unicms.service.SubjectService;
 import placeholder.organisation.unicms.service.UserService;
 import placeholder.organisation.unicms.service.dto.request.filter.UserFilter;
+import placeholder.organisation.unicms.service.util.ScheduleUtil;
 
-import java.util.List;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Controller
 @RequestMapping("/users")
 @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+@AllArgsConstructor
 public class UserController {
 
     private static final String UPDATE_LECTURER_SUBJECTS = "You have successfully updated subjects";
@@ -30,14 +37,9 @@ public class UserController {
     private final LecturerService lecturerService;
     private final SubjectService subjectService;
     private final CourseService courseService;
+    private final GroupRepository groupRepository;
+    private final LessonRepository lessonRepository;
 
-    public UserController(UserService userService, LecturerService lecturerService, SubjectService subjectService,
-                          CourseService courseService) {
-        this.userService = userService;
-        this.lecturerService = lecturerService;
-        this.subjectService = subjectService;
-        this.courseService = courseService;
-    }
 
     @GetMapping()
     public String getUsers(Model model,
@@ -76,5 +78,17 @@ public class UserController {
         lecturerService.updateLecturerSubjects(subjectIds, lecturerId);
         redirectAttributes.addFlashAttribute("successMessage", UPDATE_LECTURER_SUBJECTS);
         return "redirect:/users/update-lecturer-subjects?lecturerId=" + lecturerId;
+    }
+
+    @GetMapping("/schedule-setup")
+    public String getSchedule(@RequestParam(required = false) Long groupId, Model model) {
+        model.addAttribute("groups", groupRepository.findAll());
+        model.addAttribute("url", "/users/schedule-setup");
+        model.addAttribute("selectedGroupId", groupId);
+        if(groupId != null){
+            EnumMap<DayOfWeek, List<Lesson>> lessonsByDay = ScheduleUtil.groupLessonsByDay(lessonRepository.findByGroupId(groupId));
+            model.addAttribute("lessonsByDay", lessonsByDay);
+        }
+        return "schedule-setup";
     }
 }

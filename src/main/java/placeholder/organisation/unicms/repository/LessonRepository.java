@@ -95,4 +95,7 @@ public interface LessonRepository extends JpaRepository<Lesson, Long>, JpaSpecif
     @Override
     @EntityGraph(attributePaths = {"duration", "group", "lecturer", "room", "subject"})
     Page<Lesson> findAll(Specification<Lesson> spec, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"duration", "group", "lecturer", "room", "subject"})
+    List<Lesson> findByGroupId(long groupId);
 }

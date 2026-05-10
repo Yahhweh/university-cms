@@ -90,9 +90,9 @@ public class LessonController {
     @PostMapping("/delete-lesson")
     public String deleteLesson(RedirectAttributes redirectAttributes, @RequestParam Long lessonId,
                                @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
-                               @ModelAttribute("filters") LessonFilter filter) {
+                               @ModelAttribute("filters") LessonFilter filter, @RequestParam String url){
         lessonService.removeLesson(lessonId);
         RedirectAttributesHelper.addPageAndFilterAttributes(REMOVE_LESSON_MESSAGE, pageable, redirectAttributes, filter);
-        return "redirect:/lessons/lesson-setup";
+        return "redirect:" + url;
     }
 }
