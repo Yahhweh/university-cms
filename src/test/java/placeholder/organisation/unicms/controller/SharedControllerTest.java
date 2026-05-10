@@ -8,6 +8,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.*;
+import placeholder.organisation.unicms.repository.GroupRepository;
+import placeholder.organisation.unicms.repository.LessonRepository;
 import placeholder.organisation.unicms.service.*;
 import placeholder.organisation.unicms.service.mapper.AddressMapper;
 
@@ -48,6 +50,10 @@ public class SharedControllerTest {
     private RoomService roomService;
     @MockitoBean
     private RoomTypeService roomTypeService;
+    @MockitoBean
+    private GroupRepository groupRepository;
+    @MockitoBean
+    private LessonRepository lessonRepository;
 
     @Test
     void updateLecturerSubject_shouldRedirect_whenSubjectsUpdated() throws Exception {

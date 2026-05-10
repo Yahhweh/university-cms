@@ -3,12 +3,16 @@ package placeholder.organisation.unicms.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.*;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import placeholder.organisation.unicms.entity.Degree;
+import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.service.GroupService;
 import placeholder.organisation.unicms.service.LessonService;
@@ -17,6 +21,7 @@ import placeholder.organisation.unicms.service.StudentService;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +33,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(StudentController.class)
 @WithMockUser(username = "user", roles = "ADMIN")
+@Import(StudentControllerTest.MethodSecurityConfig.class)
 class StudentControllerTest {
+
+    @TestConfiguration
+    @EnableMethodSecurity
+    static class MethodSecurityConfig {}
 
     @Autowired
     MockMvc mockMvc;
@@ -77,7 +87,7 @@ class StudentControllerTest {
             .andExpect(view().name("student-schedule"))
             .andExpect(model().attribute("begin", weekBegin))
             .andExpect(model().attribute("end", weekEnd))
-            .andExpect(model().attribute("lessonsByDay", Map.of()));
+            .andExpect(model().attribute("lessonsByDay", emptyLessonsByDay()));
     }
 
     @Test
@@ -98,7 +108,15 @@ class StudentControllerTest {
             .andExpect(view().name("student-schedule"))
             .andExpect(model().attribute("begin", monthBegin))
             .andExpect(model().attribute("end", monthEnd))
-            .andExpect(model().attribute("lessonsByDay", Map.of()));
+            .andExpect(model().attribute("lessonsByDay", emptyLessonsByDay()));
+    }
+
+    private EnumMap<DayOfWeek, List<Lesson>> emptyLessonsByDay() {
+        EnumMap<DayOfWeek, List<Lesson>> map = new EnumMap<>(DayOfWeek.class);
+        for (DayOfWeek day : DayOfWeek.values()) {
+            map.put(day, List.of());
+        }
+        return map;
     }
 
     @Test

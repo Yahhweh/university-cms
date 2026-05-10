@@ -3,17 +3,22 @@ package placeholder.organisation.unicms.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.*;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import placeholder.organisation.unicms.entity.Lecturer;
+import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.service.LecturerService;
 import placeholder.organisation.unicms.service.LessonService;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +30,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(LecturerController.class)
 @WithMockUser(username = "user", roles = "ADMIN")
+@Import(LecturerControllerTest.MethodSecurityConfig.class)
 class LecturerControllerTest {
+
+    @TestConfiguration
+    @EnableMethodSecurity
+    static class MethodSecurityConfig {}
 
     @Autowired
     MockMvc mockMvc;
@@ -56,7 +66,7 @@ class LecturerControllerTest {
 
     @Test
     @WithMockUser(username = "lecturer@test.com", roles = "LECTURER")
-    void getMySchedule_ShouldReturnScheduleView_whenWeekRange() throws Exception {
+    void getSchedule_ShouldReturnScheduleView_whenWeekRange() throws Exception {
         LocalDate today = LocalDate.now();
         LocalDate weekBegin = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate weekEnd = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
@@ -72,12 +82,12 @@ class LecturerControllerTest {
             .andExpect(view().name("lecturer-schedule"))
             .andExpect(model().attribute("begin", weekBegin))
             .andExpect(model().attribute("end", weekEnd))
-            .andExpect(model().attribute("lessonsByDay", Map.of()));
+            .andExpect(model().attribute("lessonsByDay", emptyLessonsByDay()));
     }
 
     @Test
     @WithMockUser(username = "lecturer@test.com", roles = "LECTURER")
-    void getMySchedule_ShouldReturnScheduleView_whenMonthRange() throws Exception {
+    void getSchedule_ShouldReturnScheduleView_whenMonthRange() throws Exception {
         LocalDate today = LocalDate.now();
         LocalDate monthBegin = today.with(TemporalAdjusters.firstDayOfMonth());
         LocalDate monthEnd = today.with(TemporalAdjusters.lastDayOfMonth());
@@ -93,11 +103,19 @@ class LecturerControllerTest {
             .andExpect(view().name("lecturer-schedule"))
             .andExpect(model().attribute("begin", monthBegin))
             .andExpect(model().attribute("end", monthEnd))
-            .andExpect(model().attribute("lessonsByDay", Map.of()));
+            .andExpect(model().attribute("lessonsByDay", emptyLessonsByDay()));
+    }
+
+    private EnumMap<DayOfWeek, List<Lesson>> emptyLessonsByDay() {
+        EnumMap<DayOfWeek, List<Lesson>> map = new EnumMap<>(DayOfWeek.class);
+        for (DayOfWeek day : DayOfWeek.values()) {
+            map.put(day, List.of());
+        }
+        return map;
     }
 
     @Test
-    void getMySchedule_ShouldReturnForbidden_whenRoleIsAdmin() throws Exception {
+    void getSchedule_ShouldReturnForbidden_whenRoleIsAdmin() throws Exception {
         mockMvc.perform(get("/lecturers/my-schedule"))
             .andExpect(status().isForbidden());
     }

@@ -3,7 +3,9 @@ package placeholder.organisation.unicms.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.data.domain.*;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,6 +28,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(LessonController.class)
 @WithMockUser(username = "user", roles = {"ADMIN"})
 class LessonControllerTest {
+
+    @TestConfiguration
+    @EnableMethodSecurity
+    static class MethodSecurityConfig {}
 
     @Autowired
     private MockMvc mockMvc;
@@ -111,6 +117,7 @@ class LessonControllerTest {
     void deleteLesson_shouldRedirectToLessonSetup_whenLessonDeleted() throws Exception {
         mockMvc.perform(post("/lessons/delete-lesson")
                 .param("lessonId", "1")
+                .param("url", "/lessons/lesson-setup")
                 .with(csrf()))
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrlPattern("/lessons/lesson-setup*"));

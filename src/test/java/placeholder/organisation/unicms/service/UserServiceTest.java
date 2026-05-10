@@ -48,7 +48,7 @@ class UserServiceTest {
 
         userService.changeRoles(user.getId(), roles);
 
-        assertThat(expectedUser).isEqualTo(user);
+        assertThat(user.getRoles()).containsExactlyInAnyOrderElementsOf(roles);
         verify(mockPersonRepository).save(user);
     }
 
