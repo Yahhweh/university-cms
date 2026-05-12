@@ -77,7 +77,7 @@ public class LessonService {
         throw new IllegalArgumentException("User with id " + personId + " is neither student nor lecturer");
     }
 
-    public List<Lesson> findLessonsByGroup(long groupId){
+    public List<Lesson> findLessonsByGroup(long groupId) {
         return lessonRepository.findByGroupId(groupId);
     }
 

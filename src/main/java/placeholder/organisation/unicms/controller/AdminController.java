@@ -29,7 +29,7 @@ import java.util.List;
 @PreAuthorize("hasRole('ADMIN')")
 @Validated
 @AllArgsConstructor
-public class AdminController {
+public class   AdminController {
 
     private static final String DELETE_MESSAGE = "User has been successfully deleted";
     private static final String CHANGE_MESSAGE = "User has been successfully changed";

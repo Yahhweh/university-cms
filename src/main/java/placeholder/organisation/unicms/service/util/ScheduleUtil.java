@@ -32,7 +32,7 @@ public class ScheduleUtil {
         return lessonsByDay;
     }
 
-    public List<Lesson> findLessonsInRange(LocalDate startDate, LocalDate endDate, LocalDate today, User user){
+    public List<Lesson> findLessonsInRange(LocalDate startDate, LocalDate endDate, LocalDate today, User user) {
 
         if (startDate == null) {
             startDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
@@ -46,13 +46,13 @@ public class ScheduleUtil {
         return lessons;
     }
 
-    public Model addAtributes(Model model, LocalDate today, LocalDate startDate, LocalDate endDate, List<Lesson> lessons){
+    public Model addAtributes(Model model, LocalDate today, LocalDate startDate, LocalDate endDate, List<Lesson> lessons) {
         LocalDate weekBegin = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate weekEnd = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
         LocalDate monthBegin = today.with(TemporalAdjusters.firstDayOfMonth());
         LocalDate monthEnd = today.with(TemporalAdjusters.lastDayOfMonth());
 
-        model.addAttribute("lessonsByDay",groupLessonsByDay(lessons));
+        model.addAttribute("lessonsByDay", groupLessonsByDay(lessons));
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
         model.addAttribute("weekBegin", weekBegin);
