@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import placeholder.organisation.unicms.entity.Course;
@@ -24,6 +25,7 @@ import java.util.List;
 @Controller
 @PreAuthorize("hasAnyRole('ADMIN')")
 @AllArgsConstructor
+@Validated
 public class CourseController {
 
     private static final String CREATE_MESSAGE = "Course has been successfully created";

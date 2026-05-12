@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,10 +28,11 @@ import java.util.List;
 @RequestMapping("/lecturers")
 @PreAuthorize("hasAnyRole('ADMIN', 'LECTURER')")
 @AllArgsConstructor
+@Validated
 public class LecturerController {
 
     private final LecturerService lecturerService;
-    private final LessonService lessonService;
+    private final ScheduleUtil scheduleUtil;
 
     @GetMapping()
     public String getLecturers(Model model, @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
@@ -56,34 +58,16 @@ public class LecturerController {
     @PreAuthorize("hasRole('LECTURER')")
     @GetMapping("my-schedule")
     public String getLecturerSchedule(@AuthenticationPrincipal UserDetails userDetails,
-                                      @RequestParam(required = false) LocalDate begin,
-                                      @RequestParam(required = false) LocalDate end,
+                                      @RequestParam(required = false) LocalDate startDate,
+                                      @RequestParam(required = false) LocalDate endDate,
                                       Model model) {
 
         Lecturer lecturer = lecturerService.findByEmail(userDetails.getUsername());
         LocalDate today = LocalDate.now();
 
-        if (begin == null) {
-            begin = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-            end = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
-        }
+        List<Lesson> lessons = scheduleUtil.findLessonsInRange(startDate, endDate, today, lecturer);
+        model = scheduleUtil.addAtributes(model, today, startDate, endDate, lessons);
 
-        List<Lesson> lessons = (end == null)
-            ? lessonService.findByDate(begin, lecturer.getId())
-            : lessonService.findLessonsInRange(begin, end, lecturer.getId());
-
-        LocalDate weekBegin = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        LocalDate weekEnd = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
-        LocalDate monthBegin = today.with(TemporalAdjusters.firstDayOfMonth());
-        LocalDate monthEnd = today.with(TemporalAdjusters.lastDayOfMonth());
-
-        model.addAttribute("lessonsByDay", ScheduleUtil.groupLessonsByDay(lessons));
-        model.addAttribute("begin", begin);
-        model.addAttribute("end", end);
-        model.addAttribute("weekBegin", weekBegin);
-        model.addAttribute("weekEnd", weekEnd);
-        model.addAttribute("monthBegin", monthBegin);
-        model.addAttribute("monthEnd", monthEnd);
         return "lecturer-schedule";
     }
 }

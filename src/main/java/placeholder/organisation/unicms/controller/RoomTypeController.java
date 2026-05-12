@@ -1,5 +1,6 @@
 package placeholder.organisation.unicms.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -7,6 +8,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,13 +21,11 @@ import java.util.List;
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
+@Validated
+@AllArgsConstructor
 public class RoomTypeController {
 
     private final RoomTypeService roomTypeService;
-
-    public RoomTypeController(RoomTypeService roomTypeService) {
-        this.roomTypeService = roomTypeService;
-    }
 
     @GetMapping("/room-types")
     public String getRoomTypes(Model model,

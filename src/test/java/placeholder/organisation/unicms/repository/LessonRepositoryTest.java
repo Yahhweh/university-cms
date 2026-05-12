@@ -151,6 +151,19 @@ class LessonRepositoryTest {
     }
 
     @Test
+    void findInRange_shouldReturnLessonsWithDifferentDateByLecturer_WhenLessonsExists() {
+        long lecturerId = 2L;
+        int expectedLessonsSize = 2;
+
+        LocalDate fromDate = LocalDate.parse("2026-05-01");
+        LocalDate toDate = LocalDate.parse("2026-05-30");
+
+        List<Lesson> lessons = lessonRepository.findInRangeForLecturer(fromDate, toDate, lecturerId);
+
+        assertThat(lessons.size()).isEqualTo(expectedLessonsSize);
+    }
+
+    @Test
     void findRoomConflictsInTime_shouldReturnTrue_whenRoomIsOccupied() {
         LocalTime startTime = LocalTime.of(9, 0);
         LocalTime endTime = LocalTime.of(10, 0);

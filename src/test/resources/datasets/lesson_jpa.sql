@@ -66,3 +66,23 @@ INSERT INTO lesson (
     class_room_id,
     date
 ) VALUES (3,1, 3, 1, 2, 1, '2026-01-18');
+
+INSERT INTO lesson (
+    id,
+    duration_id,
+    study_subject_id,
+    group_id,
+    lecturer_id,
+    class_room_id,
+    date
+) VALUES (4,1, 1, 1, 2, 1, '2026-05-03');
+
+INSERT INTO lesson (
+    id,
+    duration_id,
+    study_subject_id,
+    group_id,
+    lecturer_id,
+    class_room_id,
+    date
+) VALUES (5,1, 1, 1, 2, 1, '2026-05-29');

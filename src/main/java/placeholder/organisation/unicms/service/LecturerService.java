@@ -1,5 +1,6 @@
 package placeholder.organisation.unicms.service;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,19 +24,12 @@ import java.util.stream.Collectors;
 @Service
 @Log4j2
 @Transactional(readOnly = true)
+@AllArgsConstructor
 public class LecturerService {
     private final LecturerRepository lecturerRepository;
     private final SubjectRepository subjectRepository;
     private final LecturerMapper lecturerMapper;
     private final PasswordEncoder passwordEncoder;
-
-    public LecturerService(LecturerRepository lecturerRepository, SubjectRepository subjectRepository,
-                           LecturerMapper lecturerMapper, PasswordEncoder passwordEncoder) {
-        this.lecturerRepository = lecturerRepository;
-        this.subjectRepository = subjectRepository;
-        this.lecturerMapper = lecturerMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public List<Lecturer> findAllLecturers() {
         List<Lecturer> lecturers = lecturerRepository.findAll();

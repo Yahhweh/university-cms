@@ -1,5 +1,6 @@
 package placeholder.organisation.unicms.service;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,15 +20,11 @@ import java.util.Optional;
 @Service
 @Log4j2
 @Transactional(readOnly = true)
+@AllArgsConstructor
 public class SubjectService {
 
     private final SubjectRepository subjectRepository;
     private final SubjectMapper subjectMapper;
-
-    public SubjectService(SubjectRepository subjectRepository, SubjectMapper subjectMapper) {
-        this.subjectRepository = subjectRepository;
-        this.subjectMapper = subjectMapper;
-    }
 
     public List<Subject> findSubjectsByGroupId(Long groupId) {
         return subjectRepository.findSubjectsByGroupId(groupId);

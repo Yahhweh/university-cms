@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import placeholder.organisation.unicms.entity.*;
@@ -29,6 +30,7 @@ import java.util.*;
 @RequestMapping("/users")
 @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
 @AllArgsConstructor
+@Validated
 public class UserController {
 
     private static final String UPDATE_LECTURER_SUBJECTS = "You have successfully updated subjects";
@@ -36,7 +38,6 @@ public class UserController {
     private final UserService userService;
     private final LecturerService lecturerService;
     private final SubjectService subjectService;
-    private final CourseService courseService;
     private final GroupRepository groupRepository;
     private final LessonRepository lessonRepository;
 

@@ -1,6 +1,7 @@
 package placeholder.organisation.unicms.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,7 +26,8 @@ public class GlobalExceptionHandler {
         BadCredentialsException.class,
         EntityNotFoundException.class,
         DataIntegrityViolationException.class,
-        InsufficientRoleException.class
+        InsufficientRoleException.class,
+        ConstraintViolationException.class
     })
     public String handleException(Exception ex, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());

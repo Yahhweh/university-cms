@@ -13,7 +13,7 @@ public interface UserMapper {
     UserResponseDTO toDto(User user);
 
     @Mapping(target = "id", ignore = true)
-    void updateEntityFromDto(UserResponseDTO dto, @MappingTarget User entity);
+        void updateEntityFromDto(UserResponseDTO dto, @MappingTarget User entity);
 
     @Mapping(target = "id", ignore = true)
     User toEntity(UserRequestDTO dto);

@@ -11,6 +11,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,12 +34,14 @@ import java.util.List;
 @RequestMapping("/students")
 @PreAuthorize("hasAnyRole('ADMIN', 'STUDENT')")
 @AllArgsConstructor
+@Validated
 public class StudentController {
     private static final String ASSIGN_STUDENT_GROUP = "Student has successfully assigned to group";
 
     private final StudentService studentService;
     private final GroupService groupService;
     private final LessonService lessonService;
+    private final ScheduleUtil scheduleUtil;
 
     @GetMapping()
     public String getStudents(Model model,
@@ -87,34 +90,15 @@ public class StudentController {
     @PreAuthorize("hasRole('STUDENT')")
     @GetMapping("/my-schedule")
     public String getStudentSchedule(@AuthenticationPrincipal UserDetails userDetails,
-                                     @RequestParam(required = false) LocalDate begin,
-                                     @RequestParam(required = false) LocalDate end,
+                                     @RequestParam(required = false) LocalDate startDate,
+                                     @RequestParam(required = false) LocalDate endDate,
                                      Model model) {
 
         Student student = studentService.findByEmail(userDetails.getUsername());
         LocalDate today = LocalDate.now();
+        List<Lesson> lessons = scheduleUtil.findLessonsInRange(startDate, endDate, today, student);
 
-        if (begin == null) {
-            begin = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-            end = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
-        }
-
-        List<Lesson> lessons = (end == null)
-            ? lessonService.findByDate(begin, student.getId())
-            : lessonService.findLessonsInRange(begin, end, student.getId());
-
-        LocalDate weekBegin = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        LocalDate weekEnd = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
-        LocalDate monthBegin = today.with(TemporalAdjusters.firstDayOfMonth());
-        LocalDate monthEnd = today.with(TemporalAdjusters.lastDayOfMonth());
-
-        model.addAttribute("lessonsByDay", ScheduleUtil.groupLessonsByDay(lessons));
-        model.addAttribute("begin", begin);
-        model.addAttribute("end", end);
-        model.addAttribute("weekBegin", weekBegin);
-        model.addAttribute("weekEnd", weekEnd);
-        model.addAttribute("monthBegin", monthBegin);
-        model.addAttribute("monthEnd", monthEnd);
+        model = scheduleUtil.addAtributes(model, today, startDate, endDate, lessons);
         return "student-schedule";
     }
 }

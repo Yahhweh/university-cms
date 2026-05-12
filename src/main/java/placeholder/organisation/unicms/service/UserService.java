@@ -1,5 +1,6 @@
 package placeholder.organisation.unicms.service;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,7 @@ import java.util.Optional;
 @Log4j2
 @Service
 @Validated
+@AllArgsConstructor
 public class UserService {
 
     private static final List<String> STAFF_VISIBLE_TYPES = List.of("Student", "Lecturer");
@@ -30,12 +32,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public Optional<User> findByEmail(String email) {
         Optional<User> user = userRepository.findByEmail(email);

@@ -1,5 +1,6 @@
 package placeholder.organisation.unicms.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -19,6 +20,7 @@ import placeholder.organisation.unicms.service.dto.request.DurationRequestDTO;
 @PreAuthorize("hasRole('ADMIN')")
 @RequestMapping("admin/")
 @Validated
+@AllArgsConstructor
 public class DurationController {
 
     private static final String VALIDATION_CREATE_DURATION_MESSAGE = "Some of your forms are not valid";
@@ -26,10 +28,6 @@ public class DurationController {
     private static final String REMOVE_DURATION_MESSAGE = "Duration has been successfully deleted";
 
     private final DurationService durationService;
-
-    public DurationController(DurationService service) {
-        this.durationService = service;
-    }
 
     @GetMapping("/durations")
     public String getDuration(Model model,

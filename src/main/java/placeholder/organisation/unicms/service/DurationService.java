@@ -1,5 +1,6 @@
 package placeholder.organisation.unicms.service;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,18 +18,12 @@ import java.util.List;
 @Service
 @Log4j2
 @Transactional(readOnly = true)
+@AllArgsConstructor
 public class DurationService {
 
     private final DurationRepository durationRepository;
     private final DurationValidator durationValidator;
     private final DurationMapper durationMapper;
-
-    public DurationService(DurationRepository durationRepository, DurationValidator
-        durationValidator, DurationMapper durationMapper) {
-        this.durationRepository = durationRepository;
-        this.durationValidator = durationValidator;
-        this.durationMapper = durationMapper;
-    }
 
     public List<Duration> findAllDurations() {
         List<Duration> durations = durationRepository.findAll();

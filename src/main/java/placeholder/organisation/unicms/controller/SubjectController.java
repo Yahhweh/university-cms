@@ -1,5 +1,6 @@
 package placeholder.organisation.unicms.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -8,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import placeholder.organisation.unicms.entity.Subject;
@@ -17,6 +19,8 @@ import placeholder.organisation.unicms.service.dto.request.filter.SubjectFilter;
 
 @Controller
 @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+@Validated
+@AllArgsConstructor
 public class SubjectController {
 
     private static final String REMOVE_SUBJECT_MESSAGE = "Subject has been successfully deleted";
@@ -24,10 +28,6 @@ public class SubjectController {
     private static final String CREATE_SUBJECT_MESSAGE = "Subject has been successfully added";
 
     private final SubjectService subjectService;
-
-    public SubjectController(SubjectService subjectService) {
-        this.subjectService = subjectService;
-    }
 
     @GetMapping("/subjects")
     public String getRoomTypes(Model model,

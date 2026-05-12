@@ -1,5 +1,6 @@
 package placeholder.organisation.unicms.service.validation;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.service.EntityValidationException;
@@ -10,16 +11,10 @@ import placeholder.organisation.unicms.repository.StudentRepository;
 import java.time.DayOfWeek;
 
 @Component
+@AllArgsConstructor
 public class LessonValidator {
     private final LessonRepository lessonRepository;
     private final StudentRepository studentRepository;
-    private final GroupRepository groupRepository;
-
-    public LessonValidator(LessonRepository lessonRepository, StudentRepository studentRepository, GroupRepository groupRepository) {
-        this.lessonRepository = lessonRepository;
-        this.studentRepository = studentRepository;
-        this.groupRepository = groupRepository;
-    }
 
     public void validateLesson(Lesson lesson, long lessonId) {
 

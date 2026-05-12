@@ -9,10 +9,10 @@
     <h4 class="text-white mb-4">My Schedule</h4>
 
     <div class="d-flex gap-2 mb-4">
-        <a th:href="@{/students/my-schedule(begin=${weekBegin},end=${weekEnd})}"
-           th:class="${begin == weekBegin and end == weekEnd} ? 'btn btn-primary btn-sm' : 'btn btn-outline-light btn-sm'">This week</a>
-        <a th:href="@{/students/my-schedule(begin=${monthBegin},end=${monthEnd})}"
-           th:class="${begin == monthBegin and end == monthEnd} ? 'btn btn-primary btn-sm' : 'btn btn-outline-light btn-sm'">This month</a>
+        <a th:href="@{/students/my-schedule(startDate=${weekBegin},endDate=${weekEnd})}"
+           th:class="${startDate == weekBegin and endDate == weekEnd} ? 'btn btn-primary btn-sm' : 'btn btn-outline-light btn-sm'">This week</a>
+        <a th:href="@{/lecturers/my-schedule(startDate=${monthBegin},endDate=${monthEnd})}"
+           th:class="${startDate == monthBegin and endDate == monthEnd} ? 'btn btn-primary btn-sm' : 'btn btn-outline-light btn-sm'">This month</a>
     </div>
 
     <p th:if="${lessonsByDay.isEmpty()}" class="text-muted">No lessons found for the selected period.</p>

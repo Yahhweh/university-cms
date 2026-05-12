@@ -1,5 +1,6 @@
 package placeholder.organisation.unicms.service;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,15 +19,11 @@ import java.util.Optional;
 @Service
 @Log4j2
 @Transactional(readOnly = true)
+@AllArgsConstructor
 public class RoomTypeService {
 
     private final RoomTypeRepository roomTypeRepository;
     private final ClassRoomTypeMapper classRoomTypeMapper;
-
-    public RoomTypeService(RoomTypeRepository roomTypeRepository, ClassRoomTypeMapper classRoomTypeMapper) {
-        this.roomTypeRepository = roomTypeRepository;
-        this.classRoomTypeMapper = classRoomTypeMapper;
-    }
 
     public List<RoomType> findAllRoomTypes() {
         List<RoomType> roomTypes = roomTypeRepository.findAll();

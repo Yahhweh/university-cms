@@ -43,6 +43,10 @@ public interface LessonRepository extends JpaRepository<Lesson, Long>, JpaSpecif
     );
 
     @Query("SELECT l FROM Lesson l " +
+        "JOIN FETCH l.duration " +
+        "JOIN FETCH l.group " +
+        "JOIN FETCH l.room " +
+        "JOIN FETCH l.subject " +
         "WHERE l.date BETWEEN :fromDate AND :toDate " +
         "AND l.lecturer.id = :personId " +
         "ORDER BY l.date ASC")

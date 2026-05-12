@@ -1,5 +1,6 @@
 package placeholder.organisation.unicms.service;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import java.util.Optional;
 @Service
 @Log4j2
 @Transactional(readOnly = true)
+@AllArgsConstructor
 public class LessonService {
 
     private final LessonRepository lessonRepository;
@@ -33,22 +35,6 @@ public class LessonService {
     private final SubjectRepository subjectRepository;
     private final GroupRepository groupRepository;
     private final RoomRepository roomRepository;
-
-    public LessonService(LessonRepository lessonRepository, LessonMapper lessonMapper,
-                         LessonValidator lessonValidator, StudentRepository studentRepository,
-                         LecturerRepository lecturerRepository, DurationRepository durationRepository,
-                         SubjectRepository subjectRepository, GroupRepository groupRepository,
-                         RoomRepository roomRepository) {
-        this.lessonRepository = lessonRepository;
-        this.lessonMapper = lessonMapper;
-        this.lessonValidator = lessonValidator;
-        this.lecturerRepository = lecturerRepository;
-        this.studentRepository = studentRepository;
-        this.durationRepository = durationRepository;
-        this.subjectRepository = subjectRepository;
-        this.groupRepository = groupRepository;
-        this.roomRepository = roomRepository;
-    }
 
     public List<Lesson> findAllLessons() {
         List<Lesson> lessons = lessonRepository.findAll();

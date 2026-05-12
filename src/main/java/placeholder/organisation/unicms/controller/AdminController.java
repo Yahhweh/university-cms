@@ -1,5 +1,6 @@
 package placeholder.organisation.unicms.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,6 +28,7 @@ import java.util.List;
 @RequestMapping("/admin")
 @PreAuthorize("hasRole('ADMIN')")
 @Validated
+@AllArgsConstructor
 public class AdminController {
 
     private static final String DELETE_MESSAGE = "User has been successfully deleted";
@@ -44,19 +46,6 @@ public class AdminController {
     private final LecturerService lecturerService;
     private final LessonService lessonService;
     private final CourseService courseService;
-
-    public AdminController(UserService userService, GroupService groupService,
-                           SubjectService subjectService, StudentService studentService,
-                           LecturerService lecturerService, LessonService lessonService,
-                           CourseService courseService) {
-        this.groupService = groupService;
-        this.subjectService = subjectService;
-        this.userService = userService;
-        this.studentService = studentService;
-        this.lecturerService = lecturerService;
-        this.lessonService = lessonService;
-        this.courseService = courseService;
-    }
 
     @GetMapping
     public String showAdminPanel() {

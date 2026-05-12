@@ -1,6 +1,7 @@
 package placeholder.organisation.unicms.controller;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import java.util.List;
 @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
 @RequestMapping("/lessons")
 @Validated
+@AllArgsConstructor
 public class LessonController {
 
     private static final String CREATE_LESSON_MESSAGE = "Lesson has been successfully created";
@@ -38,15 +40,6 @@ public class LessonController {
     private final RoomService roomService;
     private final DurationService durationService;
     private final GroupService groupService;
-
-    public LessonController(LessonService lessonService, SubjectService subjectService, LecturerService lecturerService, RoomService roomService, DurationService durationService, GroupService groupService) {
-        this.lessonService = lessonService;
-        this.subjectService = subjectService;
-        this.lecturerService = lecturerService;
-        this.roomService = roomService;
-        this.durationService = durationService;
-        this.groupService = groupService;
-    }
 
     @GetMapping("/lesson-setup")
     public String lessons(Model model, @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
@@ -90,7 +83,7 @@ public class LessonController {
     @PostMapping("/delete-lesson")
     public String deleteLesson(RedirectAttributes redirectAttributes, @RequestParam Long lessonId,
                                @PageableDefault(direction = Sort.Direction.ASC, sort = "id") Pageable pageable,
-                               @ModelAttribute("filters") LessonFilter filter, @RequestParam String url){
+                               @ModelAttribute("filters") LessonFilter filter, @RequestParam String url) {
         lessonService.removeLesson(lessonId);
         RedirectAttributesHelper.addPageAndFilterAttributes(REMOVE_LESSON_MESSAGE, pageable, redirectAttributes, filter);
         return "redirect:" + url;
