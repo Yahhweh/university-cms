@@ -12,6 +12,7 @@ import placeholder.organisation.unicms.repository.GroupRepository;
 import placeholder.organisation.unicms.repository.LessonRepository;
 import placeholder.organisation.unicms.service.*;
 import placeholder.organisation.unicms.service.mapper.AddressMapper;
+import placeholder.organisation.unicms.service.util.ScheduleUtil;
 
 import java.util.List;
 
@@ -54,6 +55,8 @@ public class SharedControllerTest {
     private GroupRepository groupRepository;
     @MockitoBean
     private LessonRepository lessonRepository;
+    @MockitoBean
+    private ScheduleUtil scheduleUtil;
 
     @Test
     void updateLecturerSubject_shouldRedirect_whenSubjectsUpdated() throws Exception {

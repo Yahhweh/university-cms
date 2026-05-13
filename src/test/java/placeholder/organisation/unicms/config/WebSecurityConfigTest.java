@@ -17,6 +17,7 @@ import placeholder.organisation.unicms.controller.StudentController;
 import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.service.*;
 import placeholder.organisation.unicms.service.mapper.AddressMapper;
+import placeholder.organisation.unicms.service.util.ScheduleUtil;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -59,6 +60,8 @@ class WebSecurityConfigTest {
 
     @MockitoBean
     private CourseService courseService;
+    @MockitoBean
+    private ScheduleUtil scheduleUtil;
 
     @Test
     @WithMockUser(username = "user", roles = {"STUDENT", "ADMIN", "STAFF"})

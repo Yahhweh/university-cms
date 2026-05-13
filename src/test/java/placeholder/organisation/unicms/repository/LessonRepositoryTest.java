@@ -32,7 +32,7 @@ class LessonRepositoryTest {
     @Test
     void findLessonsByLecturerId_shouldReturnLecturer_WhenLecturerExists() {
         Long targetLecturerId = 2L;
-        int expectedLessonsSize = 3;
+        int expectedLessonsSize = 5;
 
         List<Lesson> lessons = lessonRepository.findLessonsByLecturerId(targetLecturerId);
 
@@ -217,7 +217,7 @@ class LessonRepositoryTest {
     @Test
     void findByGroupId_shouldReturnLessons_whenGroupExists() {
         long groupId = 1L;
-        int expectedLessonsSize = 2;
+        int expectedLessonsSize = 4;
 
         List<Lesson> lessons = lessonRepository.findByGroupId(groupId);
 

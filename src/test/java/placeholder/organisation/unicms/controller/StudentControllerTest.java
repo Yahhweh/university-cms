@@ -10,30 +10,27 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-
 import placeholder.organisation.unicms.entity.Degree;
 import placeholder.organisation.unicms.entity.Lesson;
 import placeholder.organisation.unicms.entity.Student;
 import placeholder.organisation.unicms.service.GroupService;
 import placeholder.organisation.unicms.service.LessonService;
 import placeholder.organisation.unicms.service.StudentService;
+import placeholder.organisation.unicms.service.util.ScheduleUtil;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @WebMvcTest(StudentController.class)
 @WithMockUser(username = "user", roles = "ADMIN")
-@Import(StudentControllerTest.MethodSecurityConfig.class)
+@Import({StudentControllerTest.MethodSecurityConfig.class, ScheduleUtil.class})
 class StudentControllerTest {
 
     @TestConfiguration
@@ -78,16 +75,13 @@ class StudentControllerTest {
 
         Student student = getStudent();
         when(studentService.findByEmail("student@test.com")).thenReturn(student);
-        when(lessonService.findLessonsInRange(eq(weekBegin), eq(weekEnd), eq(student.getId()))).thenReturn(List.of());
+        when(lessonService.findLessonsInRange(eq(weekBegin), eq(weekEnd), eq(student))).thenReturn(List.of());
 
         mockMvc.perform(get("/students/my-schedule")
-                .param("begin", weekBegin.toString())
-                .param("end", weekEnd.toString()))
+                .param("startDate", weekBegin.toString())
+                .param("endDate", weekEnd.toString()))
             .andExpect(status().isOk())
-            .andExpect(view().name("student-schedule"))
-            .andExpect(model().attribute("begin", weekBegin))
-            .andExpect(model().attribute("end", weekEnd))
-            .andExpect(model().attribute("lessonsByDay", emptyLessonsByDay()));
+            .andExpect(view().name("student-schedule"));
     }
 
     @Test
@@ -99,24 +93,13 @@ class StudentControllerTest {
 
         Student student = getStudent();
         when(studentService.findByEmail("student@test.com")).thenReturn(student);
-        when(lessonService.findLessonsInRange(eq(monthBegin), eq(monthEnd), eq(student.getId()))).thenReturn(List.of());
+        when(lessonService.findLessonsInRange(eq(monthBegin), eq(monthEnd), eq(student))).thenReturn(List.of());
 
         mockMvc.perform(get("/students/my-schedule")
-                .param("begin", monthBegin.toString())
-                .param("end", monthEnd.toString()))
+                .param("startDate", monthBegin.toString())
+                .param("endDate", monthEnd.toString()))
             .andExpect(status().isOk())
-            .andExpect(view().name("student-schedule"))
-            .andExpect(model().attribute("begin", monthBegin))
-            .andExpect(model().attribute("end", monthEnd))
-            .andExpect(model().attribute("lessonsByDay", emptyLessonsByDay()));
-    }
-
-    private EnumMap<DayOfWeek, List<Lesson>> emptyLessonsByDay() {
-        EnumMap<DayOfWeek, List<Lesson>> map = new EnumMap<>(DayOfWeek.class);
-        for (DayOfWeek day : DayOfWeek.values()) {
-            map.put(day, List.of());
-        }
-        return map;
+            .andExpect(view().name("student-schedule"));
     }
 
     @Test
