@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import placeholder.organisation.unicms.entity.Lecturer;
 import placeholder.organisation.unicms.entity.Lesson;
+import placeholder.organisation.unicms.entity.User;
 import placeholder.organisation.unicms.repository.*;
 import placeholder.organisation.unicms.repository.specifications.LessonSpecification;
 import placeholder.organisation.unicms.service.dto.request.LessonRequestDTO;
@@ -16,7 +17,9 @@ import placeholder.organisation.unicms.service.dto.request.filter.LessonFilter;
 import placeholder.organisation.unicms.service.mapper.LessonMapper;
 import placeholder.organisation.unicms.service.validation.LessonValidator;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.Optional;
 
@@ -120,6 +123,21 @@ public class LessonService {
         lessonValidator.validateLesson(lesson, -1L);
         lessonRepository.save(lesson);
         log.info("Lesson saved successfully: {}", lesson.getSubject());
+    }
+
+    public List<Lesson> findLessonsInRange(LocalDate startDate, LocalDate endDate, User user) {
+
+        if (startDate == null) {
+            LocalDate today = LocalDate.now();
+            startDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+            endDate = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
+        }
+
+        List<Lesson> lessons = (endDate == null)
+            ? findByDate(startDate, user.getId())
+            : findLessonsInRange(startDate, endDate, user.getId());
+
+        return lessons;
     }
 
     private void resolveRelations(LessonRequestDTO dto, Lesson lesson) {

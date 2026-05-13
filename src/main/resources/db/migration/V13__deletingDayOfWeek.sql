@@ -1,1 +1,0 @@
-DROP TYPE  IF EXISTS day_of_week_type

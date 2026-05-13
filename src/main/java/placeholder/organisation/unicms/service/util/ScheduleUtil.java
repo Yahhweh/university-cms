@@ -32,21 +32,7 @@ public class ScheduleUtil {
         return lessonsByDay;
     }
 
-    public List<Lesson> findLessonsInRange(LocalDate startDate, LocalDate endDate, LocalDate today, User user) {
-
-        if (startDate == null) {
-            startDate = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-            endDate = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
-        }
-
-        List<Lesson> lessons = (endDate == null)
-            ? lessonService.findByDate(startDate, user.getId())
-            : lessonService.findLessonsInRange(startDate, endDate, user.getId());
-
-        return lessons;
-    }
-
-    public Model addAtributes(Model model, LocalDate today, LocalDate startDate, LocalDate endDate, List<Lesson> lessons) {
+    public Model addAttributes(Model model, LocalDate today, LocalDate startDate, LocalDate endDate, List<Lesson> lessons) {
         LocalDate weekBegin = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
         LocalDate weekEnd = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.FRIDAY));
         LocalDate monthBegin = today.with(TemporalAdjusters.firstDayOfMonth());

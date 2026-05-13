@@ -3,49 +3,156 @@
 <head th:insert="~{styles/css.html :: my-css}">
     <meta charset="UTF-8">
     <title>My Schedule</title>
+    <style>
+        .idance .timetable-item {
+            border: 1px solid #d8e3eb;
+            padding: 15px;
+            margin-top: 20px;
+            position: relative;
+            display: block;
+        }
+        @media (min-width: 768px) {
+            .idance .timetable-item {
+                display: -webkit-box;
+                display: -ms-flexbox;
+                display: flex;
+            }
+        }
+        .idance .timetable-item-main {
+            -webkit-box-flex: 1;
+            -ms-flex: 1;
+            flex: 1;
+            position: relative;
+            margin-top: 12px;
+        }
+        @media (min-width: 768px) {
+            .idance .timetable-item-main {
+                margin-top: 0;
+            }
+        }
+        .idance .timetable-item-time {
+            font-weight: 500;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        .idance .timetable-item-name {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .idance .schedule .nav-tabs {
+            border-bottom: 2px solid #104455;
+        }
+        .idance .schedule .nav-link {
+            -webkit-box-flex: 1;
+            -ms-flex: 1;
+            flex: 1;
+            font-size: 12px;
+            text-align: center;
+            text-transform: uppercase;
+            color: #3d3d3d;
+            font-weight: 500;
+            -webkit-transition: none;
+            -o-transition: none;
+            transition: none;
+            border-radius: 2px 2px 0 0;
+            padding-left: 0;
+            padding-right: 0;
+            cursor: pointer;
+        }
+        @media (min-width: 768px) {
+            .idance .schedule .nav-link {
+                font-size: 16px;
+            }
+        }
+        .idance .schedule .nav-link.active {
+            background: #104455;
+            border-color: #104455;
+            color: #fff;
+        }
+        .idance .schedule .nav-link.active:focus {
+            border-color: #104455;
+        }
+        .idance .schedule .nav-link:hover:not(.active) {
+            background: #46c1be;
+            border-color: #46c1be;
+            color: #fff;
+        }
+        .idance .schedule .tab-pane {
+            padding-top: 10px;
+        }
+    </style>
 </head>
 <body class="py-4">
-<div class="container">
-    <h4 class="text-white mb-4">My Schedule</h4>
+<div class="container idance">
+
+    <h4 class="text-white mb-4">
+        <i class="bi bi-calendar3 me-2"></i>My Schedule
+    </h4>
 
     <div class="d-flex gap-2 mb-4">
         <a th:href="@{/lecturers/my-schedule(startDate=${weekBegin},endDate=${weekEnd})}"
-           th:class="${startDate == weekBegin and endDate == weekEnd} ? 'btn btn-primary btn-sm' : 'btn btn-outline-light btn-sm'">This week</a>
+           th:class="${startDate == weekBegin and endDate == weekEnd} ? 'btn btn-primary btn-sm' : 'btn btn-outline-light btn-sm'">
+            <i class="bi bi-calendar-week me-1"></i>This week
+        </a>
         <a th:href="@{/lecturers/my-schedule(startDate=${monthBegin},endDate=${monthEnd})}"
-           th:class="${startDate == monthBegin and endDate == monthEnd} ? 'btn btn-primary btn-sm' : 'btn btn-outline-light btn-sm'">This month</a>
+           th:class="${startDate == monthBegin and endDate == monthEnd} ? 'btn btn-primary btn-sm' : 'btn btn-outline-light btn-sm'">
+            <i class="bi bi-calendar-month me-1"></i>This month
+        </a>
     </div>
 
-    <p th:if="${lessonsByDay.isEmpty()}" class="text-muted">No lessons found for
-        the selected period.</p>
+    <p th:if="${lessonsByDay.isEmpty()}" class="text-white-50 fst-italic">
+        <i class="bi bi-info-circle me-1"></i>No lessons found for the selected period.
+    </p>
 
-    <div th:if="${!lessonsByDay.isEmpty()}">
-        <div th:each="entry : ${lessonsByDay}" class="mb-4">
-            <h5 class="text-white mb-2" th:text="${entry.key}">MONDAY</h5>
-            <div class="table-responsive">
-                <table
-                    class="table table-bordered table-striped table-hover bg-white">
-                    <thead class="table-dark">
-                    <tr>
-                        <th>Date</th>
-                        <th>Subject</th>
-                        <th>Duration</th>
-                        <th>Room</th>
-                        <th>Group</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="lesson : ${entry.value}">
-                        <td th:text="${#temporals.format(lesson.date, 'dd.MM.yyyy')}"></td>
-                        <td th:text="${lesson.subject}"></td>
-                        <td th:text="${lesson.duration}"></td>
-                        <td th:text="${lesson.room}"></td>
-                        <td th:text="${lesson.group}"></td>
-                    </tr>
-                    </tbody>
-                </table>
+    <div th:unless="${lessonsByDay.isEmpty()}" class="schedule">
+
+        <nav class="nav nav-tabs">
+            <a th:each="entry, stat : ${lessonsByDay}"
+               class="nav-link"
+               th:classappend="${stat.first} ? ' active'"
+               th:href="'#tab-' + ${stat.index}"
+               th:attr="data-bs-toggle='tab'"
+               th:text="${entry.key}">Mon</a>
+        </nav>
+
+        <div class="tab-content bg-white px-3 pb-3">
+            <div th:each="entry, stat : ${lessonsByDay}"
+                 class="tab-pane"
+                 th:classappend="${stat.first} ? ' show active'"
+                 th:id="'tab-' + ${stat.index}">
+
+                <p th:if="${entry.value.isEmpty()}" class="text-muted fst-italic pt-3">No lessons this day.</p>
+
+                <div class="row">
+                    <div th:each="lesson : ${entry.value}" class="col-md-6">
+                        <div class="timetable-item">
+                            <div class="timetable-item-main">
+                                <div class="timetable-item-time">
+                                    <i class="bi bi-clock me-1"></i>
+                                    <span th:text="${lesson.duration}"></span>
+                                </div>
+                                <div class="timetable-item-name fw-semibold" th:text="${lesson.subject}"></div>
+                                <div class="text-muted small">
+                                    <i class="bi bi-calendar2 me-1"></i>
+                                    <span th:text="${#temporals.format(lesson.date, 'dd MMM yyyy')}"></span>
+                                </div>
+                                <div class="text-muted small">
+                                    <i class="bi bi-door-open me-1"></i>
+                                    <span th:text="${lesson.room}"></span>
+                                    &nbsp;&bull;&nbsp;
+                                    <i class="bi bi-people me-1"></i>
+                                    <span th:text="${lesson.group}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
+
     </div>
+
 </div>
 </body>
 </html>

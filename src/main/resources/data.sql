@@ -1836,12 +1836,9 @@ SELECT pg_catalog.setval('public.user_id_seq', 163, true);
 
 SELECT pg_catalog.setval('public.study_subject_id_seq', 10, true);
 
-UPDATE "user"
-SET role= 'STUDENT'
-where id BETWEEN 14 and 163;
-UPDATE "user"
-SET role= 'LECTURER'
-where id BETWEEN 1 and 10;
-UPDATE "user"
-SET role = 'ADMIN'
-where id IN (11, 12, 13);
+UPDATE "user" SET dtype = 'Student' WHERE id BETWEEN 14 AND 163;
+UPDATE "user" SET dtype = 'Lecturer' WHERE id BETWEEN 1 AND 10;
+
+INSERT INTO user_roles (user_id, role) SELECT id, 'STUDENT' FROM "user" WHERE id BETWEEN 14 AND 163;
+INSERT INTO user_roles (user_id, role) SELECT id, 'LECTURER' FROM "user" WHERE id BETWEEN 1 AND 10;
+INSERT INTO user_roles (user_id, role) SELECT id, 'ADMIN' FROM "user" WHERE id IN (11, 12, 13);

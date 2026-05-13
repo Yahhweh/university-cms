@@ -19,9 +19,7 @@ import placeholder.organisation.unicms.entity.*;
 import placeholder.organisation.unicms.service.*;
 import placeholder.organisation.unicms.service.util.ScheduleUtil;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 @Controller
@@ -33,6 +31,7 @@ public class LecturerController {
 
     private final LecturerService lecturerService;
     private final ScheduleUtil scheduleUtil;
+    private final LessonService lessonService;
 
     @GetMapping()
     public String getLecturers(Model model, @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
@@ -65,8 +64,8 @@ public class LecturerController {
         Lecturer lecturer = lecturerService.findByEmail(userDetails.getUsername());
         LocalDate today = LocalDate.now();
 
-        List<Lesson> lessons = scheduleUtil.findLessonsInRange(startDate, endDate, today, lecturer);
-        model = scheduleUtil.addAtributes(model, today, startDate, endDate, lessons);
+        List<Lesson> lessons = lessonService.findLessonsInRange(startDate, endDate, lecturer);
+        model = scheduleUtil.addAttributes(model, today, startDate, endDate, lessons);
 
         return "lecturer-schedule";
     }

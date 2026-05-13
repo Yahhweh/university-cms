@@ -25,9 +25,7 @@ import placeholder.organisation.unicms.service.StudentService;
 import placeholder.organisation.unicms.service.dto.request.StudentRequestDTO;
 import placeholder.organisation.unicms.service.util.ScheduleUtil;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 @Controller
@@ -96,9 +94,9 @@ public class StudentController {
 
         Student student = studentService.findByEmail(userDetails.getUsername());
         LocalDate today = LocalDate.now();
-        List<Lesson> lessons = scheduleUtil.findLessonsInRange(startDate, endDate, today, student);
+        List<Lesson> lessons = lessonService.findLessonsInRange(startDate, endDate, student);
 
-        model = scheduleUtil.addAtributes(model, today, startDate, endDate, lessons);
+        model = scheduleUtil.addAttributes(model, today, startDate, endDate, lessons);
         return "student-schedule";
     }
 }
